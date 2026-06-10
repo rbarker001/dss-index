@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DSCA City Run — Kansas City, MO (Demo)</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+         font-size: 14px; line-height: 1.6; color: #2D3748; background: #F7FAFC; }
+  .page { max-width: 1000px; margin: 0 auto; background: #fff; box-shadow: 0 2px 16px rgba(0,0,0,.08); }
+  .header { background: #1B2A4A; color: #fff; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+  .brand { font-size: 15px; font-weight: 500; }
+  .brand span { color: #ef7835; }
+  .meta { font-size: 11px; color: #90CDF4; text-align: right; line-height: 1.8; }
+  .demo-badge { display:inline-block; background:#2C5282; color:#BEE3F8; font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:2px 8px; border-radius:3px; }
+  .title-block { padding: 24px 40px 20px; border-bottom: 2px solid #1B2A4A; }
+  .title-main { font-size: 20px; font-weight: 700; color: #1B2A4A; margin-bottom: 4px; }
+  .title-sub { font-size: 13px; color: #4A5568; }
+  .body { padding: 32px 40px; }
+  .section-header { background: #1B2A4A; color: #fff; padding: 8px 16px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; border-radius: 3px; margin-bottom: 16px; }
+  .section { margin-bottom: 40px; }
+  table.summary { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.summary th { background: #2D3748; color: #fff; padding: 8px 10px; text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  table.summary td { padding: 8px 10px; border-bottom: 1px solid #E2E8F0; vertical-align: middle; }
+  table.summary tr:last-child td { border-bottom: none; }
+  table.summary tr:nth-child(even) td { background: #F7FAFC; }
+  .stat-row { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .stat { background: #EDF2F7; border: 1px solid #CBD5E0; border-radius: 6px; padding: 14px 20px; flex: 1; min-width: 140px; text-align: center; }
+  .stat-num { font-size: 28px; font-weight: 800; color: #1B2A4A; }
+  .stat-label { font-size: 11px; color: #718096; text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+  .footer { background: #1B2A4A; color: #90CDF4; padding: 16px 40px; font-size: 11px; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="brand">Seagull Health &nbsp;<span>|</span>&nbsp; <span>CRISP</span></div>
+    <div class="meta">
+      Run Date: June 8, 2026
+      &nbsp;&nbsp; City: Kansas City, MO &nbsp;&nbsp; Facilities: 5<br>
+      <span class="demo-badge">Demo — Dummy Data</span>
+    </div>
+  </div>
+
+  <div class="title-block">
+    <div class="title-main">DSCA City Run — Kansas City, MO</div>
+    <div class="title-sub">Deterministic DSS classification · CMS public data · SNF universe · Senior Care Investment</div>
+  </div>
+
+  <div class="body">
+
+    <div class="section">
+      <div class="section-header">City Summary</div>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-num">5</div><div class="stat-label">Facilities</div></div>
+        <div class="stat"><div class="stat-num" style="color:#C53030">2</div><div class="stat-label">High Exposure</div></div>
+        <div class="stat"><div class="stat-num" style="color:#C05621">1</div><div class="stat-label">Moderate-High</div></div>
+        <div class="stat"><div class="stat-num" style="color:#744210">1</div><div class="stat-label">Moderate</div></div>
+        <div class="stat"><div class="stat-num" style="color:#22543D">1</div><div class="stat-label">Low</div></div>
+      </div>
+
+      <table class="summary">
+        <thead>
+          <tr>
+            <th>Facility</th>
+            <th style="text-align:center">Beds</th>
+            <th style="text-align:center">Five-Star</th>
+            <th style="text-align:center">HPRD</th>
+            <th style="text-align:center">Turnover</th>
+            <th style="text-align:center">Conditions</th>
+            <th style="text-align:center">High Risk</th>
+            <th style="text-align:center">Exposure</th>
+          </tr>
+        </thead>
+        <tbody>
+      <tr>
+        <td style="font-weight:600;color:#1B2A4A">Maplewood Skilled Nursing & Rehabilitation</td>
+        <td style="text-align:center">60</td>
+        <td style="text-align:center">★★★☆☆</td>
+        <td style="text-align:center">3.4</td>
+        <td style="text-align:center">68%</td>
+        <td style="text-align:center"><b>2</b> Rec / <b>4</b> Pot</td>
+        <td style="text-align:center">4 of 6</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:3px 12px;border-radius:3px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:#C05621;color:#fff">Moderate-High</span></td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:#1B2A4A">Riverside Care Center</td>
+        <td style="text-align:center">120</td>
+        <td style="text-align:center">★★★★★</td>
+        <td style="text-align:center">4.1</td>
+        <td style="text-align:center">38%</td>
+        <td style="text-align:center"><b>0</b> Rec / <b>0</b> Pot</td>
+        <td style="text-align:center">0 of 6</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:3px 12px;border-radius:3px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:#22543D;color:#fff">Low</span></td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:#1B2A4A">Westview Nursing Home</td>
+        <td style="text-align:center">90</td>
+        <td style="text-align:center">★★☆☆☆</td>
+        <td style="text-align:center">3.1</td>
+        <td style="text-align:center">82%</td>
+        <td style="text-align:center"><b>5</b> Rec / <b>2</b> Pot</td>
+        <td style="text-align:center">4 of 6</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:3px 12px;border-radius:3px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:#C53030;color:#fff">High</span></td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:#1B2A4A">Prairie Village SNF</td>
+        <td style="text-align:center">45</td>
+        <td style="text-align:center">★★★★☆</td>
+        <td style="text-align:center">3.6</td>
+        <td style="text-align:center">55%</td>
+        <td style="text-align:center"><b>0</b> Rec / <b>3</b> Pot</td>
+        <td style="text-align:center">2 of 6</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:3px 12px;border-radius:3px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:#744210;color:#fff">Moderate</span></td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:#1B2A4A">Crossroads Rehabilitation & Living</td>
+        <td style="text-align:center">200</td>
+        <td style="text-align:center">★☆☆☆☆</td>
+        <td style="text-align:center">2.8</td>
+        <td style="text-align:center">91%</td>
+        <td style="text-align:center"><b>5</b> Rec / <b>1</b> Pot</td>
+        <td style="text-align:center">4 of 6</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:3px 12px;border-radius:3px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:#C53030;color:#fff">High</span></td>
+      </tr></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-header">Condition Breakdown — All Facilities</div>
+      
+      <div style="margin-bottom:32px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div style="font-size:14px;font-weight:700;color:#1B2A4A">Maplewood Skilled Nursing & Rehabilitation</div>
+          <span style="display:inline-block;padding:3px 12px;border-radius:3px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:#C05621;color:#fff">Moderate-High</span>
+          <div style="font-size:12px;color:#718096">CCN 265399 · 60 beds · For profit - Limited Liability company</div>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+          <thead>
+            <tr style="background:#2D3748;color:#fff">
+              <th style="padding:6px 10px;text-align:left;width:40px">ID</th>
+              <th style="padding:6px 10px;text-align:left">Condition</th>
+              <th style="padding:6px 10px;text-align:center;width:130px">Classification</th>
+              <th style="padding:6px 10px;text-align:center;width:90px">DSS Domain</th>
+              <th style="padding:6px 10px;text-align:center;width:100px">Risk</th>
+              <th style="padding:6px 10px;text-align:center;width:90px">F-tag</th>
+              <th style="padding:6px 10px;text-align:center;width:70px">Count</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-1</td>
+        <td style="font-weight:500">Fall-Seizure Nexus</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">Recognized</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">2</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Moderate</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-689</td>
+        <td style="text-align:center;color:#718096">3</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-2</td>
+        <td style="font-weight:500">Pharmacy / Medication Management</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Potential</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-755</td>
+        <td style="text-align:center;color:#718096">1</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-3</td>
+        <td style="font-weight:500">Services Meet Professional Standards</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">Recognized</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-658</td>
+        <td style="text-align:center;color:#718096">2</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-4</td>
+        <td style="font-weight:500">Behavioral Health and Staff Competency</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Potential</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-740/F-741</td>
+        <td style="text-align:center;color:#718096">1</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-5</td>
+        <td style="font-weight:500">Five-Star Component Discrepancy</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Potential</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">2</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Moderate</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">Health Inspection vs Overall Rating</td>
+        <td style="text-align:center;color:#718096">1</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-6</td>
+        <td style="font-weight:500">Staffing Profile</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Potential</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">HPRD / RN Hours / Turnover</td>
+        <td style="text-align:center;color:#718096">—</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-7</td>
+        <td style="font-weight:500">Special Focus / Enforcement History</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#C6F6D5;color:#22543D;border:1px solid #68D391">Not Identified</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">—</td>
+        <td style="text-align:center"><span style="color:#A0AEC0">—</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">Special Focus Status / Penalties</td>
+        <td style="text-align:center;color:#718096">0</td>
+      </tr></tbody>
+        </table>
+        <div style="margin-top:10px;font-size:12px;color:#718096;padding:8px 12px;background:#F7FAFC;border:1px solid #E2E8F0;border-radius:3px">
+          <strong style="color:#4A5568">Data gaps written to DB (DG-1–DG-5):</strong>
+          Pharmacy Records (Recognized) · MDS &amp; Clinical Records (Recognized) · Seizure Protocols (Recognized) · State Licensing (Potential) · Pending Enforcement (Potential)
+        </div>
+      </div>
+      <div style="margin-bottom:32px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div style="font-size:14px;font-weight:700;color:#1B2A4A">Riverside Care Center</div>
+          <span style="display:inline-block;padding:3px 12px;border-radius:3px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:#22543D;color:#fff">Low</span>
+          <div style="font-size:12px;color:#718096">CCN 265401 · 120 beds · Non profit - Corporation</div>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+          <thead>
+            <tr style="background:#2D3748;color:#fff">
+              <th style="padding:6px 10px;text-align:left;width:40px">ID</th>
+              <th style="padding:6px 10px;text-align:left">Condition</th>
+              <th style="padding:6px 10px;text-align:center;width:130px">Classification</th>
+              <th style="padding:6px 10px;text-align:center;width:90px">DSS Domain</th>
+              <th style="padding:6px 10px;text-align:center;width:100px">Risk</th>
+              <th style="padding:6px 10px;text-align:center;width:90px">F-tag</th>
+              <th style="padding:6px 10px;text-align:center;width:70px">Count</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-1</td>
+        <td style="font-weight:500">Fall-Seizure Nexus</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#C6F6D5;color:#22543D;border:1px solid #68D391">Not Identified</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">2</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Moderate</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-689</td>
+        <td style="text-align:center;color:#718096">0</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-2</td>
+        <td style="font-weight:500">Pharmacy / Medication Management</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#C6F6D5;color:#22543D;border:1px solid #68D391">Not Identified</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-755</td>
+        <td style="text-align:center;color:#718096">0</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-3</td>
+        <td style="font-weight:500">Services Meet Professional Standards</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#C6F6D5;color:#22543D;border:1px solid #68D391">Not Identified</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-658</td>
+        <td style="text-align:center;color:#718096">0</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-4</td>
+        <td style="font-weight:500">Behavioral Health and Staff Competency</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#C6F6D5;color:#22543D;border:1px solid #68D391">Not Identified</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-740/F-741</td>
+        <td style="text-align:center;color:#718096">0</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-5</td>
+        <td style="font-weight:500">Five-Star Component Discrepancy</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#C6F6D5;color:#22543D;border:1px solid #68D391">Not Identified</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">2</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Moderate</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">Health Inspection vs Overall Rating</td>
+        <td style="text-align:center;color:#718096">0</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-6</td>
+        <td style="font-weight:500">Staffing Profile</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#C6F6D5;color:#22543D;border:1px solid #68D391">Not Identified</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">HPRD / RN Hours / Turnover</td>
+        <td style="text-align:center;color:#718096">—</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-7</td>
+        <td style="font-weight:500">Special Focus / Enforcement History</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#C6F6D5;color:#22543D;border:1px solid #68D391">Not Identified</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">—</td>
+        <td style="text-align:center"><span style="color:#A0AEC0">—</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">Special Focus Status / Penalties</td>
+        <td style="text-align:center;color:#718096">0</td>
+      </tr></tbody>
+        </table>
+        <div style="margin-top:10px;font-size:12px;color:#718096;padding:8px 12px;background:#F7FAFC;border:1px solid #E2E8F0;border-radius:3px">
+          <strong style="color:#4A5568">Data gaps written to DB (DG-1–DG-5):</strong>
+          Pharmacy Records (Recognized) · MDS &amp; Clinical Records (Recognized) · Seizure Protocols (Recognized) · State Licensing (Potential) · Pending Enforcement (Potential)
+        </div>
+      </div>
+      <div style="margin-bottom:32px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div style="font-size:14px;font-weight:700;color:#1B2A4A">Westview Nursing Home</div>
+          <span style="display:inline-block;padding:3px 12px;border-radius:3px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:#C53030;color:#fff">High</span>
+          <div style="font-size:12px;color:#718096">CCN 265412 · 90 beds · For profit - Corporation</div>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+          <thead>
+            <tr style="background:#2D3748;color:#fff">
+              <th style="padding:6px 10px;text-align:left;width:40px">ID</th>
+              <th style="padding:6px 10px;text-align:left">Condition</th>
+              <th style="padding:6px 10px;text-align:center;width:130px">Classification</th>
+              <th style="padding:6px 10px;text-align:center;width:90px">DSS Domain</th>
+              <th style="padding:6px 10px;text-align:center;width:100px">Risk</th>
+              <th style="padding:6px 10px;text-align:center;width:90px">F-tag</th>
+              <th style="padding:6px 10px;text-align:center;width:70px">Count</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-1</td>
+        <td style="font-weight:500">Fall-Seizure Nexus</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">Recognized</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">2</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Moderate</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-689</td>
+        <td style="text-align:center;color:#718096">5</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-2</td>
+        <td style="font-weight:500">Pharmacy / Medication Management</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">Recognized</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-755</td>
+        <td style="text-align:center;color:#718096">3</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-3</td>
+        <td style="font-weight:500">Services Meet Professional Standards</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">Recognized</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-658</td>
+        <td style="text-align:center;color:#718096">4</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-4</td>
+        <td style="font-weight:500">Behavioral Health and Staff Competency</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">Recognized</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-740/F-741</td>
+        <td style="text-align:center;color:#718096">3</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-5</td>
+        <td style="font-weight:500">Five-Star Component Discrepancy</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Potential</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">2</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Moderate</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">Health Inspection vs Overall Rating</td>
+        <td style="text-align:center;color:#718096">1</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-6</td>
+        <td style="font-weight:500">Staffing Profile</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Potential</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">HPRD / RN Hours / Turnover</td>
+        <td style="text-align:center;color:#718096">—</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-7</td>
+        <td style="font-weight:500">Special Focus / Enforcement History</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">Recognized</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">—</td>
+        <td style="text-align:center"><span style="color:#A0AEC0">—</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">Special Focus Status / Penalties</td>
+        <td style="text-align:center;color:#718096">3</td>
+      </tr></tbody>
+        </table>
+        <div style="margin-top:10px;font-size:12px;color:#718096;padding:8px 12px;background:#F7FAFC;border:1px solid #E2E8F0;border-radius:3px">
+          <strong style="color:#4A5568">Data gaps written to DB (DG-1–DG-5):</strong>
+          Pharmacy Records (Recognized) · MDS &amp; Clinical Records (Recognized) · Seizure Protocols (Recognized) · State Licensing (Potential) · Pending Enforcement (Potential)
+        </div>
+      </div>
+      <div style="margin-bottom:32px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div style="font-size:14px;font-weight:700;color:#1B2A4A">Prairie Village SNF</div>
+          <span style="display:inline-block;padding:3px 12px;border-radius:3px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:#744210;color:#fff">Moderate</span>
+          <div style="font-size:12px;color:#718096">CCN 265388 · 45 beds · For profit - Individual</div>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+          <thead>
+            <tr style="background:#2D3748;color:#fff">
+              <th style="padding:6px 10px;text-align:left;width:40px">ID</th>
+              <th style="padding:6px 10px;text-align:left">Condition</th>
+              <th style="padding:6px 10px;text-align:center;width:130px">Classification</th>
+              <th style="padding:6px 10px;text-align:center;width:90px">DSS Domain</th>
+              <th style="padding:6px 10px;text-align:center;width:100px">Risk</th>
+              <th style="padding:6px 10px;text-align:center;width:90px">F-tag</th>
+              <th style="padding:6px 10px;text-align:center;width:70px">Count</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-1</td>
+        <td style="font-weight:500">Fall-Seizure Nexus</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Potential</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">2</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Moderate</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-689</td>
+        <td style="text-align:center;color:#718096">1</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-2</td>
+        <td style="font-weight:500">Pharmacy / Medication Management</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#C6F6D5;color:#22543D;border:1px solid #68D391">Not Identified</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-755</td>
+        <td style="text-align:center;color:#718096">0</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-3</td>
+        <td style="font-weight:500">Services Meet Professional Standards</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Potential</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-658</td>
+        <td style="text-align:center;color:#718096">1</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-4</td>
+        <td style="font-weight:500">Behavioral Health and Staff Competency</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#C6F6D5;color:#22543D;border:1px solid #68D391">Not Identified</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-740/F-741</td>
+        <td style="text-align:center;color:#718096">0</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-5</td>
+        <td style="font-weight:500">Five-Star Component Discrepancy</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#C6F6D5;color:#22543D;border:1px solid #68D391">Not Identified</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">2</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Moderate</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">Health Inspection vs Overall Rating</td>
+        <td style="text-align:center;color:#718096">0</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-6</td>
+        <td style="font-weight:500">Staffing Profile</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Potential</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">HPRD / RN Hours / Turnover</td>
+        <td style="text-align:center;color:#718096">—</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-7</td>
+        <td style="font-weight:500">Special Focus / Enforcement History</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#C6F6D5;color:#22543D;border:1px solid #68D391">Not Identified</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">—</td>
+        <td style="text-align:center"><span style="color:#A0AEC0">—</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">Special Focus Status / Penalties</td>
+        <td style="text-align:center;color:#718096">0</td>
+      </tr></tbody>
+        </table>
+        <div style="margin-top:10px;font-size:12px;color:#718096;padding:8px 12px;background:#F7FAFC;border:1px solid #E2E8F0;border-radius:3px">
+          <strong style="color:#4A5568">Data gaps written to DB (DG-1–DG-5):</strong>
+          Pharmacy Records (Recognized) · MDS &amp; Clinical Records (Recognized) · Seizure Protocols (Recognized) · State Licensing (Potential) · Pending Enforcement (Potential)
+        </div>
+      </div>
+      <div style="margin-bottom:32px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div style="font-size:14px;font-weight:700;color:#1B2A4A">Crossroads Rehabilitation & Living</div>
+          <span style="display:inline-block;padding:3px 12px;border-radius:3px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:#C53030;color:#fff">High</span>
+          <div style="font-size:12px;color:#718096">CCN 265455 · 200 beds · For profit - Corporation</div>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+          <thead>
+            <tr style="background:#2D3748;color:#fff">
+              <th style="padding:6px 10px;text-align:left;width:40px">ID</th>
+              <th style="padding:6px 10px;text-align:left">Condition</th>
+              <th style="padding:6px 10px;text-align:center;width:130px">Classification</th>
+              <th style="padding:6px 10px;text-align:center;width:90px">DSS Domain</th>
+              <th style="padding:6px 10px;text-align:center;width:100px">Risk</th>
+              <th style="padding:6px 10px;text-align:center;width:90px">F-tag</th>
+              <th style="padding:6px 10px;text-align:center;width:70px">Count</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-1</td>
+        <td style="font-weight:500">Fall-Seizure Nexus</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">Recognized</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">2</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Moderate</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-689</td>
+        <td style="text-align:center;color:#718096">7</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-2</td>
+        <td style="font-weight:500">Pharmacy / Medication Management</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">Recognized</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-755</td>
+        <td style="text-align:center;color:#718096">4</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-3</td>
+        <td style="font-weight:500">Services Meet Professional Standards</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">Recognized</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-658</td>
+        <td style="text-align:center;color:#718096">6</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-4</td>
+        <td style="font-weight:500">Behavioral Health and Staff Competency</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">Recognized</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">F-740/F-741</td>
+        <td style="text-align:center;color:#718096">5</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-5</td>
+        <td style="font-weight:500">Five-Star Component Discrepancy</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#C6F6D5;color:#22543D;border:1px solid #68D391">Not Identified</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">2</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Moderate</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">Health Inspection vs Overall Rating</td>
+        <td style="text-align:center;color:#718096">0</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-6</td>
+        <td style="font-weight:500">Staffing Profile</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FEFCBF;color:#744210;border:1px solid #F6E05E">Potential</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">3 + 4</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">High</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">HPRD / RN Hours / Turnover</td>
+        <td style="text-align:center;color:#718096">—</td>
+      </tr>
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">C-7</td>
+        <td style="font-weight:500">Special Focus / Enforcement History</td>
+        <td style="text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;background:#FED7D7;color:#C53030;border:1px solid #FC8181">Recognized</span></td>
+        <td style="text-align:center;font-size:12px;color:#2C5282">—</td>
+        <td style="text-align:center"><span style="color:#A0AEC0">—</span></td>
+        <td style="text-align:center;font-family:monospace;font-size:11px;color:#2C5282;font-weight:700">Special Focus Status / Penalties</td>
+        <td style="text-align:center;color:#718096">8</td>
+      </tr></tbody>
+        </table>
+        <div style="margin-top:10px;font-size:12px;color:#718096;padding:8px 12px;background:#F7FAFC;border:1px solid #E2E8F0;border-radius:3px">
+          <strong style="color:#4A5568">Data gaps written to DB (DG-1–DG-5):</strong>
+          Pharmacy Records (Recognized) · MDS &amp; Clinical Records (Recognized) · Seizure Protocols (Recognized) · State Licensing (Potential) · Pending Enforcement (Potential)
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div>CRISP — Cognitive Research Intelligence of Seizure Pathology · Seagull Health</div>
+    <div>Demo output — fictitious facility data</div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "dsca-db",
+  "version": "0.1.0",
+  "description": "DSCA structured data collection — Seagull Health",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "city": "node run-city.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.6.0",
+    "express": "^5.2.1"
+  }
+}

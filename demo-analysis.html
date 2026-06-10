@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DSCA Database — What the Data Can Tell You</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+         font-size: 14px; line-height: 1.6; color: #2D3748; background: #F7FAFC; }
+  .page { max-width: 1040px; margin: 0 auto; background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,.08); }
+  .header { background: #1B2A4A; color: #fff; padding: 22px 48px; display: flex; justify-content: space-between; align-items: center; }
+  .brand { font-size: 16px; font-weight: 500; }
+  .brand span { color: #ef7835; }
+  .header-right { font-size: 11px; color: #90CDF4; text-align: right; line-height: 1.8; }
+  .demo-badge { display:inline-block; background:#2C5282; color:#BEE3F8; font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:2px 8px; border-radius:3px; }
+  .title-block { padding: 28px 48px 24px; border-bottom: 2px solid #1B2A4A; }
+  .title-main { font-size: 22px; font-weight: 700; color: #1B2A4A; margin-bottom: 6px; }
+  .title-sub { font-size: 13px; color: #4A5568; }
+  .body { padding: 40px 48px; }
+  .section { margin-bottom: 52px; }
+  .section-label { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #ef7835; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .section-label::before { content: ''; display: block; width: 14px; height: 2px; background: #ef7835; }
+  .section-title { font-size: 17px; font-weight: 700; color: #1B2A4A; margin-bottom: 4px; }
+  .section-desc { font-size: 13px; color: #4A5568; margin-bottom: 20px; }
+  hr.divider { border: none; border-top: 1px solid #E2E8F0; margin: 48px 0; }
+
+  /* BAR CHART */
+  .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+  .bar-row { display: flex; align-items: center; gap: 12px; }
+  .bar-label { font-size: 12.5px; color: #2D3748; min-width: 240px; flex-shrink: 0; font-weight: 500; }
+  .bar-label small { font-weight: 400; color: #718096; }
+  .bar-track { flex: 1; background: #EDF2F7; border-radius: 3px; height: 22px; position: relative; }
+  .bar-fill { height: 100%; border-radius: 3px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 700; color: #fff; white-space: nowrap; transition: width .4s; }
+  .bar-annotation { font-size: 11px; color: #718096; min-width: 110px; flex-shrink: 0; }
+  .benchmark-line { position: absolute; top: 0; bottom: 0; width: 2px; background: #2C5282; opacity: .5; }
+  .benchmark-label { position: absolute; top: -16px; font-size: 10px; color: #2C5282; font-weight: 700; transform: translateX(-50%); }
+
+  /* SCATTER PLOT */
+  .scatter { position: relative; border: 1px solid #E2E8F0; border-radius: 6px; padding: 20px 20px 32px; margin-top: 8px; }
+  .scatter-title { font-size: 11px; font-weight: 700; color: #4A5568; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 16px; }
+  .scatter-grid { display: flex; flex-direction: column; gap: 0; }
+  .scatter-row { display: flex; align-items: center; gap: 0; height: 44px; border-bottom: 1px dashed #E2E8F0; }
+  .scatter-row:last-child { border-bottom: none; }
+  .scatter-y { font-size: 11px; font-weight: 700; color: #4A5568; width: 110px; flex-shrink: 0; letter-spacing: .03em; }
+  .scatter-track { flex: 1; position: relative; height: 100%; }
+  .dot { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; cursor: default; }
+  .scatter-xaxis { display: flex; margin-left: 110px; margin-top: 4px; font-size: 10px; color: #718096; justify-content: space-between; }
+  .scatter-benchmark { position: absolute; top: 0; bottom: 0; width: 1px; background: #2C5282; opacity: .4; }
+
+  /* DOMAIN BAR */
+  .domain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .domain-card { border: 1px solid #E2E8F0; border-radius: 6px; overflow: hidden; }
+  .domain-header { padding: 10px 14px; font-size: 12px; font-weight: 700; color: #fff; background: #1B2A4A; display: flex; justify-content: space-between; align-items: center; }
+  .domain-body { padding: 12px 14px; font-size: 12.5px; color: #4A5568; }
+  .domain-stat { font-size: 22px; font-weight: 800; color: #1B2A4A; }
+
+  /* CONDITION TABLE */
+  .ctable { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .ctable th { background: #2D3748; color: #fff; padding: 7px 10px; text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .ctable td { padding: 7px 10px; border-bottom: 1px solid #E2E8F0; vertical-align: middle; }
+  .ctable tr:last-child td { border-bottom: none; }
+  .ctable tr:nth-child(even) td { background: #F7FAFC; }
+
+  /* BADGES */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 700; }
+  .b-high    { background: #FED7D7; color: #C53030; border: 1px solid #FC8181; }
+  .b-mh      { background: #FEEBC8; color: #C05621; border: 1px solid #F6AD55; }
+  .b-mod     { background: #FEFCBF; color: #744210; border: 1px solid #F6E05E; }
+  .b-low     { background: #C6F6D5; color: #22543D; border: 1px solid #68D391; }
+  .b-rec     { background: #FED7D7; color: #C53030; border: 1px solid #FC8181; }
+  .b-pot     { background: #FEFCBF; color: #744210; border: 1px solid #F6E05E; }
+  .b-ni      { background: #C6F6D5; color: #22543D; border: 1px solid #68D391; }
+
+  /* INSIGHT BOX */
+  .insight { background: #EBF8FF; border: 1px solid #90CDF4; border-left: 4px solid #2C5282; border-radius: 4px; padding: 12px 16px; font-size: 13px; color: #1A365D; margin-top: 16px; }
+  .insight strong { color: #1B2A4A; }
+
+  /* QUERY BOX */
+  .query-box { background: #1B2A4A; border-radius: 6px; padding: 14px 18px; font-family: 'Courier New', monospace; font-size: 12px; color: #90CDF4; margin-top: 12px; line-height: 1.7; }
+  .query-comment { color: #4A5568; }
+
+  .footer { background: #1B2A4A; color: #90CDF4; padding: 18px 48px; font-size: 11px; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="header">
+  <div class="brand">Seagull Health &nbsp;<span>|</span>&nbsp; <span>CRISP</span></div>
+  <div class="header-right">Kansas City, MO · 5 facilities · June 2026<br><span class="demo-badge">Demo — Dummy Data</span></div>
+</div>
+
+<div class="title-block">
+  <div class="title-main">What the Database Can Tell You</div>
+  <div class="title-sub">Analyses available from the structured DSCA data · SNF universe · Senior Care Investment</div>
+</div>
+
+<div class="body">
+
+<!-- ══ 1. STAFFING → EXPOSURE ═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">Analysis 1</div>
+  <div class="section-title">Does staffing level predict exposure?</div>
+  <div class="section-desc">Each bar below is one facility. The bar length = staffing hours per resident per day. The color = exposure level. The dashed line is the national benchmark (3.8 hrs).</div>
+
+  <div class="bar-chart">
+
+    <div class="bar-row">
+      <div class="bar-label">Riverside Care Center <small>· Low</small></div>
+      <div class="bar-track">
+        <div class="benchmark-line" style="left:calc(3.8/5*100%)"><span class="benchmark-label">3.8 benchmark</span></div>
+        <div class="bar-fill" style="width:calc(4.1/5*100%);background:#22543D">4.1 hrs/day</div>
+      </div>
+      <div class="bar-annotation"><span class="badge b-low">Low</span></div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-label">Prairie Village SNF <small>· Moderate</small></div>
+      <div class="bar-track">
+        <div class="benchmark-line" style="left:calc(3.8/5*100%)"></div>
+        <div class="bar-fill" style="width:calc(3.6/5*100%);background:#744210">3.6 hrs/day</div>
+      </div>
+      <div class="bar-annotation"><span class="badge b-mod">Moderate</span></div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-label">Maplewood SNF <small>· Moderate-High</small></div>
+      <div class="bar-track">
+        <div class="benchmark-line" style="left:calc(3.8/5*100%)"></div>
+        <div class="bar-fill" style="width:calc(3.4/5*100%);background:#C05621">3.4 hrs/day</div>
+      </div>
+      <div class="bar-annotation"><span class="badge b-mh">Moderate-High</span></div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-label">Westview Nursing Home <small>· High</small></div>
+      <div class="bar-track">
+        <div class="benchmark-line" style="left:calc(3.8/5*100%)"></div>
+        <div class="bar-fill" style="width:calc(3.1/5*100%);background:#C53030">3.1 hrs/day</div>
+      </div>
+      <div class="bar-annotation"><span class="badge b-high">High</span></div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-label">Crossroads Rehab <small>· High</small></div>
+      <div class="bar-track">
+        <div class="benchmark-line" style="left:calc(3.8/5*100%)"></div>
+        <div class="bar-fill" style="width:calc(2.8/5*100%);background:#C53030">2.8 hrs/day</div>
+      </div>
+      <div class="bar-annotation"><span class="badge b-high">High</span></div>
+    </div>
+
+  </div>
+
+  <div class="insight">
+    <strong>Pattern visible in this city:</strong> Every facility below the 3.8 benchmark is Moderate or above. The one facility above benchmark (Riverside, 4.1 hrs) is the only Low exposure. At scale — 75 Kansas City SNFs, then all 15,000 US SNFs — this relationship either holds or it doesn't, and the database is what lets you test it empirically rather than assert it.
+  </div>
+
+  <div class="query-box">
+    <span class="query-comment">-- Average staffing by exposure level across all assessments</span><br>
+    SELECT exposure_level,<br>
+    &nbsp;&nbsp;ROUND(AVG(staffing_hprd), 2) AS avg_hprd,<br>
+    &nbsp;&nbsp;ROUND(AVG(nursing_turnover_pct), 1) AS avg_turnover,<br>
+    &nbsp;&nbsp;COUNT(*) AS facilities<br>
+    FROM assessment<br>
+    GROUP BY exposure_level<br>
+    ORDER BY avg_hprd DESC;
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ 2. DSS DOMAIN DISTRIBUTION ═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">Analysis 2</div>
+  <div class="section-title">Which DSS domain appears most often?</div>
+  <div class="section-desc">Across all 5 facilities, how many active (non-Not Identified) conditions fall in each domain? This is the question no folder of reports can answer.</div>
+
+  <div class="domain-grid">
+
+    <div class="domain-card">
+      <div class="domain-header">Domain 1 — Seizure Events <span style="font-size:10px;font-weight:400;opacity:.8">Overt convulsive</span></div>
+      <div class="domain-body">
+        <div class="domain-stat">0</div>
+        <div style="margin-top:4px">Active conditions across 5 facilities</div>
+        <div style="margin-top:8px;font-size:12px;color:#718096">None of the 7 standard SNF conditions map here. Domain 1 events are observable through standard documentation — the recognition gap is lowest here.</div>
+      </div>
+    </div>
+
+    <div class="domain-card">
+      <div class="domain-header">Domain 2 — Movement Changes <span style="font-size:10px;font-weight:400;opacity:.8">Falls, automatisms</span></div>
+      <div class="domain-body">
+        <div class="domain-stat" style="color:#C05621">6</div>
+        <div style="margin-top:4px">Active conditions across 5 facilities</div>
+        <div style="margin-top:8px;font-size:12px;color:#718096">Driven by F-689 (fall-seizure nexus) and Five-Star discrepancy. <strong>Moderate recognition risk</strong> — falls are documented, but seizure-precipitated cause is not attributed.</div>
+      </div>
+    </div>
+
+    <div class="domain-card">
+      <div class="domain-header">Domain 3 — Awareness Changes <span style="font-size:10px;font-weight:400;opacity:.8">Confusion, absence-like</span></div>
+      <div class="domain-body">
+        <div class="domain-stat" style="color:#C53030">14</div>
+        <div style="margin-top:4px">Active conditions across 5 facilities</div>
+        <div style="margin-top:8px;font-size:12px;color:#718096">The dominant domain. F-755, F-658, F-740/741, and staffing all map here. <strong>High recognition risk</strong> — awareness-change presentations are systematically misattributed to dementia fluctuation.</div>
+      </div>
+    </div>
+
+    <div class="domain-card">
+      <div class="domain-header">Domain 4 — Behavioral Changes <span style="font-size:10px;font-weight:400;opacity:.8">Agitation, postictal behavior</span></div>
+      <div class="domain-body">
+        <div class="domain-stat" style="color:#C53030">14</div>
+        <div style="margin-top:4px">Active conditions (secondary domain)</div>
+        <div style="margin-top:8px;font-size:12px;color:#718096">Same conditions as Domain 3 — these conditions span both. Behavioral seizure presentations are categorized as behavioral incidents, not neurological events.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="insight">
+    <strong>At scale, this becomes a research question:</strong> If Domain 3 and 4 dominate across all Kansas City SNFs, does that hold in St. Louis? In rural Missouri? Nationally? That's an empirical finding about where the misattribution problem concentrates — publishable, citable, and the kind of thing that turns your framework into a standard.
+  </div>
+
+  <div class="query-box">
+    <span class="query-comment">-- Most common DSS domain in active conditions, by city</span><br>
+    SELECT f.region, c.dss_domain, COUNT(*) AS count<br>
+    FROM condition c<br>
+    JOIN assessment a ON c.assessment_id = a.assessment_id<br>
+    JOIN facility f ON a.facility_id = f.facility_id<br>
+    WHERE c.classification != 'Not Identified'<br>
+    &nbsp;&nbsp;AND c.dss_domain IS NOT NULL<br>
+    GROUP BY f.region, c.dss_domain<br>
+    ORDER BY f.region, count DESC;
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ 3. OWNERSHIP TYPE → RISK ══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">Analysis 3</div>
+  <div class="section-title">Does ownership type correlate with risk?</div>
+  <div class="section-desc">For-profit vs non-profit vs government — do structural incentives show up in the DSS risk profile?</div>
+
+  <table class="ctable">
+    <thead>
+      <tr>
+        <th>Facility</th>
+        <th>Ownership</th>
+        <th style="text-align:center">Recognized Conditions</th>
+        <th style="text-align:center">High Risk Conditions</th>
+        <th style="text-align:center">Exposure</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="font-weight:600">Crossroads Rehabilitation</td>
+        <td>For profit — Corp</td>
+        <td style="text-align:center"><strong style="color:#C53030">5</strong></td>
+        <td style="text-align:center">4 of 6</td>
+        <td style="text-align:center"><span class="badge b-high">High</span></td>
+      </tr>
+      <tr>
+        <td style="font-weight:600">Westview Nursing Home</td>
+        <td>For profit — Corp</td>
+        <td style="text-align:center"><strong style="color:#C53030">4</strong></td>
+        <td style="text-align:center">4 of 6</td>
+        <td style="text-align:center"><span class="badge b-high">High</span></td>
+      </tr>
+      <tr>
+        <td style="font-weight:600">Maplewood SNF</td>
+        <td>For profit — LLC</td>
+        <td style="text-align:center"><strong style="color:#C05621">2</strong></td>
+        <td style="text-align:center">4 of 6</td>
+        <td style="text-align:center"><span class="badge b-mh">Moderate-High</span></td>
+      </tr>
+      <tr>
+        <td style="font-weight:600">Prairie Village SNF</td>
+        <td>For profit — Individual</td>
+        <td style="text-align:center"><strong style="color:#744210">0</strong></td>
+        <td style="text-align:center">2 of 6</td>
+        <td style="text-align:center"><span class="badge b-mod">Moderate</span></td>
+      </tr>
+      <tr>
+        <td style="font-weight:600">Riverside Care Center</td>
+        <td>Non profit — Corp</td>
+        <td style="text-align:center"><strong style="color:#22543D">0</strong></td>
+        <td style="text-align:center">0 of 6</td>
+        <td style="text-align:center"><span class="badge b-low">Low</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="insight">
+    <strong>With 5 facilities this is suggestive, not conclusive.</strong> With all 75 Kansas City SNFs — and eventually all 15,000 nationally — you can test whether for-profit corporate operators systematically carry higher Domain 3/4 exposure than non-profit operators. That's a finding with policy, litigation, and investment implications.
+  </div>
+
+  <div class="query-box">
+    <span class="query-comment">-- Avg recognized conditions by ownership type</span><br>
+    SELECT a.ownership_type,<br>
+    &nbsp;&nbsp;ROUND(AVG(a.conditions_recognized), 1) AS avg_recognized,<br>
+    &nbsp;&nbsp;ROUND(AVG(a.staffing_hprd), 2) AS avg_hprd,<br>
+    &nbsp;&nbsp;COUNT(*) AS n<br>
+    FROM assessment a<br>
+    GROUP BY a.ownership_type<br>
+    ORDER BY avg_recognized DESC;
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ 4. CONDITION CO-OCCURRENCE ════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">Analysis 4</div>
+  <div class="section-title">Which conditions always appear together?</div>
+  <div class="section-desc">When F-658 (professional standards) is Recognized, what else is usually Recognized alongside it? Co-occurrence patterns reveal whether risk is isolated or systemic.</div>
+
+  <table class="ctable">
+    <thead>
+      <tr>
+        <th>Facility</th>
+        <th style="text-align:center">F-689</th>
+        <th style="text-align:center">F-755</th>
+        <th style="text-align:center">F-658</th>
+        <th style="text-align:center">F-740/741</th>
+        <th style="text-align:center">Staffing</th>
+        <th style="text-align:center">Exposure</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="font-weight:600;color:#1B2A4A">Maplewood</td>
+        <td style="text-align:center"><span class="badge b-rec">Rec</span></td>
+        <td style="text-align:center"><span class="badge b-pot">Pot</span></td>
+        <td style="text-align:center"><span class="badge b-rec">Rec</span></td>
+        <td style="text-align:center"><span class="badge b-pot">Pot</span></td>
+        <td style="text-align:center"><span class="badge b-pot">Pot</span></td>
+        <td style="text-align:center"><span class="badge b-mh">Mod-High</span></td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:#1B2A4A">Riverside</td>
+        <td style="text-align:center"><span class="badge b-ni">NI</span></td>
+        <td style="text-align:center"><span class="badge b-ni">NI</span></td>
+        <td style="text-align:center"><span class="badge b-ni">NI</span></td>
+        <td style="text-align:center"><span class="badge b-ni">NI</span></td>
+        <td style="text-align:center"><span class="badge b-ni">NI</span></td>
+        <td style="text-align:center"><span class="badge b-low">Low</span></td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:#1B2A4A">Westview</td>
+        <td style="text-align:center"><span class="badge b-rec">Rec</span></td>
+        <td style="text-align:center"><span class="badge b-rec">Rec</span></td>
+        <td style="text-align:center"><span class="badge b-rec">Rec</span></td>
+        <td style="text-align:center"><span class="badge b-rec">Rec</span></td>
+        <td style="text-align:center"><span class="badge b-pot">Pot</span></td>
+        <td style="text-align:center"><span class="badge b-high">High</span></td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:#1B2A4A">Prairie Village</td>
+        <td style="text-align:center"><span class="badge b-pot">Pot</span></td>
+        <td style="text-align:center"><span class="badge b-ni">NI</span></td>
+        <td style="text-align:center"><span class="badge b-pot">Pot</span></td>
+        <td style="text-align:center"><span class="badge b-ni">NI</span></td>
+        <td style="text-align:center"><span class="badge b-pot">Pot</span></td>
+        <td style="text-align:center"><span class="badge b-mod">Moderate</span></td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:#1B2A4A">Crossroads</td>
+        <td style="text-align:center"><span class="badge b-rec">Rec</span></td>
+        <td style="text-align:center"><span class="badge b-rec">Rec</span></td>
+        <td style="text-align:center"><span class="badge b-rec">Rec</span></td>
+        <td style="text-align:center"><span class="badge b-rec">Rec</span></td>
+        <td style="text-align:center"><span class="badge b-pot">Pot</span></td>
+        <td style="text-align:center"><span class="badge b-high">High</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="insight">
+    <strong>Pattern visible now:</strong> F-658 and F-740/741 never appear alone — every facility that has one has the other. F-689 appears in isolation (Prairie Village: F-689 Potential, but F-755 and F-740/741 Not Identified). This suggests F-658 + F-740/741 is a syndrome, not two independent conditions. At 15,000 facilities, you can test whether that co-occurrence is statistically reliable — which would make it a named risk cluster in your framework.
+  </div>
+
+  <div class="query-box">
+    <span class="query-comment">-- Facilities where F-658 is Recognized but F-740/741 is Not Identified</span><br>
+    SELECT f.name, a.exposure_level<br>
+    FROM facility f<br>
+    JOIN assessment a ON f.facility_id = a.facility_id<br>
+    JOIN condition c658 ON c658.assessment_id = a.assessment_id<br>
+    &nbsp;&nbsp;AND c658.source_citation_value = 'F-658'<br>
+    &nbsp;&nbsp;AND c658.classification = 'Recognized'<br>
+    JOIN condition c740 ON c740.assessment_id = a.assessment_id<br>
+    &nbsp;&nbsp;AND c740.source_citation_value = 'F-740/F-741'<br>
+    &nbsp;&nbsp;AND c740.classification = 'Not Identified';
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ 5. WHAT THIS UNLOCKS ═══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">The bigger picture</div>
+  <div class="section-title">Questions this database can answer that reports cannot</div>
+
+  <table class="ctable" style="margin-top:4px">
+    <thead>
+      <tr>
+        <th>Question</th>
+        <th>Why it matters</th>
+        <th style="text-align:center">Answerable from reports?</th>
+        <th style="text-align:center">Answerable from DB?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Which Kansas City SNFs have Recognized Domain 4 conditions?</td>
+        <td>PE firm building a target list</td>
+        <td style="text-align:center;color:#C53030">✗ manual search</td>
+        <td style="text-align:center;color:#22543D">✓ one query</td>
+      </tr>
+      <tr>
+        <td>Is there a staffing threshold below which High exposure clusters?</td>
+        <td>Empirical finding, publishable</td>
+        <td style="text-align:center;color:#C53030">✗ impossible</td>
+        <td style="text-align:center;color:#22543D">✓ regression on DB</td>
+      </tr>
+      <tr>
+        <td>Do for-profit operators carry more Domain 3/4 exposure than non-profit?</td>
+        <td>Policy, litigation, investment</td>
+        <td style="text-align:center;color:#C53030">✗ impossible</td>
+        <td style="text-align:center;color:#22543D">✓ GROUP BY query</td>
+      </tr>
+      <tr>
+        <td>How does Kansas City compare to St. Louis on exposure distribution?</td>
+        <td>Market intelligence for PE</td>
+        <td style="text-align:center;color:#C53030">✗ impossible</td>
+        <td style="text-align:center;color:#22543D">✓ after second city run</td>
+      </tr>
+      <tr>
+        <td>Which conditions always co-occur? Is F-658 + F-740 a syndrome?</td>
+        <td>Framework refinement, research</td>
+        <td style="text-align:center;color:#C53030">✗ impossible</td>
+        <td style="text-align:center;color:#22543D">✓ JOIN query</td>
+      </tr>
+      <tr>
+        <td>What % of all clinical claims rest on Expert Inference vs Literature?</td>
+        <td>Methodology defensibility</td>
+        <td style="text-align:center;color:#C53030">✗ impossible</td>
+        <td style="text-align:center;color:#22543D">✓ evidence table</td>
+      </tr>
+      <tr>
+        <td>Re-run a facility 12 months later — did risk go up or down?</td>
+        <td>Post-close monitoring for PE</td>
+        <td style="text-align:center;color:#C53030">✗ two PDFs, no comparison</td>
+        <td style="text-align:center;color:#22543D">✓ two assessment rows, same facility_id</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div><!-- /body -->
+
+<div class="footer">
+  <div>CRISP — Cognitive Research Intelligence of Seizure Pathology · Seagull Health</div>
+  <div>Demo — Dummy Data · Kansas City, MO</div>
+</div>
+
+</div><!-- /page -->
+</body>
+</html>
