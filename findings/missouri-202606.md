@@ -91,7 +91,7 @@ Definitions: High = ≥2 Recognized high-risk conditions. Moderate-High = 1 Reco
 **What this analysis cannot establish.**
 1. *No seizure events are identified.* CMS deficiency data records regulatory findings, not clinical events. DSS Domain 1 (overt convulsive seizures) cannot be populated from this data and does not appear in these results.
 2. *Recognition risk is not care quality.* A Recognized condition means a citation pattern exists in the public record at the disclosed threshold. It is not a determination that any facility provides deficient care, and the absence of conditions is not a certification of quality.
-3. *Citations are not time-weighted.* Counts aggregate the CMS deficiency dataset's covered survey cycles (approximately three) without date weighting.
+3. *Citations span January 2019 – March 2026 and are not time-weighted.* Counts aggregate all surveys in the CMS deficiency dataset — verified against the API: earliest survey date 2019-01-15, latest 2026-03-31 (~7 years) — without date weighting. A 2019 citation counts the same as a 2026 citation. Staffing, ratings, and turnover are by contrast a current monthly snapshot (turnover is a trailing 12-month measure).
 4. *Staffing figures are facility-reported except where noted.* PBJ figures are payroll-derived; RN hours have no published PBJ equivalent and are reported-only.
 5. *Aggregates conceal heterogeneity.* Nothing in this summary supports an inference about any individual facility.
 

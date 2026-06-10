@@ -62,6 +62,8 @@ All from the CMS Provider Data Catalog (data.cms.gov) — free, no API key requi
 | `r5ix-sfxw` | Health Deficiencies | F-tag citation counts per facility |
 | `g6vv-u9sr` | Penalties | Civil monetary penalty counts |
 
+**Data time window (verified against the API, 2026-06-09):** the Health Deficiencies dataset covers surveys from **2019-01-15 through 2026-03-31** (~7 years) — not the commonly assumed "three survey cycles." Citation counts aggregate that full window without date weighting. Provider Information is a current monthly snapshot; turnover is a trailing 12-month measure. Verification cross-check: the dataset contains exactly 1,759 Missouri rows across the five screened F-tags, matching the database's stored citation totals (807+639+219+94) to the row.
+
 ### Key field decisions
 
 **City field:** `citytown` (not `provider_city` — confirmed from live API response).
