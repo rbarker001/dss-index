@@ -40,6 +40,6 @@ If you work in aging care, senior housing, or dementia research and want to see 
 
 - **The one story:** "the conditions for missing a silent seizure are the norm, not the exception" — every number serves that single sentence.
 - **Translations used:** 0.46 RN HPRD → 28 min/resident/day (×60); benchmark 0.75 → 45 min. 275/487 = 56% of facilities above 50% turnover. 250/487 = 51% Recognized C-1 (severity-weighted: repeat citations or single G+/IJ citation).
-- Deliberately excluded: exposure tiers (jargon), urban/rural reversal (invites methodological fights in comments), ownership gradient (saving it — it's a strong follow-up post), over-reporting finding (also a strong standalone follow-up: "94% of facilities report more staffing than their payroll shows").
+- Deliberately excluded: exposure tiers (jargon), urban/rural reversal (invites methodological fights in comments), ownership differences (saving it — a strong follow-up post; use the softer "exposure differs by ownership type" framing per the 2026-06 language decision, not a for-profit-vs-non-profit headline), over-reporting finding (also a strong standalone follow-up: "94% of facilities report more staffing than their payroll shows").
 - [Re] This is written as post #1 of a potential series. Each excluded finding is a future post with its own one story.
 - The disclaimer paragraph is load-bearing for the legal posture — keep it even if trimming for length.
