@@ -243,6 +243,8 @@ Stable per facility per run month. Running the same city again in a later month 
 
 Missouri exposure summary: 28 High · 221 Moderate-High · 226 Moderate · 12 Low. 289 urban / 198 rural. 242 distinct cities.
 
+Data completeness: 22 conditions are Not Assessed (6 C-5 missing Five-Star ratings, 16 C-6 missing all staffing figures) — the data to evaluate them was absent, distinct from assessed-clean. Exposure levels are unaffected (Not Assessed is never an active finding).
+
 ---
 
 ## Migration Path

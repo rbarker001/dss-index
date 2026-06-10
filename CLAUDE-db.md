@@ -44,12 +44,29 @@ node query-server.js
 
 ---
 
+## Version Control & Backup
+
+The repo is a local git repository. The binary `dsca.db` is **gitignored**; the data is version-controlled as a text dump at `db/dump.sql` instead — diffable, no binary churn.
+
+- After any run that writes new rows, `run-city.js` / `run-state.js` regenerate `db/dump.sql` automatically (`db/dump.js`). Commit it alongside any code changes: `git add db/dump.sql && git commit`.
+- Rebuild the database from the dump: `sqlite3 dsca.db < db/dump.sql`.
+- Regenerate the dump manually if needed: `sqlite3 dsca.db .dump > db/dump.sql`.
+
+Gitignored: `dsca.db`, `*.db-wal`, `*.db-shm`, `node_modules/`, `.env`, `.DS_Store`, `.claude/settings.local.json`.
+
+Currently **local-only** — no remote configured. Add a private GitHub remote for offsite backup when ready (this is healthcare-adjacent risk data; keep the repo private).
+
+---
+
 ## Key Files
 
 | File | Purpose |
 |---|---|
 | `schema.sql` | 6-table SQLite schema — source of truth for all table definitions |
 | `db/init.js` | Opens `dsca.db`, runs `schema.sql`, returns db connection |
+| `db/write.js` | Shared write layer — `createWriter(db)` prepares statements and returns `writeAssessment` (facility upsert + assessment/condition/gap inserts in one transaction). Used by both run entry points. |
+| `db/dump.js` | Regenerates `db/dump.sql` from `dsca.db` via the sqlite3 CLI. Called automatically after a run writes new rows. |
+| `db/dump.sql` | Text, version-controlled SQL dump of `dsca.db` (the binary db is gitignored). Rebuild: `sqlite3 dsca.db < db/dump.sql`. |
 | `services/cms.js` | CMS Provider Data Catalog queries — city/state listing + per-facility F-tag/staffing data |
 | `services/classifier.js` | Deterministic DSS rules — maps CMS data to C-1–C-7 conditions + DG-1–DG-5 gaps |
 | `run-city.js` | Entry point — all SNFs in a city |
@@ -140,6 +157,8 @@ Zotero + PubMed + Claude enter when a specific facility becomes a live engagemen
 | Missouri (MO) | 2026-06-09 | 487 | 0 |
 
 Missouri: 28 High · 221 Moderate-High · 226 Moderate · 12 Low · 289 urban · 198 rural · 242 cities
+
+Data completeness: 22 conditions classified **Not Assessed** (6 C-5 missing Five-Star ratings, 16 C-6 missing all staffing figures) — distinct from assessed-clean. All other condition rows are Recognized / Potential / Not Identified.
 
 ---
 
