@@ -57,7 +57,7 @@ async function main() {
       const { tagCounts, penaltyCount, citations } = await getFacilityRawData(ccn);
 
       const { facilityRow, assessmentRow, conditionRows, gapRows } =
-        classifyFacility(assessmentId, provider, tagCounts, penaltyCount);
+        classifyFacility(assessmentId, provider, tagCounts, penaltyCount, citations);
 
       writeAssessment(facilityRow, assessmentRow, conditionRows, gapRows, citations);
 

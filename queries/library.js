@@ -683,6 +683,86 @@ const QUERIES = [
       JOIN facility f   ON a.facility_id    = f.facility_id
       WHERE f.name = ?
       ORDER BY dg.gap_code`
+  },
+
+  // ── CITATION DETAIL ────────────────────────────────────────────────────────
+  // Recency and severity visibility. Classification does not weight recency
+  // (deliberate — see architecture-db.md); these queries surface it as data
+  // so a reader can weigh "Recognized, last cited 2019" vs "last cited 2026".
+  {
+    id: 'condition_recency',
+    category: 'Citation Detail',
+    title: 'Recognized conditions — citation recency',
+    description: 'Every Recognized citation-based condition with its latest citation date and how many citations fall in the most recent inspection cycle. Stale-first: the conditions most exposed to the "old citations" critique are at the top.',
+    sql: `
+      SELECT f.name, c.condition_code, c.source_citation_value AS ftag,
+             c.source_count AS citations,
+             MAX(ct.citation_date) AS latest_citation,
+             SUM(CASE WHEN ct.inspection_cycle = 1 THEN 1 ELSE 0 END) AS cycle1_citations,
+             SUM(CASE WHEN ct.severity_code IN ('G','H','I','J','K','L') THEN 1 ELSE 0 END) AS severe_citations
+      FROM condition c
+      JOIN assessment a ON c.assessment_id = a.assessment_id
+      JOIN facility f   ON a.facility_id   = f.facility_id
+      JOIN citation ct  ON ct.assessment_id = a.assessment_id
+                       AND ((c.condition_code = 'C-4' AND ct.source_citation_value IN ('F-740','F-741'))
+                         OR ct.source_citation_value = c.source_citation_value)
+      WHERE c.classification = 'Recognized' AND c.condition_code IN ('C-1','C-2','C-3','C-4')
+      GROUP BY c.condition_id
+      ORDER BY latest_citation ASC`
+  },
+  {
+    id: 'stale_recognized',
+    category: 'Citation Detail',
+    title: 'Stale Recognized conditions (no citation in 24 months)',
+    description: 'Recognized conditions whose most recent citation is over two years old — the recency caveat list. These classifications rest entirely on older survey cycles.',
+    sql: `
+      SELECT f.name, c.condition_code, c.source_citation_value AS ftag,
+             c.source_count AS citations,
+             MAX(ct.citation_date) AS latest_citation,
+             CAST((julianday('now') - julianday(MAX(ct.citation_date))) / 30.44 AS INTEGER) AS months_since
+      FROM condition c
+      JOIN assessment a ON c.assessment_id = a.assessment_id
+      JOIN facility f   ON a.facility_id   = f.facility_id
+      JOIN citation ct  ON ct.assessment_id = a.assessment_id
+                       AND ((c.condition_code = 'C-4' AND ct.source_citation_value IN ('F-740','F-741'))
+                         OR ct.source_citation_value = c.source_citation_value)
+      WHERE c.classification = 'Recognized' AND c.condition_code IN ('C-1','C-2','C-3','C-4')
+      GROUP BY c.condition_id
+      HAVING julianday('now') - julianday(MAX(ct.citation_date)) > 730
+      ORDER BY months_since DESC`
+  },
+  {
+    id: 'severe_citations',
+    category: 'Citation Detail',
+    title: 'Severe citations — actual harm and immediate jeopardy',
+    description: 'Every G+ severity citation in the screened tags (G–I actual harm, J–L immediate jeopardy). These single citations now classify Recognized on their own under severity weighting.',
+    sql: `
+      SELECT f.name, ct.source_citation_value AS ftag, ct.severity_code,
+             CASE WHEN ct.severity_code IN ('J','K','L') THEN 'Immediate Jeopardy'
+                  ELSE 'Actual Harm' END AS severity_class,
+             ct.citation_date, ct.survey_type, a.exposure_level
+      FROM citation ct
+      JOIN assessment a ON ct.assessment_id = a.assessment_id
+      JOIN facility f   ON a.facility_id    = f.facility_id
+      WHERE ct.severity_code IN ('G','H','I','J','K','L')
+      ORDER BY CASE WHEN ct.severity_code IN ('J','K','L') THEN 0 ELSE 1 END,
+               ct.citation_date DESC`
+  },
+  {
+    id: 'survey_currency',
+    category: 'Citation Detail',
+    title: 'Survey currency — how fresh is each facility’s record',
+    description: 'Latest screened citation per facility. A facility whose newest citation is from 2021 has an older public record than its peers — a data-currency caveat, not a virtue. Facilities with no screened citations are excluded (no date to measure).',
+    sql: `
+      SELECT f.name, COUNT(*) AS citations,
+             MAX(ct.citation_date) AS latest_citation,
+             MIN(ct.citation_date) AS earliest_citation,
+             a.exposure_level
+      FROM citation ct
+      JOIN assessment a ON ct.assessment_id = a.assessment_id
+      JOIN facility f   ON a.facility_id    = f.facility_id
+      GROUP BY a.assessment_id
+      ORDER BY latest_citation ASC`
   }
 
 ];

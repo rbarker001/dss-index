@@ -20,10 +20,10 @@ Every Medicare/Medicaid-certified skilled nursing facility in Missouri was asses
 All figures computed from the assessment database on 2026-06-09. Provenance for each is in the appendix.
 
 **1. Half the state's SNF universe carries elevated exposure.**
-249 of 487 facilities (51%) classify as High (28) or Moderate-High (221) exposure. Only 9 facilities (1.8%) classify Low — meaning no high-risk condition active and no Recognized condition of any kind in their CMS record.
+250 of 487 facilities (51%) classify as High (29) or Moderate-High (221) exposure. Only 9 facilities (1.8%) classify Low — meaning no high-risk condition active and no Recognized condition of any kind in their CMS record.
 
 **2. The fall–seizure nexus is the most prevalent Recognized condition in the state.**
-225 facilities (46%) carry a Recognized C-1 (Fall-Seizure Nexus, F-689 ≥2 citations); another 143 (29%) carry it as Potential. 807 F-689 citations were counted statewide — the largest citation volume of any tag in scope. [Re] Falls are the most visible surface of DSS Domain 2; the prevalence of this condition indicates how large the population is in which seizure-precipitated falls could go unattributed.
+250 facilities (51%) carry a Recognized C-1 (Fall-Seizure Nexus: repeat F-689 citations, or a single citation at actual-harm severity or worse); another 118 (24%) carry it as Potential. 807 F-689 citations were counted statewide — the largest citation volume of any tag in scope, including 92 at immediate-jeopardy severity across all screened tags. [Re] Falls are the most visible surface of DSS Domain 2; the prevalence of this condition indicates how large the population is in which seizure-precipitated falls could go unattributed.
 
 **3. Professional-standards citations are nearly as widespread.**
 173 facilities (36%) carry a Recognized C-3 (F-658, services must meet professional standards; 639 citations statewide), and 153 more carry it as Potential. [Re] F-658 is the documentation-integrity signal: the condition under which subtle neurological events are least likely to be charted accurately.
@@ -59,9 +59,9 @@ For-profit LLCs (178 facilities — the largest segment): 62% elevated, mean 3.2
 
 | Level | Facilities | Share |
 |---|---|---|
-| High | 28 | 5.7% |
+| High | 29 | 6.0% |
 | Moderate-High | 221 | 45.4% |
-| Moderate | 229 | 47.0% |
+| Moderate | 228 | 46.8% |
 | Low | 9 | 1.8% |
 
 Definitions: High = ≥2 Recognized high-risk conditions. Moderate-High = 1 Recognized high-risk OR ≥3 active high-risk. Moderate = ≥1 active high-risk condition, or any Recognized condition in any domain (floor rule). Low = neither. High-risk conditions are those mapped to DSS Domains 3/4 (pharmacy, professional standards, behavioral-health competency, staffing).
@@ -70,10 +70,10 @@ Definitions: High = ≥2 Recognized high-risk conditions. Moderate-High = 1 Reco
 
 | Condition | Signal | Recognized | Potential | Not Identified | Not Assessed |
 |---|---|---|---|---|---|
-| C-1 Fall-Seizure Nexus | F-689 | 225 | 143 | 119 | 0 |
+| C-1 Fall-Seizure Nexus | F-689 | 250 | 118 | 119 | 0 |
 | C-2 Pharmacy / Medication | F-755 | 44 | 111 | 332 | 0 |
 | C-3 Professional Standards | F-658 | 173 | 153 | 161 | 0 |
-| C-4 Behavioral Health & Competency | F-740/741 | 15 | 47 | 425 | 0 |
+| C-4 Behavioral Health & Competency | F-740/741 | 18 | 44 | 425 | 0 |
 | C-5 Five-Star Discrepancy | CMS ratings | 0 | 38 | 443 | 6 |
 | C-6 Staffing Profile | CMS staffing | 0 | 456 | 15 | 16 |
 | C-7 Enforcement | SFF / penalties | 69 | 172 | 246 | 0 |
@@ -86,7 +86,7 @@ Definitions: High = ≥2 Recognized high-risk conditions. Moderate-High = 1 Reco
 
 **Sources.** CMS Provider Data Catalog, datasets 4pq5-n9py (Provider Information), r5ix-sfxw (Health Deficiencies), g6vv-u9sr (Penalties). Retrieved 2026-06-08/09. No non-public data was used. No facility was contacted.
 
-**Classification rules (complete).** F-tag conditions: ≥2 citations = Recognized, 1 = Potential, 0 = Not Identified. C-4 sums F-740+F-741. C-5: overall minus health-inspection rating ≥2 = Recognized, =1 = Potential. C-6: Potential if total HPRD <3.8 or RN HPRD <0.75 or turnover >50%; Not Assessed if all three absent. C-7: Recognized on Special Focus status or abuse flag, Potential on ≥1 penalty. Exposure levels as defined above.
+**Classification rules (complete).** F-tag conditions are severity-weighted: each citation weighted by its CMS scope/severity letter (A–F no-harm ×1, G–I actual harm ×2, J–L immediate jeopardy ×3), then weighted score ≥2.0 = Recognized, >0 = Potential, 0 = Not Identified — so a single actual-harm or IJ citation classifies Recognized on its own. C-4 sums F-740+F-741. C-5: overall minus health-inspection rating ≥2 = Recognized, =1 = Potential. C-6: Potential if total HPRD <3.8 or RN HPRD <0.75 or turnover >50%; Not Assessed if all three absent. C-7: Recognized on Special Focus status or abuse flag, Potential on ≥1 penalty. Exposure levels as defined above.
 
 **What this analysis cannot establish.**
 1. *No seizure events are identified.* CMS deficiency data records regulatory findings, not clinical events. DSS Domain 1 (overt convulsive seizures) cannot be populated from this data and does not appear in these results.

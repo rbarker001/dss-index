@@ -21,7 +21,7 @@ What the public record shows:
 
 → **The trained eye keeps leaving.** At more than half of facilities, nursing staff turnover exceeds 50% a year.
 
-→ **Nearly half** (46%) have been cited repeatedly for failing to prevent accidents and falls — and an unwitnessed fall is one of the ways a missed seizure surfaces in a chart.
+→ **More than half** (51%) carry an established citation pattern for failing to prevent accidents and falls — repeat citations, or a single finding severe enough to document actual harm. An unwitnessed fall is one of the ways a missed seizure surfaces in a chart.
 
 To be clear about what this is and isn't:
 No facility is named. These are screening signals from public CMS data, classified through a disclosed method — not findings that any facility missed a seizure, and not a judgment of anyone's care.
@@ -39,7 +39,7 @@ If you work in aging care, senior housing, or dementia research and want to see 
 ## Notes for Russ
 
 - **The one story:** "the conditions for missing a silent seizure are the norm, not the exception" — every number serves that single sentence.
-- **Translations used:** 0.46 RN HPRD → 28 min/resident/day (×60); benchmark 0.75 → 45 min. 275/487 = 56% of facilities above 50% turnover. 225/487 = 46% Recognized C-1.
+- **Translations used:** 0.46 RN HPRD → 28 min/resident/day (×60); benchmark 0.75 → 45 min. 275/487 = 56% of facilities above 50% turnover. 250/487 = 51% Recognized C-1 (severity-weighted: repeat citations or single G+/IJ citation).
 - Deliberately excluded: exposure tiers (jargon), urban/rural reversal (invites methodological fights in comments), ownership gradient (saving it — it's a strong follow-up post), over-reporting finding (also a strong standalone follow-up: "94% of facilities report more staffing than their payroll shows").
 - [Re] This is written as post #1 of a potential series. Each excluded finding is a future post with its own one story.
 - The disclaimer paragraph is load-bearing for the legal posture — keep it even if trimming for length.

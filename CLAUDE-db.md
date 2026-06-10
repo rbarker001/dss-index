@@ -105,7 +105,7 @@ Currently **local-only** — no remote configured. Add a private GitHub remote f
 | C-6 | Staffing Profile | CMS Staffing | 3+4 | High |
 | C-7 | Special Focus / Enforcement | CMS Enforcement | — | — |
 
-**Classification thresholds:** ≥2 citations = Recognized · 1 citation = Potential · 0 = Not Identified
+**Classification thresholds (severity-weighted, 2026-06-09):** citations weighted by CMS severity (A–F ×1 · G–I ×2 · J–L ×3), then weighted score ≥2 = Recognized · >0 = Potential · 0 = Not Identified. A single actual-harm or IJ citation is Recognized on its own. Recency weighting was modeled and rejected (survey-scheduling distortions) — recency is exposed via the Citation Detail queries instead.
 **Staffing (C-6):** Potential if HPRD < 3.8 OR RN HPRD < 0.75 OR turnover > 50% · Not Assessed if all three figures missing
 **Five-Star (C-5):** Recognized if overall − health ≥ 2 · Potential if diff = 1 · Not Assessed if either rating missing
 
@@ -165,7 +165,7 @@ That synthesis layer is a future build on this database. Its reference implement
 |---|---|---|---|
 | Missouri (MO) | 2026-06-09 | 487 | 0 |
 
-Missouri: 28 High · 221 Moderate-High · 229 Moderate · 9 Low · 289 urban · 198 rural · 242 cities
+Missouri: 29 High · 221 Moderate-High · 228 Moderate · 9 Low · 289 urban · 198 rural · 242 cities
 
 Data completeness: 22 conditions classified **Not Assessed** (6 C-5 missing Five-Star ratings, 16 C-6 missing all staffing figures) — distinct from assessed-clean. All other condition rows are Recognized / Potential / Not Identified.
 

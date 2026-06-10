@@ -43,10 +43,38 @@ const SNF_DATA_GAPS = [
   }
 ];
 
-function certify(count) {
-  if (count >= 2) return 'Recognized';
-  if (count === 1) return 'Potential';
+// ── Severity weighting (decided 2026-06-09) ─────────────────────────────────
+// Citations are weighted by the CMS scope/severity letter before thresholding:
+//   D–F (no actual harm)       ×1
+//   G–I (actual harm)          ×2
+//   J–L (immediate jeopardy)   ×3
+// Threshold on the weighted score: ≥2.0 = Recognized · >0 = Potential.
+// With all weights 1.0 this reduces exactly to the original "≥2 citations /
+// 1 citation" rule — the weighting is a strict generalization. Consequence:
+// a single actual-harm or immediate-jeopardy citation is Recognized on its
+// own, which mirrors how CMS itself treats IJ as categorical, not cumulative.
+// Recency weighting was modeled and deliberately NOT adopted (both calendar-
+// and cycle-based decay carry survey-scheduling distortions); recency is
+// exposed as data via the citation table and query library instead.
+function severityWeight(code) {
+  if ('JKL'.includes(code)) return 3;
+  if ('GHI'.includes(code)) return 2;
+  return 1;
+}
+
+function certify(score) {
+  if (score >= 2) return 'Recognized';
+  if (score > 0) return 'Potential';
   return 'Not Identified';
+}
+
+// Weighted score for one condition from its citation rows. Falls back to the
+// raw count (all weights 1.0) when citation detail is unavailable.
+function conditionScore(citations, labels, fallbackCount) {
+  if (!citations) return fallbackCount;
+  return citations
+    .filter(c => labels.includes(c.source_citation_value))
+    .reduce((sum, c) => sum + severityWeight(c.severity_code || ''), 0);
 }
 
 // Parse a CMS field to a number, returning null only when the value is
@@ -69,7 +97,7 @@ function buildAssessmentId(state, ccn) {
   return `DSCA-${year}${mo}-${state.toUpperCase()}-${ccn}`;
 }
 
-function classifyFacility(assessmentId, provider, tagCounts, penaltyCount) {
+function classifyFacility(assessmentId, provider, tagCounts, penaltyCount, citations) {
   const overall  = num(provider.overall_rating);
   const health   = num(provider.health_inspection_rating);
   const hprd    = num(provider.reported_total_nurse_staffing_hours_per_resident_per_day);
@@ -95,10 +123,11 @@ function classifyFacility(assessmentId, provider, tagCounts, penaltyCount) {
 
   // ── C-1: F-689 Fall-Seizure Nexus ────────────────────────────────────────
   const c1count = tagCounts['0689'] || 0;
+  const c1score = conditionScore(citations, ['F-689'], c1count);
   const C1 = {
     condition_code:       'C-1',
     condition_name:       'Fall-Seizure Nexus',
-    classification:       certify(c1count),
+    classification:       certify(c1score),
     dss_domain:           2,
     dss_domain_secondary: null,
     recognition_risk:     'Moderate',
@@ -110,10 +139,11 @@ function classifyFacility(assessmentId, provider, tagCounts, penaltyCount) {
 
   // ── C-2: F-755 Pharmacy / Medication ─────────────────────────────────────
   const c2count = tagCounts['0755'] || 0;
+  const c2score = conditionScore(citations, ['F-755'], c2count);
   const C2 = {
     condition_code:       'C-2',
     condition_name:       'Pharmacy / Medication Management',
-    classification:       certify(c2count),
+    classification:       certify(c2score),
     dss_domain:           3,
     dss_domain_secondary: 4,
     recognition_risk:     'High',
@@ -125,10 +155,11 @@ function classifyFacility(assessmentId, provider, tagCounts, penaltyCount) {
 
   // ── C-3: F-658 Professional Standards ────────────────────────────────────
   const c3count = tagCounts['0658'] || 0;
+  const c3score = conditionScore(citations, ['F-658'], c3count);
   const C3 = {
     condition_code:       'C-3',
     condition_name:       'Services Meet Professional Standards',
-    classification:       certify(c3count),
+    classification:       certify(c3score),
     dss_domain:           3,
     dss_domain_secondary: 4,
     recognition_risk:     'High',
@@ -140,10 +171,11 @@ function classifyFacility(assessmentId, provider, tagCounts, penaltyCount) {
 
   // ── C-4: F-740/741 Behavioral Health & Staff Competency ──────────────────
   const c4count = (tagCounts['0740'] || 0) + (tagCounts['0741'] || 0);
+  const c4score = conditionScore(citations, ['F-740', 'F-741'], c4count);
   const C4 = {
     condition_code:       'C-4',
     condition_name:       'Behavioral Health and Staff Competency',
-    classification:       certify(c4count),
+    classification:       certify(c4score),
     dss_domain:           3,
     dss_domain_secondary: 4,
     recognition_risk:     'High',

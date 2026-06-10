@@ -97,9 +97,19 @@ Four states, not three. The distinction between the last two is deliberate:
 
 ### F-tag conditions (C-1 to C-4)
 
-Threshold: ≥2 citations = Recognized · 1 citation = Potential · 0 = Not Identified
+**Severity-weighted scoring (decided 2026-06-09).** Each citation is weighted by its CMS scope/severity letter, then the weighted score is thresholded:
 
-C-4 combines F-740 + F-741 citation counts before applying the threshold.
+| Severity | Meaning | Weight |
+|---|---|---|
+| A–F | No actual harm | ×1 |
+| G–I | Actual harm | ×2 |
+| J–L | Immediate jeopardy | ×3 |
+
+Threshold: weighted score ≥2.0 = Recognized · >0 = Potential · 0 = Not Identified. With all weights at 1.0 this reduces exactly to the original "≥2 citations / 1 citation" rule — the weighting is a strict generalization. Consequence: a single actual-harm or immediate-jeopardy citation classifies Recognized on its own, mirroring how CMS treats IJ as categorical rather than cumulative. Missouri impact when adopted: 28 condition upgrades, 2 facilities moved exposure tier (model-predicted and verified).
+
+C-4 combines F-740 + F-741 weighted scores before applying the threshold. `source_count` continues to store the raw citation count; classification comes from the weighted score.
+
+**Recency weighting — modeled and deliberately rejected.** Both calendar-based decay (≤24mo ×1.0 / ≤48mo ×0.5 / older ×0.25) and inspection-cycle-based decay were modeled: they move 83 and 102 facilities respectively and collapse High from 28-29 to 4. Rejected because (1) calendar decay punishes facilities the COVID survey backlog skipped, while cycle decay punishes frequently-surveyed facilities — opposite distortions, no neutral choice; (2) the decay constants are tunable knobs that would make the published distribution contestable; (3) a recognition-capacity pattern does not expire on a schedule — per-facility recency judgment belongs in the synthesis layer. Instead, recency is exposed as data: the Citation Detail query category surfaces latest-citation dates, cycle-1 counts, and stale Recognized conditions (107 in Missouri rest on citations >24 months old).
 
 ### Five-Star discrepancy (C-5)
 
@@ -213,7 +223,7 @@ Express server at port 3010. Query library in `queries/library.js`.
 
 **Start:** `node query-server.js`
 
-### Query categories (34 total)
+### Query categories (38 total)
 
 | Category | Queries | Notes |
 |---|---|---|
@@ -225,6 +235,7 @@ Express server at port 3010. Query library in `queries/library.js`.
 | Staffing Integrity | 3 | Reported vs PBJ discrepancy, over-reporters with F-658, all staffing fields |
 | Data Gaps | 1 | Gap inventory |
 | Single Facility | 3 | Profile, condition breakdown, data gaps |
+| Citation Detail | 4 | Recognized-condition recency, stale Recognized (>24mo), severe citations (G+), survey currency |
 
 **Condition Analysis restructure (from original design):**
 - Domain distribution now covers all 4 DSS domains, not just 3 and 4
@@ -263,7 +274,7 @@ Stable per facility per run month. Running the same city again in a later month 
 |---|---|---|---|
 | Missouri (MO) | 2026-06-09 | 487 SNFs | First state run; 0 errors; city + zip + urban + lat/long populated |
 
-Missouri exposure summary: 28 High · 221 Moderate-High · 229 Moderate · 9 Low. 289 urban / 198 rural. 242 distinct cities. (3 facilities moved Low → Moderate under the 2026-06-09 floor rule.)
+Missouri exposure summary: 29 High · 221 Moderate-High · 228 Moderate · 9 Low. 289 urban / 198 rural. 242 distinct cities. (3 facilities moved Low → Moderate under the floor rule; 2 moved up under severity weighting — both 2026-06-09.)
 
 Data completeness: 22 conditions are Not Assessed (6 C-5 missing Five-Star ratings, 16 C-6 missing all staffing figures) — the data to evaluate them was absent, distinct from assessed-clean. Exposure levels are unaffected (Not Assessed is never an active finding).
 
