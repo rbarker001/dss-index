@@ -237,10 +237,16 @@ function classifyFacility(assessmentId, provider, tagCounts, penaltyCount) {
   const active          = conditions.filter(c => c.classification === 'Recognized' || c.classification === 'Potential');
   const highRisk        = active.filter(c => c.recognition_risk === 'High');
   const highRecognized  = highRisk.filter(c => c.classification === 'Recognized');
+  const anyRecognized   = active.some(c => c.classification === 'Recognized');
   let exposureLevel;
   if      (highRecognized.length >= 2)                        exposureLevel = 'High';
   else if (highRecognized.length >= 1 || highRisk.length >= 3) exposureLevel = 'Moderate-High';
   else if (highRisk.length >= 1)                              exposureLevel = 'Moderate';
+  // Floor rule: no facility with a Recognized condition in any domain ranks Low.
+  // High/Moderate-High stay reserved for High-risk (Domain 3/4) findings; this
+  // only lifts the floor so a Recognized Domain 2 (or enforcement) finding
+  // cannot coexist with a "Low" exposure label.
+  else if (anyRecognized)                                      exposureLevel = 'Moderate';
   else                                                         exposureLevel = 'Low';
 
   // ── Facility row ──────────────────────────────────────────────────────────

@@ -110,7 +110,9 @@ Currently **local-only** — no remote configured. Add a private GitHub remote f
 
 **Four classification states:** Recognized · Potential · Not Identified (assessed clean) · Not Assessed (data missing). The last two are distinct: "checked and clean" ≠ "couldn't check". Only Recognized/Potential are active findings. Only C-5/C-6 can be Not Assessed.
 
-**Domain weighting (recurring question — full rationale in architecture-db.md):** Recognition risk tiers misattribution likelihood, not clinical importance. Domains 3/4 (most missed / most misattributed) = High; Domain 2 (partially recognized) = Moderate. Domain 2 is NOT minor — C-1 is the most prevalent Recognized condition in Missouri (225/487). Consequence: exposure level counts High-risk conditions only, so Domain 2 never moves it — 3 MO facilities have Recognized Domain 2 yet rank Low. Whether Domain 2 should contribute to exposure is an open design decision. Never default queries to `dss_domain IN (3,4)` without asking if Domain 2 belongs.
+**Domain weighting (recurring question — full rationale in architecture-db.md):** Recognition risk tiers misattribution likelihood, not clinical importance. Domains 3/4 (most missed / most misattributed) = High; Domain 2 (partially recognized) = Moderate. Domain 2 is NOT minor — C-1 is the most prevalent Recognized condition in Missouri (225/487). Never default queries to `dss_domain IN (3,4)` without asking if Domain 2 belongs.
+
+**Exposure floor rule (decided 2026-06-09):** no facility with a Recognized condition in any domain ranks Low — a Recognized finding floors exposure at Moderate. High/Moderate-High stay reserved for High-risk (Domain 3/4) conditions. Implemented in `classifier.js`; stored Missouri rows re-scored (3 moved Low → Moderate).
 
 ---
 
@@ -162,7 +164,7 @@ That synthesis layer is a future build on this database. Its reference implement
 |---|---|---|---|
 | Missouri (MO) | 2026-06-09 | 487 | 0 |
 
-Missouri: 28 High · 221 Moderate-High · 226 Moderate · 12 Low · 289 urban · 198 rural · 242 cities
+Missouri: 28 High · 221 Moderate-High · 229 Moderate · 9 Low · 289 urban · 198 rural · 242 cities
 
 Data completeness: 22 conditions classified **Not Assessed** (6 C-5 missing Five-Star ratings, 16 C-6 missing all staffing figures) — distinct from assessed-clean. All other condition rows are Recognized / Potential / Not Identified.
 

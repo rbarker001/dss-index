@@ -140,7 +140,7 @@ This is a recurring question, so the rationale is recorded here permanently.
 
 **Domain 2 is not minor — the data says the opposite.** C-1 (Fall-Seizure Nexus, F-689) is the single most prevalent Recognized condition in the Missouri data: 225 of 487 facilities (46%) Recognized, another 143 Potential. Falls are long-term care's most common adverse event, and F-689 is among the most-cited F-tags nationally. Domain 2 is the highest-volume signal in the database.
 
-**Design consequence — stated plainly because it is easy to miss:** exposure level counts only High-risk conditions. Domain 2 conditions therefore *never* raise a facility's exposure level, regardless of classification. In the Missouri data, 3 facilities carry a **Recognized** Domain 2 condition yet rank **Low** exposure. That is the current rule working as designed — exposure measures misattribution-capacity risk, not total clinical risk — but whether Domain 2 should contribute to exposure (e.g., a Recognized C-1 lifting Low → Moderate) is an **open design decision**, not a settled one. Any change must be made in `classifier.js` exposure logic and re-run, and would shift the published Missouri distribution.
+**Floor rule (decided 2026-06-09):** no facility with a Recognized condition in any domain ranks Low. The upper tiers (High / Moderate-High) remain reserved for High-risk Domain 3/4 findings — the misattribution-capacity thesis — but a Recognized finding in any domain (or enforcement) lifts the floor to Moderate. Rationale: "Recognized fall-seizure citation pattern + Low exposure" is indefensible in client delivery, publication, or deposition. Alternatives modeled before deciding: counting Recognized Domain 2 toward the Moderate-High threshold moved 47 facilities and pushed Moderate-High to 54% of all Missouri SNFs, flattening the scale's discriminating power — rejected. The floor rule moved exactly 3 facilities (Low → Moderate). Stored Missouri assessments were re-scored from their existing condition rows; no CMS re-pull was needed.
 
 **Query layer:** Domain 2 was invisible in the original query library — only Domain 3/4 queries existed. The Condition Analysis restructure fixed this (see Query Runner section): domain distribution now covers all four domains, and a dedicated "Domain 2 — Fall-Seizure Nexus" query exists. When adding queries, do not default to `dss_domain IN (3,4)` — ask whether Domain 2 belongs in the question.
 
@@ -149,10 +149,10 @@ This is a recurring question, so the rationale is recorded here permanently.
 Computed from the condition set after classification:
 - **High:** ≥2 Recognized conditions with High recognition risk
 - **Moderate-High:** 1 Recognized High OR ≥3 active High risk conditions
-- **Moderate:** ≥1 active High risk condition
-- **Low:** no High risk conditions active
+- **Moderate:** ≥1 active High risk condition, OR any Recognized condition in any domain (floor rule)
+- **Low:** no High risk conditions active and no Recognized condition anywhere
 
-Note: only High-risk (Domain 3/4) conditions move this dial — see "Domain weighting" above for why, and for the open question about Domain 2's exclusion.
+The upper tiers are driven by High-risk (Domain 3/4) conditions; the floor rule guarantees a Recognized condition in any domain ranks at least Moderate — see "Domain weighting" above for the full rationale.
 
 ---
 
@@ -259,7 +259,7 @@ Stable per facility per run month. Running the same city again in a later month 
 |---|---|---|---|
 | Missouri (MO) | 2026-06-09 | 487 SNFs | First state run; 0 errors; city + zip + urban + lat/long populated |
 
-Missouri exposure summary: 28 High · 221 Moderate-High · 226 Moderate · 12 Low. 289 urban / 198 rural. 242 distinct cities.
+Missouri exposure summary: 28 High · 221 Moderate-High · 229 Moderate · 9 Low. 289 urban / 198 rural. 242 distinct cities. (3 facilities moved Low → Moderate under the 2026-06-09 floor rule.)
 
 Data completeness: 22 conditions are Not Assessed (6 C-5 missing Five-Star ratings, 16 C-6 missing all staffing figures) — the data to evaluate them was absent, distinct from assessed-clean. Exposure levels are unaffected (Not Assessed is never an active finding).
 
