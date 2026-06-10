@@ -2,7 +2,9 @@
 
 ## Strategic Context
 
-This database is the **data asset layer** from the Seagull Health rethink document. The core insight: every DSCA produced for a client should also write structured rows into a standing database. Over time, that database becomes a risk map of the SNF universe — queryable, cross-comparable, and valuable independent of any single client engagement.
+This database is the **data asset layer** from the Seagull Health rethink document (`~/crisp-app/reference/Complete rethink.txt`). The core insight: every DSCA produced for a client should also write structured rows into a standing database. Over time, that database becomes a risk map of the SNF universe — queryable, cross-comparable, and valuable independent of any single client engagement.
+
+**Lineage:** dsca-db is a pared-down version of the crisp-dsca report. `~/crisp-dsca` (internally "CRISP SCI", ports 3006/3007) generates one-off DSCA reports using CRISP — form input, manual intervention, full pipeline (CMS + Zotero + PubMed + Claude) per run, results never persisted to a backend. dsca-db extracts the deterministic subset of that report and persists it: a row per facility instead of a PDF per request. It was built to be the foundation onto which the AI synthesis and Zotero integration are layered to generate reports — future reports build on top of dsca-db rows, not by wiring two standalone apps together. (`~/crisp-sci` is an empty leftover folder; crisp-app's CLAUDE.md still stale-points to it.)
 
 The proprietary value is not the raw CMS data (anyone can pull that) but the **transformation**: reclassifying regulatory deficiencies through the DSS Framework neurological lens and crossing them with staffing data. That derived variable — DSS domain, recognition risk, certainty tier — doesn't exist in any public dataset.
 
@@ -19,7 +21,7 @@ The proprietary value is not the raw CMS data (anyone can pull that) but the **t
                          │ facility row already exists
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
-│  SYNTHESIS LAYER (crisp-dsca, on client engagement)         │
+│  SYNTHESIS LAYER (future build, on client engagement)       │
 │  Pull existing row → Zotero + PubMed + Claude synthesis      │
 │  Populates evidence and exposure_estimate tables             │
 │  Produces charged DSCA work product                         │
@@ -27,6 +29,8 @@ The proprietary value is not the raw CMS data (anyone can pull that) but the **t
 ```
 
 The credit bureau analogy: the bureau maintains cheap structured data on everyone; the expensive full report pulls on demand.
+
+The synthesis layer does not exist yet as a build on this database. Its reference implementation is `~/crisp-dsca` — that project's prompts, Zotero search, GRADE scoring, and DSCA report structure define what gets layered on top of dsca-db rows. crisp-dsca itself remains a standalone one-off report generator; the synthesis layer here will be built *on* dsca.db, drawing a facility's existing row and writing `evidence` / `exposure_estimate` rows back.
 
 ---
 

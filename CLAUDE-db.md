@@ -4,7 +4,9 @@
 
 A structured database for DSCA (Dementia-Seizure Conditions Assessment) data collection. Deterministic classification only — no AI analysis. Every SNF in a city or state gets a structured row populated from CMS public data, classified through the DSS Framework.
 
-This is the **data asset layer** described in the Seagull Health strategic rethink. The database is the product; reports are generated on demand from rows that already exist.
+This is the **data asset layer** described in the Seagull Health strategic rethink (`~/crisp-app/reference/Complete rethink.txt`). The database is the product; reports are generated on demand from rows that already exist.
+
+**Lineage:** dsca-db is a pared-down version of the crisp-dsca report. `~/crisp-dsca` (internally "CRISP SCI") generates one-off DSCA reports using CRISP — form input, manual intervention, results never persisted. dsca-db extracts the deterministic subset of that report and persists it, as the foundation onto which the AI synthesis and Zotero integration are layered to generate reports. crisp-dsca is the reference implementation for that future synthesis layer, not a system this database integrates with as-is.
 
 ---
 
@@ -147,6 +149,8 @@ Re-runs skip any CCN already in the database. Delete `dsca.db` to start fresh.
 They don't enter in this pipeline. The state/city run is the deterministic layer — CMS in, DSS classification out. No API cost per facility.
 
 Zotero + PubMed + Claude enter when a specific facility becomes a live engagement. At that point: pull the facility's existing row, run the full synthesis pipeline on top of it. The `evidence` and `exposure_estimate` tables are populated then, not by the city/state run.
+
+That synthesis layer is a future build on this database. Its reference implementation is `~/crisp-dsca` — the prompts, Zotero search, GRADE scoring, and DSCA report structure there define what gets layered onto dsca.db rows.
 
 ---
 
