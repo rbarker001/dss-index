@@ -132,6 +132,18 @@ Two reasons this is not a gap in the logic — it is an honest scope boundary:
 
 Domain 1 will not appear in database rows from the deterministic pipeline. It should not be expected to. The absence of Domain 1 findings in the database is not an analytical gap — it is a correct reflection of what CMS public data can and cannot establish.
 
+### Domain weighting — why 3/4 carry High risk and Domain 2 carries Moderate
+
+This is a recurring question, so the rationale is recorded here permanently.
+
+**Recognition risk is a misattribution-likelihood tier, not a clinical-importance ranking.** Per the DSS Framework (see `dss-framework.html` on the Seagull site): Domain 3 (Awareness Changes) is the *most frequently missed* presentation and Domain 4 (Behavioral Changes) the *most commonly misattributed* — these two carry the company's core thesis, that silent seizures get documented as behavioral symptoms. The conditions signaling a facility's capacity to catch those subtle presentations (C-2 pharmacy, C-3 professional standards, C-4 behavioral health/competency, C-6 staffing) are therefore tiered High. Domain 2 (Movement Changes) is *partially recognized* — its signals (seizure-precipitated falls, automatisms) are visible events more likely to enter the record in some form, so C-1 and C-5 are tiered Moderate.
+
+**Domain 2 is not minor — the data says the opposite.** C-1 (Fall-Seizure Nexus, F-689) is the single most prevalent Recognized condition in the Missouri data: 225 of 487 facilities (46%) Recognized, another 143 Potential. Falls are long-term care's most common adverse event, and F-689 is among the most-cited F-tags nationally. Domain 2 is the highest-volume signal in the database.
+
+**Design consequence — stated plainly because it is easy to miss:** exposure level counts only High-risk conditions. Domain 2 conditions therefore *never* raise a facility's exposure level, regardless of classification. In the Missouri data, 3 facilities carry a **Recognized** Domain 2 condition yet rank **Low** exposure. That is the current rule working as designed — exposure measures misattribution-capacity risk, not total clinical risk — but whether Domain 2 should contribute to exposure (e.g., a Recognized C-1 lifting Low → Moderate) is an **open design decision**, not a settled one. Any change must be made in `classifier.js` exposure logic and re-run, and would shift the published Missouri distribution.
+
+**Query layer:** Domain 2 was invisible in the original query library — only Domain 3/4 queries existed. The Condition Analysis restructure fixed this (see Query Runner section): domain distribution now covers all four domains, and a dedicated "Domain 2 — Fall-Seizure Nexus" query exists. When adding queries, do not default to `dss_domain IN (3,4)` — ask whether Domain 2 belongs in the question.
+
 ### Exposure level
 
 Computed from the condition set after classification:
@@ -139,6 +151,8 @@ Computed from the condition set after classification:
 - **Moderate-High:** 1 Recognized High OR ≥3 active High risk conditions
 - **Moderate:** ≥1 active High risk condition
 - **Low:** no High risk conditions active
+
+Note: only High-risk (Domain 3/4) conditions move this dial — see "Domain weighting" above for why, and for the open question about Domain 2's exclusion.
 
 ---
 
