@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Missouri SNF Universe — DSS Framework Findings | Seagull Health</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange:      #ef7835;
+  --orange-dim:  #c4612a;
+  --orange-pale: #fff4ee;
+  --orange-mid:  rgba(239,120,53,0.12);
+  --ink:         #0a1628;
+  --ink-mid:     #1e2f45;
+  --text:        #2d3f52;
+  --muted:       #6b7e92;
+  --bg:          #ffffff;
+  --surface:     #f6f8fb;
+  --border:      #e4eaf2;
+  --border-dark: #d0dae6;
+  --green:       #2da870;
+  --green-pale:  #edfaf4;
+  --red:         #d94f4f;
+  --red-pale:    #fef2f2;
+  --amber:       #d4a017;
+  --amber-pale:  #fdf9ec;
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:16px; line-height:1.65;
+  color:var(--text); background:var(--bg);
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap         { max-width:1120px; margin:0 auto; padding:0 40px; }
+.wrap--narrow { max-width:820px;  margin:0 auto; padding:0 40px; }
+
+/* ── NAV ── */
+nav {
+  position:sticky; top:0; z-index:100;
+  background:rgba(255,255,255,0.95); backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 40px; height:64px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.nav-brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
+.nav-brand-name    { font-size:18px; font-weight:700; color:var(--ink); letter-spacing:-0.02em; line-height:1.1; }
+.nav-brand-name span { color:var(--orange); }
+.nav-brand-tagline { font-size:11px; font-weight:500; color:var(--muted); letter-spacing:0.03em; line-height:1; }
+.nav-doc-tag {
+  font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--red); background:var(--red-pale); border:1px solid rgba(217,79,79,0.25);
+  padding:6px 14px; border-radius:20px;
+}
+
+/* ── DRAFT BANNER ── */
+.draft-banner {
+  background:var(--red-pale); border-bottom:1px solid rgba(217,79,79,0.25);
+  padding:10px 40px; text-align:center;
+  font-size:13px; font-weight:600; color:var(--red); letter-spacing:0.02em;
+}
+
+/* ── SECTION LABELS ── */
+.section-kicker {
+  font-size:11px; font-weight:600; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--orange); margin-bottom:14px;
+  display:flex; align-items:center; gap:10px;
+}
+.section-kicker::before { content:''; display:block; width:20px; height:2px; background:var(--orange); }
+h2 { font-size:clamp(28px,3.5vw,40px); font-weight:800; color:var(--ink); letter-spacing:-0.03em; line-height:1.13; margin-bottom:16px; }
+h3 { font-size:18px; font-weight:700; color:var(--ink); letter-spacing:-0.02em; margin-bottom:10px; }
+
+/* ── HERO ── */
+#hero {
+  background:var(--ink); padding:72px 0 0;
+  position:relative; overflow:hidden;
+}
+#hero::before {
+  content:''; position:absolute; inset:0;
+  background-image:radial-gradient(circle,rgba(255,255,255,0.025) 1px,transparent 1px);
+  background-size:28px 28px; pointer-events:none;
+}
+.hero-glow-left {
+  position:absolute; top:-80px; left:-120px;
+  width:600px; height:600px;
+  background:radial-gradient(circle,rgba(239,120,53,0.10) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hero-inner {
+  position:relative; z-index:1;
+  max-width:1120px; margin:0 auto; padding:0 40px;
+}
+.hero-qualifier {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(217,79,79,0.16); border:1px solid rgba(217,79,79,0.4);
+  border-radius:20px; padding:6px 14px;
+  font-size:11px; font-weight:700; letter-spacing:0.1em;
+  text-transform:uppercase; color:#f08c8c; margin-bottom:28px;
+}
+.hero-qualifier::before { content:''; display:block; width:6px; height:6px; border-radius:50%; background:#f08c8c; }
+.hero-heading {
+  font-size:clamp(34px,5vw,58px); font-weight:900;
+  color:#fff; letter-spacing:-0.04em; line-height:1.06; margin-bottom:12px;
+}
+.hero-subheading {
+  font-size:clamp(17px,2vw,24px); font-weight:600;
+  color:rgba(255,255,255,0.5); letter-spacing:-0.02em; line-height:1.3;
+  margin-bottom:28px; font-style:italic;
+}
+.hero-body {
+  font-size:17px; color:rgba(255,255,255,0.58);
+  line-height:1.72; max-width:680px; margin-bottom:52px;
+}
+.hero-body strong { color:rgba(255,255,255,0.85); font-weight:600; }
+
+.market-strip {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  border-top:1px solid rgba(255,255,255,0.07);
+}
+.ms-item { padding:28px 24px; border-right:1px solid rgba(255,255,255,0.07); }
+.ms-item:last-child { border-right:none; }
+.ms-num {
+  font-size:clamp(28px,3vw,38px); font-weight:900;
+  color:#fff; letter-spacing:-0.04em; line-height:1; margin-bottom:6px;
+}
+.ms-num span { color:var(--orange); }
+.ms-label { font-size:12px; color:rgba(255,255,255,0.45); line-height:1.45; }
+
+/* ── SECTIONS ── */
+section.block { padding:80px 0; border-bottom:1px solid var(--border); }
+section.block.alt { background:var(--surface); }
+.block-intro { font-size:17px; color:var(--muted); max-width:680px; line-height:1.7; }
+
+/* ── METHOD NOTE ── */
+.method-note {
+  background:var(--orange-pale); border:1px solid rgba(239,120,53,0.25);
+  border-left:3px solid var(--orange); border-radius:10px;
+  padding:20px 24px; margin-top:28px;
+  font-size:15px; line-height:1.7; color:var(--text);
+}
+.method-note strong { color:var(--ink); }
+
+/* ── FINDINGS LIST ── */
+.findings { display:flex; flex-direction:column; gap:16px; margin-top:48px; }
+.finding {
+  background:#fff; border:1px solid var(--border); border-radius:14px;
+  padding:28px 30px; display:flex; gap:22px; align-items:flex-start;
+  transition:border-color 0.2s;
+}
+.alt .finding { background:#fff; }
+.finding:hover { border-color:var(--orange); }
+.f-num {
+  background:var(--ink); color:#fff; font-size:13px; font-weight:800;
+  min-width:34px; height:34px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;
+}
+.f-title { font-size:17px; font-weight:700; color:var(--ink); letter-spacing:-0.01em; margin-bottom:6px; }
+.f-body  { font-size:15px; color:var(--text); line-height:1.7; }
+.f-body strong { color:var(--ink); }
+.tag-re {
+  display:inline-block; background:var(--amber-pale); color:var(--amber);
+  border:1px solid rgba(212,160,23,0.35);
+  font-size:10px; font-weight:700; letter-spacing:0.06em;
+  padding:1px 7px; border-radius:3px; margin-right:6px; vertical-align:1px;
+}
+
+/* ── TABLES ── */
+.tbl-wrap { overflow-x:auto; margin-top:36px; border:1px solid var(--border); border-radius:12px; }
+table { width:100%; border-collapse:collapse; font-size:14px; background:#fff; }
+thead th {
+  background:var(--ink); color:#fff; text-align:left;
+  font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+  padding:12px 16px; white-space:nowrap;
+}
+tbody td { padding:11px 16px; border-bottom:1px solid var(--border); color:var(--text); }
+tbody tr:last-child td { border-bottom:none; }
+tbody tr:nth-child(even) { background:var(--surface); }
+td.num { font-variant-numeric:tabular-nums; font-weight:600; color:var(--ink); }
+.lv { display:inline-block; font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; letter-spacing:0.03em; }
+.lv-high { background:var(--red-pale);   color:var(--red);   border:1px solid rgba(217,79,79,0.3); }
+.lv-mh   { background:var(--orange-pale);color:var(--orange-dim); border:1px solid rgba(239,120,53,0.3); }
+.lv-mod  { background:var(--amber-pale); color:var(--amber); border:1px solid rgba(212,160,23,0.3); }
+.lv-low  { background:var(--green-pale); color:var(--green); border:1px solid rgba(45,168,112,0.3); }
+
+/* ── TWO-COL ── */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:48px; }
+.col-card {
+  background:#fff; border:1px solid var(--border); border-radius:14px; padding:30px 28px;
+}
+.col-card h3 { margin-bottom:14px; }
+.col-card p { font-size:15px; line-height:1.7; }
+.stat-pair { display:flex; gap:14px; align-items:baseline; margin:14px 0 6px; }
+.stat-big { font-size:38px; font-weight:900; color:var(--ink); letter-spacing:-0.04em; line-height:1; }
+.stat-big.orange { color:var(--orange); }
+.stat-vs { font-size:13px; color:var(--muted); font-weight:600; }
+
+/* ── LIMITATIONS ── */
+.limits { display:flex; flex-direction:column; gap:14px; margin-top:40px; }
+.limit {
+  display:flex; gap:14px; align-items:flex-start;
+  background:#fff; border:1px solid var(--border); border-radius:10px; padding:18px 22px;
+}
+.limit-x {
+  color:var(--red); font-weight:800; font-size:15px; flex-shrink:0; margin-top:1px;
+}
+.limit-text { font-size:14.5px; line-height:1.65; }
+.limit-text strong { color:var(--ink); }
+
+/* ── PROVENANCE ── */
+.prov-note { font-size:13px; color:var(--muted); margin-top:16px; font-style:italic; }
+
+/* ── FOOTER ── */
+footer {
+  background:var(--ink); padding:44px 40px; text-align:center;
+}
+.foot-brand { font-size:16px; font-weight:700; color:#fff; margin-bottom:6px; }
+.foot-brand span { color:var(--orange); }
+.foot-line { font-size:12.5px; color:rgba(255,255,255,0.38); line-height:1.8; max-width:640px; margin:0 auto; }
+.foot-tagline { font-size:12px; color:rgba(255,255,255,0.3); font-style:italic; margin-top:14px; }
+
+@media (max-width:880px){
+  .wrap, .wrap--narrow { padding:0 24px; }
+  nav { padding:0 24px; }
+  .market-strip { grid-template-columns:repeat(2,1fr); }
+  .ms-item:nth-child(2) { border-right:none; }
+  .two-col { grid-template-columns:1fr; }
+  section.block { padding:60px 0; }
+}
+@media print {
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+  nav { position:static; }
+}
+</style>
+</head>
+<body>
+
+<div class="draft-banner">DRAFT — INTERNAL VALIDATION ONLY · Not for publication until reviewed by Seagull Health and counsel</div>
+
+<nav>
+  <a class="nav-brand" href="#">
+    <div>
+      <div class="nav-brand-name">Seagull <span>Health</span></div>
+      <div class="nav-brand-tagline">Seizure Clarity in Dementia</div>
+    </div>
+  </a>
+  <div class="nav-doc-tag">Draft · Internal</div>
+</nav>
+
+<!-- ═══════ HERO ═══════ -->
+<section id="hero">
+  <div class="hero-glow-left"></div>
+  <div class="hero-inner">
+    <div class="hero-qualifier">Draft — Internal Validation</div>
+    <h1 class="hero-heading">Missouri SNF Universe<br>DSS Framework Findings</h1>
+    <p class="hero-subheading">Every certified skilled nursing facility in the state, classified through one clinical lens.</p>
+    <p class="hero-body">
+      <strong>487 facilities. 242 cities. Public CMS data only.</strong> Each facility was assessed
+      through the Dementia Seizure Spectrum™ Framework's deterministic classification layer —
+      fixed, disclosed rules; no per-facility judgment; no AI in classification. This summary reports
+      <strong>aggregate patterns only</strong>. No facility is named in this document.
+    </p>
+    <div class="market-strip">
+      <div class="ms-item">
+        <div class="ms-num">487</div>
+        <div class="ms-label">Certified SNFs assessed — the complete Missouri universe</div>
+      </div>
+      <div class="ms-item">
+        <div class="ms-num">51<span>%</span></div>
+        <div class="ms-label">Classify High or Moderate-High exposure (249 facilities)</div>
+      </div>
+      <div class="ms-item">
+        <div class="ms-num">0.46</div>
+        <div class="ms-label">State mean RN hours/resident/day — 39% below the 0.75 benchmark</div>
+      </div>
+      <div class="ms-item">
+        <div class="ms-num">94<span>%</span></div>
+        <div class="ms-label">Report staffing above their payroll-verified figure</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ WHAT THIS IS ═══════ -->
+<section class="block">
+  <div class="wrap--narrow">
+    <div class="section-kicker">Method</div>
+    <h2>What this is — and what the classifications mean.</h2>
+    <p class="block-intro">
+      Inputs are exclusively public CMS data: health deficiency citations (F-tags), Five-Star ratings,
+      staffing measures, and enforcement records. The proprietary step is the transformation — regulatory
+      findings reclassified as neurological recognition-risk signals through the DSS Framework, crossed
+      with staffing. That derived variable exists in no public dataset.
+    </p>
+    <div class="method-note">
+      <strong>A "Recognized" condition</strong> means the pattern is established in the facility's public
+      CMS record at the disclosed threshold (≥2 relevant citations, or a defined enforcement or rating signal).
+      <strong>"Potential"</strong> means the signal is present below that threshold. These are
+      <strong>recognition-risk classifications</strong> — they characterize what the regulatory record shows
+      about a facility's documented capacity to recognize, document, and respond to the conditions under which
+      seizure activity in dementia residents is most often missed. They are <strong>not</strong> determinations
+      of care quality, <strong>not</strong> findings that seizure events occurred, and <strong>not</strong>
+      predictions about any resident.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ HEADLINE FINDINGS ═══════ -->
+<section class="block alt">
+  <div class="wrap">
+    <div class="section-kicker">Findings</div>
+    <h2>Ten headline findings.</h2>
+    <p class="block-intro">All figures computed from the assessment database on 2026-06-09.
+      Claim-level provenance appears in the appendix. Interpretive statements are labeled
+      <span class="tag-re">Re</span> — reasoned from the data, not independently verified.</p>
+
+    <div class="findings">
+      <div class="finding"><div class="f-num">1</div><div>
+        <div class="f-title">Half the state's SNF universe carries elevated exposure.</div>
+        <div class="f-body">249 of 487 facilities (<strong>51%</strong>) classify as High (28) or Moderate-High (221).
+        Only <strong>9 facilities (1.8%)</strong> classify Low — no high-risk condition active and no Recognized
+        condition of any kind in their CMS record.</div>
+      </div></div>
+
+      <div class="finding"><div class="f-num">2</div><div>
+        <div class="f-title">The fall–seizure nexus is the most prevalent Recognized condition in the state.</div>
+        <div class="f-body">225 facilities (<strong>46%</strong>) carry a Recognized C-1 (Fall-Seizure Nexus, F-689 ≥2 citations);
+        another 143 (29%) carry it as Potential. <strong>807 F-689 citations</strong> were counted statewide — the largest
+        citation volume of any tag in scope. <span class="tag-re">Re</span>Falls are the most visible surface of DSS
+        Domain 2; this prevalence indicates how large the population is in which seizure-precipitated falls could go unattributed.</div>
+      </div></div>
+
+      <div class="finding"><div class="f-num">3</div><div>
+        <div class="f-title">Professional-standards citations are nearly as widespread.</div>
+        <div class="f-body">173 facilities (<strong>36%</strong>) carry a Recognized C-3 (F-658, services must meet professional
+        standards; 639 citations statewide); 153 more carry it as Potential. <span class="tag-re">Re</span>F-658 is the
+        documentation-integrity signal: the condition under which subtle neurological events are least likely to be charted accurately.</div>
+      </div></div>
+
+      <div class="finding"><div class="f-num">4</div><div>
+        <div class="f-title">Staffing is below benchmark almost everywhere — RN coverage is the starkest gap.</div>
+        <div class="f-body"><strong>342 facilities (70%)</strong> report total nurse staffing below the 3.8 HPRD benchmark
+        (state mean 3.44). <strong>433 facilities (89%)</strong> report RN hours below the 0.75 benchmark — state mean
+        <strong>0.46, 39% below</strong>. <strong>275 facilities (56%)</strong> report turnover above 50% (state mean 56.4%).
+        <span class="tag-re">Re</span>Staffing is the moderating variable for every recognition-risk condition: recognizing
+        non-convulsive presentations requires sustained observation by clinically trained staff. The RN figure is the single
+        most consequential aggregate in this dataset.</div>
+      </div></div>
+
+      <div class="finding"><div class="f-num">5</div><div>
+        <div class="f-title">Self-reported staffing exceeds payroll-verified staffing at 94% of facilities.</div>
+        <div class="f-body">460 of 487 facilities report staffing above their payroll-based (PBJ) figure; at
+        <strong>241 facilities (49%)</strong> the gap is ≥0.38 HPRD (≥10% of benchmark). State means: 3.44 reported vs
+        3.04 payroll-verified. <strong>82 facilities</strong> combine a ≥10% over-report with a Recognized F-658 condition.
+        <span class="tag-re">Re</span>The reported-vs-PBJ gap is itself a documentation-integrity signal; its co-occurrence
+        with F-658 is consistent with — though does not establish — a broader records-reliability problem at those facilities.</div>
+      </div></div>
+
+      <div class="finding"><div class="f-num">6</div><div>
+        <div class="f-title">The highest-risk intersection: 150 facilities.</div>
+        <div class="f-body"><strong>150 facilities (31%)</strong> combine at least one Recognized high-risk condition with
+        total staffing below benchmark — the population where a documented recognition gap and the staffing conditions
+        that produce one coincide.</div>
+      </div></div>
+
+      <div class="finding"><div class="f-num">7</div><div>
+        <div class="f-title">Urban facilities classify elevated more often than rural — the opposite of the expected direction.</div>
+        <div class="f-body"><strong>56%</strong> of urban facilities (161/289) classify High or Moderate-High versus
+        <strong>44%</strong> of rural (88/198). <span class="tag-re">Re</span>The literature-informed expectation was that
+        rural facilities, with thinner clinical resources, would carry higher recognition risk. The reversal here is
+        unexplained and should not be read causally — candidate explanations include facility size, census, survey frequency,
+        and urban/rural citation-exposure differences. This is a research question, not a conclusion.</div>
+      </div></div>
+
+      <div class="finding"><div class="f-num">8</div><div>
+        <div class="f-title">Ownership structure separates the distribution.</div>
+        <div class="f-body">For-profit LLCs (178 facilities, the largest segment): <strong>62% elevated</strong>, mean 3.24 HPRD.
+        Non-profit corporations (62): <strong>40% elevated</strong>, mean 4.21 HPRD. Non-profit "other" (12): 17% elevated.
+        <span class="tag-re">Re</span>Ownership-linked staffing differences are well documented in the literature; the
+        DSS-classified exposure gradient observed here is consistent with that pattern. Segments under ~20 facilities are
+        too small to characterize.</div>
+      </div></div>
+
+      <div class="finding"><div class="f-num">9</div><div>
+        <div class="f-title">Enforcement context.</div>
+        <div class="f-body"><strong>18 facilities</strong> carry Special Focus designation status and <strong>64</strong> carry
+        a CMS abuse flag. 69 facilities (14%) classify Recognized on C-7 (enforcement); 172 (35%) Potential (≥1 civil
+        monetary penalty).</div>
+      </div></div>
+
+      <div class="finding"><div class="f-num">10</div><div>
+        <div class="f-title">Domain activity spans nearly the entire universe.</div>
+        <div class="f-body"><strong>475 facilities (97.5%)</strong> have at least one active Domain 3/4 condition — the
+        misattribution domains (awareness and behavioral changes). <strong>383 (79%)</strong> have at least one active
+        Domain 2 condition (movement/falls). Domain 1 (overt convulsive events) is structurally absent from this dataset
+        by design — CMS deficiency data cannot establish it (see Limitations).</div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ DISTRIBUTION TABLES ═══════ -->
+<section class="block">
+  <div class="wrap">
+    <div class="section-kicker">The Numbers</div>
+    <h2>Exposure distribution and condition prevalence.</h2>
+
+    <div class="two-col">
+      <div class="col-card">
+        <h3>Exposure distribution</h3>
+        <div class="tbl-wrap" style="margin-top:18px;">
+          <table>
+            <thead><tr><th>Level</th><th>Facilities</th><th>Share</th></tr></thead>
+            <tbody>
+              <tr><td><span class="lv lv-high">High</span></td><td class="num">28</td><td class="num">5.7%</td></tr>
+              <tr><td><span class="lv lv-mh">Moderate-High</span></td><td class="num">221</td><td class="num">45.4%</td></tr>
+              <tr><td><span class="lv lv-mod">Moderate</span></td><td class="num">229</td><td class="num">47.0%</td></tr>
+              <tr><td><span class="lv lv-low">Low</span></td><td class="num">9</td><td class="num">1.8%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:13px; color:var(--muted); margin-top:14px; line-height:1.6;">
+          High = ≥2 Recognized high-risk conditions. Moderate-High = 1 Recognized high-risk OR ≥3 active high-risk.
+          Moderate = ≥1 active high-risk condition, or any Recognized condition in any domain (floor rule).
+          Low = neither. High-risk conditions are those mapped to DSS Domains 3/4.
+        </p>
+      </div>
+      <div class="col-card">
+        <h3>Urban vs rural — the unexpected reversal</h3>
+        <div class="stat-pair">
+          <span class="stat-big orange">56%</span><span class="stat-vs">urban elevated (161 of 289)</span>
+        </div>
+        <div class="stat-pair">
+          <span class="stat-big">44%</span><span class="stat-vs">rural elevated (88 of 198)</span>
+        </div>
+        <p style="margin-top:16px; font-size:14px; color:var(--muted);">
+          <span class="tag-re">Re</span>Direction contradicts the literature-informed expectation.
+          Unexplained; treated as an open research question, not a finding.
+        </p>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Condition</th><th>Signal</th><th>Recognized</th><th>Potential</th><th>Not Identified</th><th>Not Assessed</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>C-1</strong> Fall-Seizure Nexus</td><td>F-689</td><td class="num">225</td><td class="num">143</td><td class="num">119</td><td class="num">0</td></tr>
+          <tr><td><strong>C-2</strong> Pharmacy / Medication</td><td>F-755</td><td class="num">44</td><td class="num">111</td><td class="num">332</td><td class="num">0</td></tr>
+          <tr><td><strong>C-3</strong> Professional Standards</td><td>F-658</td><td class="num">173</td><td class="num">153</td><td class="num">161</td><td class="num">0</td></tr>
+          <tr><td><strong>C-4</strong> Behavioral Health &amp; Competency</td><td>F-740/741</td><td class="num">15</td><td class="num">47</td><td class="num">425</td><td class="num">0</td></tr>
+          <tr><td><strong>C-5</strong> Five-Star Discrepancy</td><td>CMS ratings</td><td class="num">0</td><td class="num">38</td><td class="num">443</td><td class="num">6</td></tr>
+          <tr><td><strong>C-6</strong> Staffing Profile</td><td>CMS staffing</td><td class="num">0</td><td class="num">456</td><td class="num">15</td><td class="num">16</td></tr>
+          <tr><td><strong>C-7</strong> Enforcement</td><td>SFF / penalties</td><td class="num">69</td><td class="num">172</td><td class="num">246</td><td class="num">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="prov-note">
+      "Not Assessed" = the CMS data required to evaluate the condition was not published for that facility — distinct from
+      assessed-and-clean. C-6 is never Recognized by design (continuous data, not citations). C-5 Recognized requires a
+      ≥2-point rating discrepancy, which no Missouri facility currently shows.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════ SCOPE & LIMITATIONS ═══════ -->
+<section class="block alt">
+  <div class="wrap--narrow">
+    <div class="section-kicker">Scope, Methodology &amp; Limitations</div>
+    <h2>What this analysis cannot establish.</h2>
+    <p class="block-intro">
+      Sources: CMS Provider Data Catalog — datasets 4pq5-n9py (Provider Information), r5ix-sfxw (Health Deficiencies),
+      g6vv-u9sr (Penalties), retrieved 2026-06-08/09. No non-public data was used. No facility was contacted.
+      Classification rules are disclosed in full in the companion methodology document.
+    </p>
+    <div class="limits">
+      <div class="limit"><span class="limit-x">✗</span><span class="limit-text">
+        <strong>No seizure events are identified.</strong> CMS deficiency data records regulatory findings, not clinical
+        events. DSS Domain 1 (overt convulsive seizures) cannot be populated from this data and does not appear in these results.
+      </span></div>
+      <div class="limit"><span class="limit-x">✗</span><span class="limit-text">
+        <strong>Recognition risk is not care quality.</strong> A Recognized condition means a citation pattern exists in the
+        public record at the disclosed threshold. It is not a determination that any facility provides deficient care, and
+        the absence of conditions is not a certification of quality.
+      </span></div>
+      <div class="limit"><span class="limit-x">✗</span><span class="limit-text">
+        <strong>Citations are not time-weighted.</strong> Counts aggregate the CMS deficiency dataset's covered survey
+        cycles (approximately three) without date weighting.
+      </span></div>
+      <div class="limit"><span class="limit-x">✗</span><span class="limit-text">
+        <strong>Staffing figures are facility-reported except where noted.</strong> PBJ figures are payroll-derived;
+        RN hours have no published PBJ equivalent and are reported-only.
+      </span></div>
+      <div class="limit"><span class="limit-x">✗</span><span class="limit-text">
+        <strong>Aggregates conceal heterogeneity.</strong> Nothing in this summary supports an inference about any
+        individual facility.
+      </span></div>
+    </div>
+    <div class="method-note" style="margin-top:36px;">
+      <strong>Framework attribution.</strong> Classification logic: Dementia Seizure Spectrum™ Framework (Seagull Health).
+      The derived variable — regulatory deficiencies reclassified as neurological recognition-risk signals, crossed with
+      staffing — exists in no public dataset and is the analytical contribution of this work.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ PROVENANCE ═══════ -->
+<section class="block">
+  <div class="wrap--narrow">
+    <div class="section-kicker">Appendix</div>
+    <h2>Claim provenance.</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Claim</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td>487 facilities, 242 cities, urban/rural split</td><td><code>facility</code> table counts</td></tr>
+          <tr><td>Exposure distribution 28 / 221 / 229 / 9</td><td><code>assessment.exposure_level</code> GROUP BY</td></tr>
+          <tr><td>Condition prevalence table</td><td><code>condition</code> GROUP BY code × classification</td></tr>
+          <tr><td>Citation totals (807 F-689 · 639 F-658 · 219 F-755 · 94 F-740/741)</td><td>SUM(<code>source_count</code>) by citation value</td></tr>
+          <tr><td>Staffing means and below-benchmark counts</td><td><code>assessment</code> staffing fields vs 3.8 / 0.75 / 50%</td></tr>
+          <tr><td>Over-reporting (460; 241 ≥0.38 HPRD; 82 with Recognized F-658)</td><td><code>staffing_hprd</code> − <code>staffing_hprd_pbj</code> joined to C-3</td></tr>
+          <tr><td>150-facility intersection</td><td>Recognized high-risk JOIN staffing &lt;3.8</td></tr>
+          <tr><td>Urban/rural elevated % (56 vs 44)</td><td><code>facility.urban_flag</code> × exposure</td></tr>
+          <tr><td>Ownership gradient</td><td><code>assessment.ownership_type</code> GROUP BY</td></tr>
+          <tr><td>Enforcement (18 SFF · 64 abuse · 69/172 C-7)</td><td><code>assessment</code> flags; C-7 classifications</td></tr>
+          <tr><td>Domain activity (475 D3/4 · 383 D2)</td><td>DISTINCT assessments with active conditions by domain</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="prov-note">All queries executed against the Seagull Health assessment database on 2026-06-09.
+    Classification-rule changes affecting stored data are recorded in the project version history.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-brand">Seagull <span>Health</span></div>
+  <p class="foot-line">
+    Missouri SNF Universe — DSS Framework Findings Summary · Draft for internal validation ·
+    Aggregate patterns only · No facility is named in this document · © 2026 Seagull Health · seagullhealth.global
+  </p>
+  <p class="foot-tagline">The Dementia Seizure Spectrum™ is the clinical foundation. SeizureSafe™ is how you use it. CRISP™ is how we know.</p>
+</footer>
+
+</body>
+</html>
