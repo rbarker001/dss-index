@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>The Conditions for Missing a Silent Seizure — Missouri | Seagull Health</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange:      #ef7835;
+  --orange-dim:  #c4612a;
+  --orange-pale: #fff4ee;
+  --ink:         #0a1628;
+  --ink-mid:     #1e2f45;
+  --text:        #2d3f52;
+  --muted:       #6b7e92;
+  --bg:          #ffffff;
+  --surface:     #f6f8fb;
+  --border:      #e4eaf2;
+  --green:       #2da870;
+  --green-pale:  #edfaf4;
+  --red:         #d94f4f;
+  --red-pale:    #fef2f2;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:17px; line-height:1.7;
+  color:var(--text); background:var(--bg);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap { max-width:720px; margin:0 auto; padding:0 28px; }
+
+/* nav */
+nav {
+  position:sticky; top:0; z-index:100;
+  background:rgba(255,255,255,0.95); backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 28px; height:64px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.nav-brand-name { font-size:18px; font-weight:700; color:var(--ink); letter-spacing:-0.02em; text-decoration:none; }
+.nav-brand-name span { color:var(--orange); }
+.nav-tag {
+  font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--red); background:var(--red-pale); border:1px solid rgba(217,79,79,0.25);
+  padding:6px 14px; border-radius:20px;
+}
+.draft-banner {
+  background:var(--red-pale); border-bottom:1px solid rgba(217,79,79,0.25);
+  padding:9px 28px; text-align:center;
+  font-size:13px; font-weight:600; color:var(--red);
+}
+
+/* hero */
+#hero { background:var(--ink); padding:88px 0 80px; position:relative; overflow:hidden; }
+#hero::before {
+  content:''; position:absolute; inset:0;
+  background-image:radial-gradient(circle,rgba(255,255,255,0.025) 1px,transparent 1px);
+  background-size:28px 28px; pointer-events:none;
+}
+.hero-glow {
+  position:absolute; top:-100px; right:-150px; width:560px; height:560px;
+  background:radial-gradient(circle,rgba(239,120,53,0.12) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hero-inner { position:relative; z-index:1; max-width:720px; margin:0 auto; padding:0 28px; }
+.hero-kicker {
+  font-size:12px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--orange); margin-bottom:24px;
+}
+.hero-h1 {
+  font-size:clamp(34px,6vw,52px); font-weight:900; color:#fff;
+  letter-spacing:-0.035em; line-height:1.1; margin-bottom:24px;
+}
+.hero-h1 em { font-style:normal; color:var(--orange); }
+.hero-p {
+  font-size:19px; color:rgba(255,255,255,0.6); line-height:1.7; max-width:600px;
+}
+.hero-p strong { color:rgba(255,255,255,0.9); }
+
+/* story sections */
+section.story { padding:72px 0; border-bottom:1px solid var(--border); }
+section.story.alt { background:var(--surface); }
+.story-kicker {
+  font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--orange); margin-bottom:16px;
+  display:flex; align-items:center; gap:10px;
+}
+.story-kicker::before { content:''; width:20px; height:2px; background:var(--orange); }
+.story h2 {
+  font-size:clamp(24px,3.5vw,34px); font-weight:800; color:var(--ink);
+  letter-spacing:-0.025em; line-height:1.2; margin-bottom:20px;
+}
+.story p { margin-bottom:18px; }
+.story p:last-child { margin-bottom:0; }
+.story p strong { color:var(--ink); }
+
+/* big number blocks */
+.bignum-block {
+  margin:40px 0; padding:36px 32px;
+  background:#fff; border:1px solid var(--border); border-radius:16px;
+}
+.alt .bignum-block { background:#fff; }
+.bignum {
+  font-size:clamp(52px,9vw,84px); font-weight:900; color:var(--ink);
+  letter-spacing:-0.045em; line-height:1; margin-bottom:14px;
+}
+.bignum.orange { color:var(--orange); }
+.bignum-label { font-size:18px; font-weight:700; color:var(--ink); margin-bottom:10px; letter-spacing:-0.01em; }
+.bignum-text { font-size:15.5px; color:var(--muted); line-height:1.7; }
+
+/* minutes bar visual */
+.minbar { margin:24px 0 8px; }
+.minbar-row { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+.minbar-name { font-size:13px; font-weight:600; color:var(--muted); width:118px; flex-shrink:0; }
+.minbar-track { flex:1; height:30px; background:var(--surface); border-radius:6px; overflow:hidden; position:relative; }
+.minbar-fill {
+  height:100%; border-radius:6px; display:flex; align-items:center; justify-content:flex-end;
+  padding-right:10px; font-size:12px; font-weight:800; color:#fff;
+}
+.minbar-fill.bench { width:100%; background:var(--ink-mid); }
+.minbar-fill.actual { width:62%; background:var(--orange); }
+
+/* audience cards */
+.aud-grid { display:grid; grid-template-columns:1fr; gap:16px; margin-top:36px; }
+.aud-card {
+  background:#fff; border:1px solid var(--border); border-radius:14px; padding:26px 28px;
+}
+.aud-who { font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--orange); margin-bottom:8px; }
+.aud-title { font-size:17px; font-weight:700; color:var(--ink); margin-bottom:8px; letter-spacing:-0.01em; }
+.aud-text { font-size:15px; color:var(--muted); line-height:1.65; }
+
+/* what this isn't */
+.isnt {
+  background:var(--orange-pale); border:1px solid rgba(239,120,53,0.25);
+  border-left:3px solid var(--orange); border-radius:12px;
+  padding:26px 28px; margin-top:36px;
+  font-size:15.5px; line-height:1.75;
+}
+.isnt strong { color:var(--ink); }
+
+/* links */
+.next-links { display:flex; flex-direction:column; gap:12px; margin-top:36px; }
+.next-link {
+  display:flex; justify-content:space-between; align-items:center; gap:16px;
+  background:#fff; border:1px solid var(--border); border-radius:12px;
+  padding:20px 24px; text-decoration:none; transition:border-color 0.2s;
+}
+.next-link:hover { border-color:var(--orange); }
+.next-link-title { font-size:15.5px; font-weight:700; color:var(--ink); }
+.next-link-sub { font-size:13px; color:var(--muted); margin-top:2px; }
+.next-link-arrow { color:var(--orange); font-size:20px; font-weight:700; flex-shrink:0; }
+
+footer { background:var(--ink); padding:40px 28px; text-align:center; }
+.foot-brand { font-size:16px; font-weight:700; color:#fff; margin-bottom:6px; }
+.foot-brand span { color:var(--orange); }
+.foot-line { font-size:12.5px; color:rgba(255,255,255,0.38); line-height:1.8; max-width:560px; margin:0 auto; }
+.foot-tagline { font-size:12px; color:rgba(255,255,255,0.3); font-style:italic; margin-top:14px; }
+
+@media (max-width:640px){
+  section.story { padding:56px 0; }
+  .bignum-block { padding:28px 22px; }
+}
+@media print { *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;} nav{position:static;} }
+</style>
+</head>
+<body>
+
+<div class="draft-banner">DRAFT — INTERNAL VALIDATION ONLY · Not for publication until reviewed</div>
+
+<nav>
+  <a class="nav-brand-name" href="#">Seagull <span>Health</span></a>
+  <div class="nav-tag">Draft · Internal</div>
+</nav>
+
+<!-- ═══════ HERO: THE HOOK ═══════ -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-kicker">Missouri · 487 Nursing Homes · Public Data</div>
+    <h1 class="hero-h1">Most seizures in dementia are <em>silent</em>.<br>We measured how easy they are to miss.</h1>
+    <p class="hero-p">
+      Up to 40% of seizures in people with dementia produce no convulsions — they look like a blank stare,
+      sudden confusion, an agitated evening. Catching one takes <strong>a trained eye, watching closely,
+      with time to write down what they saw.</strong> So we asked a simple question: how often do those
+      conditions actually exist?
+    </p>
+  </div>
+</section>
+
+<!-- ═══════ WHAT WE DID ═══════ -->
+<section class="story">
+  <div class="wrap">
+    <div class="story-kicker">What We Did</div>
+    <h2>Every nursing home in Missouri, one clinical lens.</h2>
+    <p>We took the <strong>public inspection records</strong> for all 487 certified nursing homes in
+    Missouri — the same CMS data anyone can look up — and screened them through the
+    <strong>Dementia Seizure Spectrum™ Framework</strong>, a clinical taxonomy for how seizures actually
+    present in dementia.</p>
+    <p>The screening looks for <strong>warning conditions</strong>: repeat citations for the failures that
+    let subtle neurological events slip past — accident prevention, medication management, professional
+    documentation standards, behavioral-health staff training — plus the staffing levels that determine
+    whether anyone is watching closely enough to notice.</p>
+    <p>No facility was visited. No facility is named. The rules are fixed and disclosed — the same
+    test, applied the same way, to every building in the state.</p>
+  </div>
+</section>
+
+<!-- ═══════ THE NUMBERS ═══════ -->
+<section class="story alt">
+  <div class="wrap">
+    <div class="story-kicker">What the Public Record Shows</div>
+    <h2>Four numbers tell the story.</h2>
+
+    <div class="bignum-block">
+      <div class="bignum">9 <span style="font-size:0.4em; color:var(--muted); font-weight:700;">of 487</span></div>
+      <div class="bignum-label">Facilities with a clean screen.</div>
+      <div class="bignum-text">Just 9 nursing homes in Missouri show none of the warning conditions —
+      no repeat citations in any screened category, staffing at benchmark, no enforcement flags.
+      The other 478 carry at least one.</div>
+    </div>
+
+    <div class="bignum-block">
+      <div class="bignum orange">28 <span style="font-size:0.4em; font-weight:700;">minutes</span></div>
+      <div class="bignum-label">Average registered-nurse time per resident, per day.</div>
+      <div class="bignum-text">The national benchmark is 45 minutes. The RN is the trained eye most likely
+      to recognize a silent seizure for what it is — and on average, that eye has 28 minutes per resident
+      per day. Nine out of ten Missouri facilities fall below the benchmark.</div>
+      <div class="minbar">
+        <div class="minbar-row">
+          <div class="minbar-name">Benchmark</div>
+          <div class="minbar-track"><div class="minbar-fill bench">45 min</div></div>
+        </div>
+        <div class="minbar-row">
+          <div class="minbar-name">Missouri average</div>
+          <div class="minbar-track"><div class="minbar-fill actual">28 min</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bignum-block">
+      <div class="bignum">56<span style="font-size:0.5em;">%</span></div>
+      <div class="bignum-label">The trained eye keeps leaving.</div>
+      <div class="bignum-text">At more than half of Missouri facilities, nursing staff turnover exceeds
+      50% a year. Recognizing that a resident's blank stare is <em>new</em> — different from last month —
+      requires staff who knew the resident last month.</div>
+    </div>
+
+    <div class="bignum-block">
+      <div class="bignum">46<span style="font-size:0.5em;">%</span></div>
+      <div class="bignum-label">Cited repeatedly for failing to prevent accidents and falls.</div>
+      <div class="bignum-text">Nearly half the state's facilities carry two or more citations in the
+      accident-prevention category. Why that matters here: an unwitnessed fall is one of the most common
+      ways a missed seizure shows up in a chart — recorded as the injury, not the event that caused it.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ WHAT IT MEANS ═══════ -->
+<section class="story">
+  <div class="wrap">
+    <div class="story-kicker">Why It Matters</div>
+    <h2>The conditions for missing a silent seizure aren't rare. They're the norm.</h2>
+    <p>None of this says any facility missed a seizure. What it says is that the
+    <strong>conditions under which silent seizures go unrecognized</strong> — thin RN coverage, high
+    turnover, documented gaps in the practices that catch subtle events — are present, in the public
+    record, across nearly the entire state.</p>
+
+    <div class="aud-grid">
+      <div class="aud-card">
+        <div class="aud-who">If you have a parent in care</div>
+        <div class="aud-title">You now have better questions to ask.</div>
+        <div class="aud-text">"Has staff been trained to recognize seizures that don't look like seizures?
+        What happens when a resident has an unexplained episode — who evaluates it, and what gets written down?"</div>
+      </div>
+      <div class="aud-card">
+        <div class="aud-who">If you operate or work in aging care</div>
+        <div class="aud-title">The gap is trainable.</div>
+        <div class="aud-text">Staff aren't failing — they were never taught that a blank stare can be a
+        neurological event. A recognition framework and a documentation protocol close most of this gap
+        without a single new hire.</div>
+      </div>
+      <div class="aud-card">
+        <div class="aud-who">If you invest in senior housing</div>
+        <div class="aud-title">This risk is visible before close.</div>
+        <div class="aud-text">Every warning condition in this analysis came from public data that exists
+        for every facility in the country — which means it can be screened before capital is committed,
+        not discovered after.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ WHAT THIS ISN'T ═══════ -->
+<section class="story alt">
+  <div class="wrap">
+    <div class="story-kicker">Honest Boundaries</div>
+    <h2>What this is — and what it isn't.</h2>
+    <p><strong>It is</strong> a screening of public regulatory records through a disclosed clinical framework,
+    reported only in aggregate.</p>
+    <div class="isnt">
+      <strong>It is not</strong> a finding that any facility missed a seizure — public inspection data can't
+      establish that. <strong>It is not</strong> a judgment of any facility's care, and no facility is named.
+      <strong>It is not</strong> a reason to panic about a loved one's facility — it's a reason to ask better
+      questions. The full methodology, including everything this analysis cannot establish, is published
+      openly. That's the point of a standard: anyone can check the work.
+    </div>
+
+    <div class="next-links">
+      <a class="next-link" href="missouri-202606.html">
+        <div>
+          <div class="next-link-title">Read the full findings &amp; methodology</div>
+          <div class="next-link-sub">All ten findings, complete tables, classification rules, limitations, and claim provenance</div>
+        </div>
+        <div class="next-link-arrow">→</div>
+      </a>
+      <a class="next-link" href="https://seagullhealth.global/dss-framework.html">
+        <div>
+          <div class="next-link-title">Explore the DSS Framework</div>
+          <div class="next-link-sub">The four-domain clinical taxonomy behind the screen</div>
+        </div>
+        <div class="next-link-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-brand">Seagull <span>Health</span></div>
+  <p class="foot-line">
+    Missouri is the first state. The framework is built to run on all of them.<br>
+    Draft for internal validation · Aggregate patterns only · No facility named · © 2026 Seagull Health · seagullhealth.global
+  </p>
+  <p class="foot-tagline">The Dementia Seizure Spectrum™ is the clinical foundation. SeizureSafe™ is how you use it. CRISP™ is how we know.</p>
+</footer>
+
+</body>
+</html>
