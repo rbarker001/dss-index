@@ -49,6 +49,19 @@ function certify(count) {
   return 'Not Identified';
 }
 
+// Parse a CMS field to a number, returning null only when the value is
+// genuinely missing or non-numeric. Unlike `parseFloat(x) || null`, this
+// preserves a real 0 (e.g. 0% turnover) instead of collapsing it to "no data".
+function num(x) {
+  const n = parseFloat(x);
+  return Number.isFinite(n) ? n : null;
+}
+
+function int(x) {
+  const n = parseInt(x, 10);
+  return Number.isFinite(n) ? n : null;
+}
+
 function buildAssessmentId(state, ccn) {
   const now  = new Date();
   const year = now.getFullYear();
@@ -57,12 +70,12 @@ function buildAssessmentId(state, ccn) {
 }
 
 function classifyFacility(assessmentId, provider, tagCounts, penaltyCount) {
-  const overall  = parseFloat(provider.overall_rating)           || null;
-  const health   = parseFloat(provider.health_inspection_rating) || null;
-  const hprd    = parseFloat(provider.reported_total_nurse_staffing_hours_per_resident_per_day)         || null;
-  const hprdPbj = parseFloat(provider.total_number_of_nurse_staff_hours_per_resident_per_day_on_t_4a14) || null;
-  const rnHprd  = parseFloat(provider.reported_rn_staffing_hours_per_resident_per_day)                  || null;
-  const turnover = parseFloat(provider.total_nursing_staff_turnover) || null;
+  const overall  = num(provider.overall_rating);
+  const health   = num(provider.health_inspection_rating);
+  const hprd    = num(provider.reported_total_nurse_staffing_hours_per_resident_per_day);
+  const hprdPbj = num(provider.total_number_of_nurse_staff_hours_per_resident_per_day_on_t_4a14);
+  const rnHprd  = num(provider.reported_rn_staffing_hours_per_resident_per_day);
+  const turnover = num(provider.total_nursing_staff_turnover);
   const specialFocus = provider.special_focus_status &&
                        provider.special_focus_status !== 'Not a Candidate' &&
                        provider.special_focus_status !== '';
@@ -231,10 +244,10 @@ function classifyFacility(assessmentId, provider, tagCounts, penaltyCount) {
     city:               provider.citytown || null,
     zip_code:           provider.zip_code || null,
     urban_flag:         provider.urban || null,
-    latitude:           parseFloat(provider.latitude)  || null,
-    longitude:          parseFloat(provider.longitude) || null,
+    latitude:           num(provider.latitude),
+    longitude:          num(provider.longitude),
     care_type:          'SNF',
-    licensed_beds:      parseInt(provider.number_of_certified_beds) || null,
+    licensed_beds:      int(provider.number_of_certified_beds),
     source_system:      'CMS',
     source_facility_id: provider.cms_certification_number_ccn
   };
@@ -245,10 +258,10 @@ function classifyFacility(assessmentId, provider, tagCounts, penaltyCount) {
     assessment_date:         new Date().toISOString().split('T')[0],
     market:                  null,
     exposure_level:          exposureLevel,
-    overall_rating:          overall  !== null ? parseInt(overall)  : null,
-    health_inspection_rating: health  !== null ? parseInt(health)   : null,
-    qm_rating:               parseFloat(provider.qm_rating)      || null,
-    staffing_rating:         parseFloat(provider.staffing_rating) || null,
+    overall_rating:          overall !== null ? Math.trunc(overall) : null,
+    health_inspection_rating: health !== null ? Math.trunc(health)  : null,
+    qm_rating:               num(provider.qm_rating),
+    staffing_rating:         num(provider.staffing_rating),
     staffing_hprd:           hprd,
     staffing_hprd_pbj:       hprdPbj,
     rn_hprd:                 rnHprd,
