@@ -44,7 +44,7 @@ All figures computed from the assessment database on 2026-06-09. Provenance for 
 **7. Urban facilities screen elevated more often than rural — the opposite of the expected direction.**
 56% of urban facilities (161/289) screen High or Moderate-High versus 44% of rural (88/198). [Re] Literature-informed expectation was that rural facilities, with thinner clinical resources, would carry higher recognition risk. The reversal in this dataset is unexplained and should not be interpreted causally: candidate explanations include facility size, census, survey-frequency differences, and citation-exposure differences between urban and rural surveys. This is a research question, not a conclusion.
 
-**8. For-profit facilities screen elevated more often than non-profits.**
+**8. Exposure differs by ownership type.**
 For-profit LLCs (178 facilities — the largest segment): 62% elevated, mean 3.24 HPRD. Non-profit corporations (62 facilities): 40% elevated, mean 4.21 HPRD. The non-profit "other" segment (12 facilities): 17% elevated. [Re] Ownership-linked staffing differences are well documented in the literature; the DSS-classified exposure gradient observed here is consistent with that pattern. Segment sizes below ~20 facilities are too small to characterize.
 
 **9. Enforcement flags: 18 Special Focus facilities, 64 abuse flags.**
