@@ -6,6 +6,7 @@ const { listFacilitiesByState,
         getFacilityRawData }            = require('./services/cms');
 const { classifyFacility,
         buildAssessmentId }             = require('./services/classifier');
+const { writeDump }                     = require('./db/dump');
 
 const DELAY_MS = 200;
 
@@ -74,6 +75,9 @@ async function main() {
   console.log('');
 
   db.close();
+
+  // Keep the version-controllable SQL dump current after any change.
+  if (written > 0) writeDump();
 }
 
 function writeAssessment(db, facilityRow, assessmentRow, conditionRows, gapRows) {
