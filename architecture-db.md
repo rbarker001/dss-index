@@ -76,6 +76,17 @@ The gap between `staffing_hprd` and `staffing_hprd_pbj` is itself an analytical 
 
 ## Classification Rules (SNF)
 
+### Classification vocabulary
+
+Four states, not three. The distinction between the last two is deliberate:
+
+- **Recognized** — finding confirmed at the threshold.
+- **Potential** — finding present below the confirmation threshold.
+- **Not Identified** — assessed against the data and found clean.
+- **Not Assessed** — the CMS data required to evaluate the condition was missing.
+
+"Not Identified" and "Not Assessed" are different claims. For a risk product, "we checked and it's clean" must not be conflated with "we couldn't check." Only Recognized and Potential are *active* findings; Not Assessed contributes nothing to exposure (the same as Not Identified) but is queryable as a distinct data-completeness signal. Currently only C-5 and C-6 can be Not Assessed (the F-tag and enforcement datasets return counts, defaulting to 0 = assessed-clean).
+
 ### F-tag conditions (C-1 to C-4)
 
 Threshold: ≥2 citations = Recognized · 1 citation = Potential · 0 = Not Identified
@@ -88,11 +99,15 @@ C-4 combines F-740 + F-741 citation counts before applying the threshold.
 - diff ≥ 2 → Recognized
 - diff = 1 → Potential
 - diff ≤ 0 → Not Identified
+- overall or health rating missing → Not Assessed
 
 ### Staffing (C-6)
 
-Always Potential (never Recognized) — staffing is continuous data, not a citation count.
-Triggers: `staffing_hprd < 3.8` OR `rn_hprd < 0.75` OR `nursing_turnover_pct > 50`
+Never Recognized — staffing is continuous data, not a citation count.
+- below benchmark → Potential. Triggers: `staffing_hprd < 3.8` OR `rn_hprd < 0.75` OR `nursing_turnover_pct > 50`
+- at/above benchmark (any figure present) → Not Identified
+- all three figures missing → Not Assessed (partial data still permits assessment)
+
 Benchmarks: 3.8 total HPRD (national), 0.75 RN HPRD (national), 50% turnover (national avg).
 
 ### Enforcement (C-7)
@@ -141,7 +156,7 @@ Written for every SNF assessment regardless of condition findings:
 
 ```
 node run-city.js "Kansas City" MO        # city run
-node run-state.js MO                     # state run (not yet built)
+node run-state.js MO                     # state run
          │
          ├─ listFacilitiesByCity(city, state)   — city
          │   OR listFacilitiesByState(state)    — state
@@ -157,7 +172,7 @@ node run-state.js MO                     # state run (not yet built)
               │    ├─ exposure level
               │    └─ DG-1 to DG-5 standard gaps
               │
-              └─ writeAssessment(db, ...) — single SQLite transaction
+              └─ writeAssessment(...) — db/write.js, single SQLite transaction
                    ├─ INSERT/upsert facility row
                    ├─ INSERT assessment row (with both staffing fields)
                    ├─ INSERT 7 condition rows
@@ -166,7 +181,7 @@ node run-state.js MO                     # state run (not yet built)
 
 Re-runs skip any CCN already in the database. Delete `dsca.db` to start fresh.
 
-**Missouri scale estimate:** 487 SNFs × ~7 sec/facility = ~57 minutes at current 300ms delay. `run-state.js` not yet built.
+**Missouri scale estimate:** 487 SNFs × ~7 sec/facility = ~57 minutes at current 300ms delay. After a run that writes new rows, `db/dump.sql` is regenerated automatically (see `db/dump.js`).
 
 ---
 

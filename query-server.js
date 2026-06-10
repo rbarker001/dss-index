@@ -39,7 +39,7 @@ app.get('/api/queries', (req, res) => {
 
 // ── Run a query ────────────────────────────────────────────────────────────
 app.post('/api/run', (req, res) => {
-  const { id, facility } = req.body;
+  const { id } = req.body;
   const query = QUERIES.find(q => q.id === id);
   if (!query) return res.status(404).json({ error: 'Query not found' });
 

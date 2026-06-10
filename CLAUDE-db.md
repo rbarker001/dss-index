@@ -86,8 +86,10 @@ node query-server.js
 | C-7 | Special Focus / Enforcement | CMS Enforcement | — | — |
 
 **Classification thresholds:** ≥2 citations = Recognized · 1 citation = Potential · 0 = Not Identified
-**Staffing (C-6):** Potential if HPRD < 3.8 OR RN HPRD < 0.75 OR turnover > 50%
-**Five-Star (C-5):** Recognized if overall − health ≥ 2 · Potential if diff = 1
+**Staffing (C-6):** Potential if HPRD < 3.8 OR RN HPRD < 0.75 OR turnover > 50% · Not Assessed if all three figures missing
+**Five-Star (C-5):** Recognized if overall − health ≥ 2 · Potential if diff = 1 · Not Assessed if either rating missing
+
+**Four classification states:** Recognized · Potential · Not Identified (assessed clean) · Not Assessed (data missing). The last two are distinct: "checked and clean" ≠ "couldn't check". Only Recognized/Potential are active findings. Only C-5/C-6 can be Not Assessed.
 
 ---
 

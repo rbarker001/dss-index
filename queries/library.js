@@ -71,7 +71,7 @@ const QUERIES = [
              COUNT(DISTINCT f.facility_id)                                                          AS facilities,
              SUM(CASE WHEN c.dss_domain IN (3,4) AND c.classification = 'Recognized' THEN 1 ELSE 0 END) AS recognized_domain34,
              SUM(CASE WHEN c.dss_domain IN (3,4) AND c.classification = 'Potential'  THEN 1 ELSE 0 END) AS potential_domain34,
-             SUM(CASE WHEN c.dss_domain = 2       AND c.classification != 'Not Identified' THEN 1 ELSE 0 END) AS active_domain2
+             SUM(CASE WHEN c.dss_domain = 2       AND c.classification IN ('Recognized', 'Potential') THEN 1 ELSE 0 END) AS active_domain2
       FROM facility f
       JOIN assessment a ON f.facility_id = a.facility_id
       JOIN condition c  ON c.assessment_id = a.assessment_id
@@ -329,7 +329,7 @@ const QUERIES = [
     id: 'condition_breakdown',
     category: 'Condition Analysis',
     title: 'Condition classification breakdown — all conditions',
-    description: 'Recognized / Potential / Not Identified for every condition across all facilities. Click a row to see which facilities carry that condition.',
+    description: 'Recognized / Potential / Not Identified / Not Assessed for every condition across all facilities. Not Assessed = the CMS data needed to evaluate the condition was missing (distinct from assessed-clean). Click a row to see which facilities carry that condition.',
     drilldown: {
       paramCol: 'condition_code',
       title: '{value} — active facilities',
@@ -339,7 +339,7 @@ const QUERIES = [
         FROM condition c
         JOIN assessment a ON c.assessment_id = a.assessment_id
         JOIN facility f   ON a.facility_id   = f.facility_id
-        WHERE c.condition_code = ? AND c.classification != 'Not Identified'
+        WHERE c.condition_code = ? AND c.classification IN ('Recognized', 'Potential')
         ORDER BY CASE c.classification WHEN 'Recognized' THEN 1 ELSE 2 END, f.name`
     },
     sql: `
@@ -347,6 +347,7 @@ const QUERIES = [
              SUM(CASE WHEN classification = 'Recognized'     THEN 1 ELSE 0 END) AS recognized,
              SUM(CASE WHEN classification = 'Potential'      THEN 1 ELSE 0 END) AS potential,
              SUM(CASE WHEN classification = 'Not Identified' THEN 1 ELSE 0 END) AS not_identified,
+             SUM(CASE WHEN classification = 'Not Assessed'   THEN 1 ELSE 0 END) AS not_assessed,
              COUNT(*) AS total_facilities
       FROM condition
       GROUP BY condition_code, condition_name
@@ -366,7 +367,7 @@ const QUERIES = [
         FROM condition c
         JOIN assessment a ON c.assessment_id = a.assessment_id
         JOIN facility f   ON a.facility_id   = f.facility_id
-        WHERE c.dss_domain = ? AND c.classification != 'Not Identified'
+        WHERE c.dss_domain = ? AND c.classification IN ('Recognized', 'Potential')
         ORDER BY CASE c.classification WHEN 'Recognized' THEN 1 ELSE 2 END, f.name`
     },
     sql: `
@@ -375,7 +376,7 @@ const QUERIES = [
              SUM(CASE WHEN classification = 'Recognized' THEN 1 ELSE 0 END) AS recognized,
              SUM(CASE WHEN classification = 'Potential'  THEN 1 ELSE 0 END) AS potential
       FROM condition
-      WHERE classification != 'Not Identified' AND dss_domain IS NOT NULL
+      WHERE classification IN ('Recognized', 'Potential') AND dss_domain IS NOT NULL
       GROUP BY dss_domain
       ORDER BY dss_domain`
   },
@@ -410,7 +411,7 @@ const QUERIES = [
       FROM condition c
       JOIN assessment a ON c.assessment_id = a.assessment_id
       JOIN facility f   ON a.facility_id   = f.facility_id
-      WHERE c.source_citation_value = 'F-689' AND c.classification != 'Not Identified'
+      WHERE c.source_citation_value = 'F-689' AND c.classification IN ('Recognized', 'Potential')
       ORDER BY c.source_count DESC, c.classification`
   },
   {
@@ -424,7 +425,7 @@ const QUERIES = [
       FROM condition c
       JOIN assessment a ON c.assessment_id = a.assessment_id
       JOIN facility f   ON a.facility_id   = f.facility_id
-      WHERE c.dss_domain IN (3, 4) AND c.classification != 'Not Identified'
+      WHERE c.dss_domain IN (3, 4) AND c.classification IN ('Recognized', 'Potential')
       ORDER BY CASE c.classification WHEN 'Recognized' THEN 1 ELSE 2 END,
                c.condition_code, f.name`
   },
@@ -473,7 +474,7 @@ const QUERIES = [
     sql: `
       SELECT source_citation_value AS ftag,
              SUM(COALESCE(source_count, 0)) AS total_citations,
-             SUM(CASE WHEN classification != 'Not Identified' THEN 1 ELSE 0 END) AS facilities_with_any,
+             SUM(CASE WHEN classification IN ('Recognized', 'Potential') THEN 1 ELSE 0 END) AS facilities_with_any,
              SUM(CASE WHEN classification = 'Recognized'      THEN 1 ELSE 0 END) AS recognized
       FROM condition
       WHERE source_citation_type = 'CMS F-tag'
@@ -508,7 +509,7 @@ const QUERIES = [
       FROM condition c
       JOIN assessment a ON c.assessment_id = a.assessment_id
       JOIN facility f   ON a.facility_id   = f.facility_id
-      WHERE c.recognition_risk = 'High' AND c.classification != 'Not Identified'
+      WHERE c.recognition_risk = 'High' AND c.classification IN ('Recognized', 'Potential')
       GROUP BY f.name, a.exposure_level
       ORDER BY high_risk_active DESC, f.name`
   },
@@ -565,7 +566,7 @@ const QUERIES = [
       SELECT a.ownership_type,
              COUNT(DISTINCT a.assessment_id)                                           AS facilities,
              ROUND(AVG(a.staffing_hprd), 2)                                            AS avg_hprd,
-             SUM(CASE WHEN c.dss_domain = 2 AND c.classification != 'Not Identified' THEN 1 ELSE 0 END) AS active_domain2,
+             SUM(CASE WHEN c.dss_domain = 2 AND c.classification IN ('Recognized', 'Potential') THEN 1 ELSE 0 END) AS active_domain2,
              SUM(CASE WHEN c.dss_domain IN (3,4) AND c.classification = 'Recognized' THEN 1 ELSE 0 END) AS recognized_domain34,
              SUM(CASE WHEN c.dss_domain IN (3,4) AND c.classification = 'Potential'  THEN 1 ELSE 0 END) AS potential_domain34
       FROM assessment a

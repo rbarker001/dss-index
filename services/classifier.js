@@ -163,8 +163,10 @@ function classifyFacility(assessmentId, provider, tagCounts, penaltyCount) {
       ? `${diff}-point negative discrepancy: health inspection ${health}/5 vs overall ${overall}/5.`
       : `No discrepancy; health inspection ${health}/5 at or above overall ${overall}/5.`;
   } else {
+    // Ratings absent — distinct from a measured non-discrepancy. We could not
+    // evaluate this condition, which is not the same as evaluating it clean.
     c5count = null;
-    c5classification = 'Not Identified';
+    c5classification = 'Not Assessed';
     c5desc = 'Five-Star ratings not available.';
   }
   const C5 = {
@@ -184,7 +186,10 @@ function classifyFacility(assessmentId, provider, tagCounts, penaltyCount) {
   const belowHprd    = hprd     !== null && hprd     < HPRD_BENCHMARK;
   const belowRn      = rnHprd   !== null && rnHprd   < RN_HPRD_BENCHMARK;
   const highTurnover = turnover !== null && turnover > TURNOVER_BENCHMARK;
-  const staffingBelow = belowHprd || belowRn || highTurnover;
+  const staffingBelow   = belowHprd || belowRn || highTurnover;
+  // No staffing figures at all — cannot be assessed, as opposed to assessed
+  // and found at/above benchmark. Partial data still permits assessment.
+  const staffingMissing = hprd === null && rnHprd === null && turnover === null;
   const staffingParts = [];
   if (hprd     !== null) staffingParts.push(`${hprd} hrs/resident/day (benchmark ${HPRD_BENCHMARK})`);
   if (rnHprd   !== null) staffingParts.push(`${rnHprd} RN hrs (benchmark ${RN_HPRD_BENCHMARK})`);
@@ -192,7 +197,7 @@ function classifyFacility(assessmentId, provider, tagCounts, penaltyCount) {
   const C6 = {
     condition_code:       'C-6',
     condition_name:       'Staffing Profile',
-    classification:       staffingBelow ? 'Potential' : 'Not Identified',
+    classification:       staffingMissing ? 'Not Assessed' : staffingBelow ? 'Potential' : 'Not Identified',
     dss_domain:           3,
     dss_domain_secondary: 4,
     recognition_risk:     'High',
@@ -227,7 +232,9 @@ function classifyFacility(assessmentId, provider, tagCounts, penaltyCount) {
   const conditions = [C1, C2, C3, C4, C5, C6, C7];
 
   // ── Exposure level ────────────────────────────────────────────────────────
-  const active          = conditions.filter(c => c.classification !== 'Not Identified');
+  // "Active" = an actual finding. Not Identified (assessed clean) and
+  // Not Assessed (no data) both contribute nothing to exposure.
+  const active          = conditions.filter(c => c.classification === 'Recognized' || c.classification === 'Potential');
   const highRisk        = active.filter(c => c.recognition_risk === 'High');
   const highRecognized  = highRisk.filter(c => c.classification === 'Recognized');
   let exposureLevel;
