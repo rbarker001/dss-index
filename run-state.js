@@ -49,11 +49,11 @@ async function main() {
         continue;
       }
 
-      const { tagCounts, penaltyCount } = await getFacilityRawData(ccn);
+      const { tagCounts, penaltyCount, citations } = await getFacilityRawData(ccn);
       const { facilityRow, assessmentRow, conditionRows, gapRows } =
         classifyFacility(assessmentId, provider, tagCounts, penaltyCount);
 
-      writeAssessment(facilityRow, assessmentRow, conditionRows, gapRows);
+      writeAssessment(facilityRow, assessmentRow, conditionRows, gapRows, citations);
       written++;
 
       process.stdout.write(

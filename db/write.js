@@ -33,11 +33,16 @@ function createWriter(db) {
     insertGap: db.prepare(`
       INSERT INTO data_gap (assessment_id, gap_code, materiality, availability, record_needed, absence_implication)
       VALUES (?, ?, ?, ?, ?, ?)
+    `),
+    insertCitation: db.prepare(`
+      INSERT INTO citation (assessment_id, source_citation_type, source_citation_value, citation_date, severity_code, survey_type, inspection_cycle)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `)
   };
 
   // db.transaction() returns a function that runs the body atomically.
-  const writeAssessment = db.transaction((facilityRow, assessmentRow, conditionRows, gapRows) => {
+  // citationRows is optional for backward compatibility.
+  const writeAssessment = db.transaction((facilityRow, assessmentRow, conditionRows, gapRows, citationRows) => {
     // Upsert facility — reuse the existing row if this CCN is already known.
     const existing = stmts.selectFacility.get('CMS', facilityRow.source_facility_id);
     const facilityId = existing
@@ -76,6 +81,14 @@ function createWriter(db) {
         assessmentRow.assessment_id,
         g.gap_code, g.materiality, g.availability,
         g.record_needed, g.absence_implication
+      );
+    }
+
+    for (const c of (citationRows || [])) {
+      stmts.insertCitation.run(
+        assessmentRow.assessment_id,
+        c.source_citation_type, c.source_citation_value,
+        c.citation_date, c.severity_code, c.survey_type, c.inspection_cycle
       );
     }
   });

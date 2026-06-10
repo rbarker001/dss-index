@@ -61,6 +61,21 @@ CREATE TABLE IF NOT EXISTS condition (
     created_at              TEXT DEFAULT (datetime('now'))
 );
 
+-- One row per source-record citation backing the condition counts.
+-- Source-system specifics (F-tags, CMS severity letters, inspection cycles)
+-- are values, not structure — a UK CQC finding fits the same columns.
+CREATE TABLE IF NOT EXISTS citation (
+    citation_id             INTEGER PRIMARY KEY,
+    assessment_id           TEXT NOT NULL REFERENCES assessment(assessment_id),
+    source_citation_type    TEXT,    -- e.g. 'CMS F-tag'
+    source_citation_value   TEXT,    -- e.g. 'F-689'
+    citation_date           TEXT,    -- survey date (ISO)
+    severity_code           TEXT,    -- e.g. CMS scope/severity letter A-L
+    survey_type             TEXT,    -- e.g. 'Health', 'Complaint'
+    inspection_cycle        INTEGER, -- source-system cycle number if published
+    created_at              TEXT DEFAULT (datetime('now'))
+);
+
 CREATE TABLE IF NOT EXISTS data_gap (
     gap_id              INTEGER PRIMARY KEY,
     assessment_id       TEXT NOT NULL REFERENCES assessment(assessment_id),
@@ -95,3 +110,6 @@ CREATE INDEX IF NOT EXISTS idx_condition_assessment  ON condition(assessment_id)
 CREATE INDEX IF NOT EXISTS idx_condition_domain      ON condition(dss_domain);
 CREATE INDEX IF NOT EXISTS idx_assessment_facility   ON assessment(facility_id);
 CREATE INDEX IF NOT EXISTS idx_gap_assessment        ON data_gap(assessment_id);
+CREATE INDEX IF NOT EXISTS idx_citation_assessment   ON citation(assessment_id);
+CREATE INDEX IF NOT EXISTS idx_citation_value        ON citation(source_citation_value);
+CREATE INDEX IF NOT EXISTS idx_citation_date         ON citation(citation_date);

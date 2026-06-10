@@ -86,6 +86,7 @@ Currently **local-only** — no remote configured. Add a private GitHub remote f
 | `facility` | Real-world facility | name, region, city, zip_code, urban_flag, latitude, longitude, care_type, source_system, source_facility_id |
 | `assessment` | DSCA run | exposure_level, Five-Star, staffing_hprd, staffing_hprd_pbj, rn_hprd, turnover, ownership_type |
 | `condition` | Condition found | classification, dss_domain, dss_domain_secondary, recognition_risk, source_citation_value, source_count |
+| `citation` | Individual source citation | source_citation_value (F-tag), citation_date, severity_code (CMS A–L), survey_type, inspection_cycle — backs the condition counts; enables recency weighting and severity analysis |
 | `data_gap` | Named gap | materiality, availability, record_needed, absence_implication |
 | `evidence` | Clinical claim | basis_type, evidence_strength, source_reference (populated at engagement time only) |
 | `exposure_estimate` | Scenario row | scenario, resident_count, prevalence_pct (populated at engagement time only) |
