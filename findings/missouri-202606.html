@@ -273,7 +273,7 @@ footer {
       </div>
       <div class="ms-item">
         <div class="ms-num">51<span>%</span></div>
-        <div class="ms-label">Classify High or Moderate-High exposure (249 facilities)</div>
+        <div class="ms-label">Classify High or Moderate-High exposure (250 facilities)</div>
       </div>
       <div class="ms-item">
         <div class="ms-num">0.46</div>
@@ -300,7 +300,8 @@ footer {
     </p>
     <div class="method-note">
       <strong>A "Recognized" condition</strong> means the pattern is established in the facility's public
-      CMS record at the disclosed threshold (≥2 relevant citations, or a defined enforcement or rating signal).
+      CMS record at the disclosed threshold (a severity-weighted citation score of ≥2 — repeat citations, or a
+      single citation at actual-harm severity or worse — or a defined enforcement or rating signal).
       <strong>"Potential"</strong> means the signal is present below that threshold. These are
       <strong>recognition-risk classifications</strong> — they characterize what the regulatory record shows
       about a facility's documented capacity to recognize, document, and respond to the conditions under which
@@ -526,7 +527,7 @@ footer {
         <thead><tr><th>Claim</th><th>Source</th></tr></thead>
         <tbody>
           <tr><td>487 facilities, 242 cities, urban/rural split</td><td><code>facility</code> table counts</td></tr>
-          <tr><td>Exposure distribution 28 / 221 / 229 / 9</td><td><code>assessment.exposure_level</code> GROUP BY</td></tr>
+          <tr><td>Exposure distribution 29 / 221 / 228 / 9</td><td><code>assessment.exposure_level</code> GROUP BY</td></tr>
           <tr><td>Condition prevalence table</td><td><code>condition</code> GROUP BY code × classification</td></tr>
           <tr><td>Citation totals (807 F-689 · 639 F-658 · 219 F-755 · 94 F-740/741)</td><td>SUM(<code>source_count</code>) by citation value</td></tr>
           <tr><td>Staffing means and below-benchmark counts</td><td><code>assessment</code> staffing fields vs 3.8 / 0.75 / 50%</td></tr>
