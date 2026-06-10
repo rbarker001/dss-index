@@ -11,7 +11,7 @@ Recognizing one takes a trained eye, watching closely, with time to document wha
 
 So I asked a simple question: **how often do those conditions actually exist in a nursing home?**
 
-I took the public inspection records for every certified nursing home in Missouri — all 487, covering seven years of inspections (2019–2026) plus current staffing data — and ran them through the Dementia Seizure Spectrum™ Framework, the clinical taxonomy I built during my doctoral research.
+I took the public inspection records for every certified nursing home in Missouri — all 487, each facility's three most recent state inspections plus current staffing data — and ran them through the Dementia Seizure Spectrum™ Framework, the clinical taxonomy I built during my doctoral research.
 
 What the public record shows:
 
