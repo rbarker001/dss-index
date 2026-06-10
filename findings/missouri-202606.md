@@ -1,4 +1,4 @@
-# Missouri SNF Universe — DSS Framework Findings Summary
+# Missouri Nursing Homes — DSS Framework Findings
 
 **Status: DRAFT — internal validation. Not for publication until reviewed by Russ and counsel.**
 
@@ -19,10 +19,10 @@ Every Medicare/Medicaid-certified skilled nursing facility in Missouri was asses
 
 All figures computed from the assessment database on 2026-06-09. Provenance for each is in the appendix.
 
-**1. Half the state's SNF universe carries elevated exposure.**
-250 of 487 facilities (51%) classify as High (29) or Moderate-High (221) exposure. Only 9 facilities (1.8%) classify Low — meaning no high-risk condition active and no Recognized condition of any kind in their CMS record.
+**1. Half of Missouri's nursing homes screen at elevated exposure.**
+250 of 487 facilities (51%) screen High (29) or Moderate-High (221). Only 9 facilities (1.8%) screen Low — no high-risk condition active and no Recognized condition of any kind in their CMS record.
 
-**2. The fall–seizure nexus is the most prevalent Recognized condition in the state.**
+**2. Fall-prevention citations are the most widespread finding in the state.**
 250 facilities (51%) carry a Recognized C-1 (Fall-Seizure Nexus: repeat F-689 citations, or a single citation at actual-harm severity or worse); another 118 (24%) carry it as Potential. 807 F-689 citations were counted statewide — the largest citation volume of any tag in scope, including 92 at immediate-jeopardy severity across all screened tags. [Re] Falls are the most visible surface of DSS Domain 2; the prevalence of this condition indicates how large the population is in which seizure-precipitated falls could go unattributed.
 
 **3. Professional-standards citations are nearly as widespread.**
@@ -35,22 +35,22 @@ All figures computed from the assessment database on 2026-06-09. Provenance for 
 
 [Re] Staffing is the moderating variable for every recognition-risk condition: recognition of non-convulsive seizure presentations requires sustained observation by clinically trained staff. A state mean RN coverage 39% below benchmark is the single most consequential aggregate number in this dataset.
 
-**5. Self-reported staffing exceeds payroll-verified staffing at 94% of facilities.**
+**5. 94% of facilities report more staffing than their payroll records show.**
 460 of 487 facilities report staffing above their payroll-based (PBJ) figure. At 241 facilities (49%), the gap is ≥0.38 HPRD (≥10% of benchmark). State means: 3.44 reported vs 3.04 payroll-verified. 82 facilities combine a ≥10% over-report with a Recognized F-658 professional-standards condition. [Re] The reported-vs-PBJ gap is itself a documentation-integrity signal; its co-occurrence with F-658 is consistent with — though does not establish — a broader records-reliability problem at those facilities.
 
-**6. The highest-risk intersection: 150 facilities.**
+**6. 150 facilities combine documented warning signs with below-benchmark staffing.**
 150 facilities (31%) combine at least one Recognized high-risk condition with total staffing below benchmark — the population where a documented recognition gap and the staffing conditions that produce one coincide.
 
-**7. Urban facilities classify elevated more often than rural — the opposite of the expected direction.**
-56% of urban facilities (161/289) classify High or Moderate-High versus 44% of rural (88/198). [Re] Literature-informed expectation was that rural facilities, with thinner clinical resources, would carry higher recognition risk. The reversal in this dataset is unexplained and should not be interpreted causally: candidate explanations include facility size, census, survey-frequency differences, and citation-exposure differences between urban and rural surveys. This is a research question, not a conclusion.
+**7. Urban facilities screen elevated more often than rural — the opposite of the expected direction.**
+56% of urban facilities (161/289) screen High or Moderate-High versus 44% of rural (88/198). [Re] Literature-informed expectation was that rural facilities, with thinner clinical resources, would carry higher recognition risk. The reversal in this dataset is unexplained and should not be interpreted causally: candidate explanations include facility size, census, survey-frequency differences, and citation-exposure differences between urban and rural surveys. This is a research question, not a conclusion.
 
-**8. Ownership structure separates the distribution.**
+**8. For-profit facilities screen elevated more often than non-profits.**
 For-profit LLCs (178 facilities — the largest segment): 62% elevated, mean 3.24 HPRD. Non-profit corporations (62 facilities): 40% elevated, mean 4.21 HPRD. The non-profit "other" segment (12 facilities): 17% elevated. [Re] Ownership-linked staffing differences are well documented in the literature; the DSS-classified exposure gradient observed here is consistent with that pattern. Segment sizes below ~20 facilities are too small to characterize.
 
-**9. Enforcement context.**
+**9. Enforcement flags: 18 Special Focus facilities, 64 abuse flags.**
 18 facilities carry Special Focus designation status and 64 carry a CMS abuse flag; 69 facilities (14%) classify Recognized on C-7 (enforcement) and 172 (35%) Potential (≥1 civil monetary penalty).
 
-**10. Domain activity spans nearly the entire universe.**
+**10. Warning signs appear at nearly every facility in the state.**
 475 facilities (97.5%) have at least one active Domain 3/4 condition (the misattribution domains — awareness and behavioral changes). 383 facilities (79%) have at least one active Domain 2 condition (movement/falls). Domain 1 (overt convulsive events) is structurally absent from this dataset by design — CMS deficiency data cannot establish it (see Limitations).
 
 ---
