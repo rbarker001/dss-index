@@ -30,7 +30,17 @@ The proprietary value is not the raw CMS data (anyone can pull that) but the **t
 
 The credit bureau analogy: the bureau maintains cheap structured data on everyone; the expensive full report pulls on demand.
 
-The synthesis layer does not exist yet as a build on this database. Its reference implementation is `~/crisp-dsca` — that project's prompts, Zotero search, GRADE scoring, and DSCA report structure define what gets layered on top of dsca-db rows. crisp-dsca itself remains a standalone one-off report generator; the synthesis layer here will be built *on* dsca.db, drawing a facility's existing row and writing `evidence` / `exposure_estimate` rows back.
+**Consumption is live (2026-06-10); write-back is not.** Three products now read this database directly:
+
+| Consumer | Integration | What it reads |
+|---|---|---|
+| `~/crisp-dsca` (DSCA report) | `server/services/dsca-db.js` → `COMPUTED FACILITY RECORD [DSCA-DB]` prompt block; live CMS fallback for unloaded states | Classifications, exposure screen, citation detail, state percentiles |
+| `~/crisp-dsca` → ROI bridge | `buildROIParams()` auto-sets ROI tool URL params | `licensed_beds`, survey tier (penalty/cited from citations + C-7) |
+| `~/crisp-app` (litigation) | `server/services/dsca-db.js` → `DEFENDANT FACILITY PUBLIC RECORD` block with **period-of-care citation matching** (`ccn`/`careFrom`/`careTo` params) | Citations partitioned during/before/after the case window |
+
+Both consumer projects carry the computed-facts contract in their prompts: values are restated, never derived. Running a new state (`node run-state.js <STATE>`) upgrades all three surfaces at once.
+
+The **write-back** half of the synthesis layer (populating `evidence` / `exposure_estimate` at engagement time) remains unbuilt — gated on privacy-policy consent language (see Website constraint note in the project memory and `~/crisp-app/reference/sh-website-html/privacy-policy.html`).
 
 ---
 

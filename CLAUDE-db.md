@@ -76,6 +76,10 @@ Currently **local-only** — no remote configured. Add a private GitHub remote f
 | `query-server.js` | Express server for the query runner (port 3010) |
 | `queries/library.js` | All named analytical queries — add new queries here |
 | `public/index.html` | Query runner browser UI |
+| `findings/missouri-202606.md` + `.html` | Aggregate findings summary (technical) — DRAFT, internal validation |
+| `findings/missouri-story.html` | Plain-language narrative companion — DRAFT |
+| `findings/linkedin-post-draft.md` | LinkedIn post draft + notes on excluded findings |
+| `landing/index.html` | Product landing page (Three.js field + GSAP, brand design system) — in active copy review; audience/"so what" framing unresolved |
 
 ---
 
