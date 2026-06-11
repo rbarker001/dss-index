@@ -289,26 +289,6 @@ h2 em { font-style:normal; color:var(--orange); }
 .s-body { font-size:13.5px; color:var(--muted); line-height:1.6; }
 @media (max-width:900px){ .hub-wrap { grid-template-columns:1fr; } }
 
-/* ── horizon ── */
-#horizon { background:var(--ink); overflow:hidden; position:relative; }
-#horizon::before {
-  content:''; position:absolute; top:-200px; left:50%; transform:translateX(-50%);
-  width:900px; height:900px; pointer-events:none;
-  background:radial-gradient(circle, rgba(239,120,53,0.13) 0%, transparent 62%);
-}
-#horizon .kicker { color:var(--orange); }
-#horizon h2 { color:#fff; }
-#horizon .lede { color:rgba(255,255,255,0.5); }
-#horizon .lede strong { color:rgba(255,255,255,0.85); }
-.nodes { display:flex; gap:12px; flex-wrap:wrap; margin-top:48px; }
-.node {
-  font-size:13px; font-weight:700; letter-spacing:0.02em;
-  padding:11px 20px; border-radius:24px;
-  border:1px solid rgba(255,255,255,0.14); color:rgba(255,255,255,0.4);
-}
-.node.live { background:var(--orange); border-color:var(--orange); color:#fff; }
-.node.live::before { content:'● '; font-size:9px; vertical-align:2px; }
-
 /* ── CTA ── */
 #cta { text-align:center; }
 #cta .kicker { justify-content:center; }
@@ -583,27 +563,6 @@ html.js .rv { opacity:0; transform:translateY(34px); }
           the events the assessment surfaced.</div>
         </div></div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════ HORIZON ═══════════ -->
-<section class="block" id="horizon">
-  <div class="wrap">
-    <div class="kicker rv" data-rv>Global-First By Design</div>
-    <h2 class="rv" data-rv>Built for every jurisdiction<br><em>from day one.</em></h2>
-    <p class="lede rv" data-rv>
-      The schema's spine is the DSS Framework — clinical reality, not any one
-      country's regulatory vocabulary. <strong>A silent seizure misattributed to
-      behavior looks the same in Manchester as it does in Memphis.</strong> Each
-      jurisdiction adds an ingestion layer; the database underneath stays one structure.
-    </p>
-    <div class="nodes rv" data-rv>
-      <span class="node live">United States — first full state complete</span>
-      <span class="node">Next states</span>
-      <span class="node">UK · CQC</span>
-      <span class="node">Australia · ACQSC</span>
-      <span class="node">One schema, every jurisdiction</span>
     </div>
   </div>
 </section>
