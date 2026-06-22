@@ -175,15 +175,19 @@ body {
 }
 .loading { color: #A0AEC0; font-size: 12px; padding: 16px 20px; }
 
-/* ── HAMBURGER ──────────────────────────────────────────────── */
+/* ── RESPONSIVE SIDEBAR ─────────────────────────────────────── */
 .hamburger {
-  display: none; background: none; border: none; cursor: pointer;
+  background: none; border: none; cursor: pointer;
   padding: 4px; color: #fff; font-size: 18px; line-height: 1;
 }
 .sidebar-backdrop { display: none; }
 
+.sidebar { transition: width .2s ease; overflow: hidden; white-space: nowrap; }
+.sidebar-closed .sidebar { width: 0 !important; padding: 0; border: none; min-width: 0; flex-shrink: 1; }
+.sidebar-closed .sidebar .sidebar-search,
+.sidebar-closed .sidebar #query-list { display: none; }
+
 @media (max-width: 768px) {
-  .hamburger { display: block; }
   .header { padding: 0 8px; }
   .brand { font-size: 11px; }
   .header-right { gap: 4px; }
@@ -193,15 +197,18 @@ body {
   .filter-badge { font-size: 8px; padding: 0 4px; }
 
   .sidebar {
-    position: fixed; top: 46px; left: -260px; width: 260px; bottom: 0; z-index: 1000;
+    position: fixed; top: 46px; left: 0; width: 260px; bottom: 0; z-index: 1000;
     transition: left .2s ease; box-shadow: 2px 0 12px rgba(0,0,0,.15);
   }
-  .sidebar.open { left: 0; }
-  .sidebar-backdrop {
-    display: none; position: fixed; top: 46px; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,.3); z-index: 999;
+  .sidebar-closed .sidebar { left: -260px; width: 260px !important; padding: inherit; border-right: inherit; }
+  .sidebar-closed .sidebar .sidebar-search,
+  .sidebar-closed .sidebar #query-list { display: block; }
+  .sidebar-backdrop { transition: opacity .2s ease; }
+  .sidebar-closed .sidebar-backdrop { display: none; }
+  .sidebar-backdrop { display: block; position: fixed; top: 46px; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,.3); z-index: 999; opacity: 1;
   }
-  .sidebar-backdrop.open { display: block; }
+  .sidebar-closed .sidebar-backdrop { opacity: 0; pointer-events: none; }
 
   .content { flex-direction: column; }
   .panel + .panel { border-left: none; border-top: 2px solid #E2E8F0; }
@@ -341,6 +348,7 @@ async function boot() {
   populateCitySelect(cs);
   updateDbStat(fs.length);
   renderSidebar(allQueries);
+  if (window.innerWidth <= 768) document.body.classList.add('sidebar-closed');
 }
 
 function populateFacilitySelect(names) {
@@ -684,14 +692,12 @@ function exportCSV(containerId, queryId) {
   a.click();
 }
 
-// ── Mobile sidebar ──────────────────────────────────────────
+// ── Collapsible sidebar ────────────────────────────────────
 function toggleSidebar() {
-  document.getElementById('sidebar-backdrop').classList.toggle('open');
-  document.querySelector('.sidebar').classList.toggle('open');
+  document.body.classList.toggle('sidebar-closed');
 }
 function closeSidebar() {
-  document.getElementById('sidebar-backdrop').classList.remove('open');
-  document.querySelector('.sidebar').classList.remove('open');
+  document.body.classList.add('sidebar-closed');
 }
 
 boot();
