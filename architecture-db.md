@@ -233,6 +233,10 @@ Express server at port 3010. Query library in `queries/library.js`.
 
 **Start:** `node query-server.js`
 
+**Deployment:** Railway at `dss-index.seagullhealth.global` (custom domain via CNAME). `process.env.PORT || 3010`.
+
+**City queries include state:** All city-level queries (`cities_by_exposure`, `city_domain_distribution`, `city_staffing_comparison`, `facilities_by_city`) now include `f.region AS state` in SELECT with `GROUP BY f.city, f.region` so same-name cities across states appear as separate rows.
+
 ### Query categories (41 total)
 
 | Category | Queries | Purpose |
@@ -279,12 +283,11 @@ Data completeness: 22 conditions are Not Assessed (6 C-5 missing Five-Star ratin
 
 ---
 
-## Migration Path
+## Deployment
 
-Current: SQLite file at `dsca.db` on local machine. Single user, no web access needed.
+Hosted on Railway at `dss-index.seagullhealth.global` (custom domain via DreamHost CNAME → `wjmbvw7j.up.railway.app`).
+SQLite file at `dsca.db` deployed with the repo — same Node.js + Express stack as local development.
 
-When web access is required (dashboard, client-facing queries, API):
+Future:
 - **Turso** (libSQL / hosted SQLite) — same schema, same queries, connection string change only. No migration needed.
 - **Supabase/PostgreSQL** — requires schema migration; more powerful for concurrent access at scale.
-
-Recommendation: stay local through the Missouri state run. Evaluate Turso when a web interface or second user is needed.

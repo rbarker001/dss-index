@@ -14,8 +14,10 @@
 - **Drilldown** fetches detail rows by clicking a result row (queries with `drilldown` config); no sidebar indicator needed — the "↓ Click a row" hint appears in results when relevant
 - **Export** produces CSV from any rendered table
 - **Cell formatting** handles exposure level badges, classification badges, star ratings, domain labels
-- **Collapsible sidebar** — hamburger button ☰ toggles sidebar on all screen sizes. On desktop, sidebar collapses to 0 width and content fills the space. On mobile (< 768px), sidebar slides in/out with a backdrop overlay.
+- **Collapsible sidebar** — hamburger button ☰ (left of brand) toggles sidebar on all screen sizes. On desktop, sidebar collapses to 0 width and content fills the space. On mobile (< 768px), sidebar slides in/out with a backdrop overlay.
 - **Mobile responsive** — sidebar becomes fixed overlay, panels stack vertically, tables get horizontal scroll, header elements compact
+- **State column in city queries** — all city-level queries (`cities_by_exposure`, `city_domain_distribution`, `city_staffing_comparison`, `facilities_by_city`) include `f.region AS state` in SELECT with `GROUP BY f.city, f.region` to disambiguate same-name cities across states
+- **Deployment** — Express on port 3010, deployed on Railway at `dss-index.seagullhealth.global`
 - **Map link** — standalone "🗺 The DSS Index US Map" link at the top of the sidebar, opens in new tab
 
 ### Sidebar — 8 task-based categories
