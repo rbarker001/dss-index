@@ -233,39 +233,28 @@ Express server at port 3010. Query library in `queries/library.js`.
 
 **Start:** `node query-server.js`
 
-### Query categories (38 total)
+### Query categories (41 total)
 
-| Category | Queries | Notes |
+| Category | Queries | Purpose |
 |---|---|---|
-| Geographic | 6 | Cities ranked by exposure, city staffing comparison, DSS domain by city, urban vs rural exposure, facilities by city, state comparison |
-| City Overview | 4 | Exposure distribution, full list, staffing by exposure, Five-Star by exposure |
-| Facility Targeting | 7 | High exposure, priority list, clean facilities, staffing+risk intersection, special focus, below benchmark, high turnover |
-| Condition Analysis | 8 | Full breakdown all conditions, all domains (not just 3+4), domain×classification matrix, Domain 2 F-689 specific, Domain 3+4 all active (Recognized and Potential), Recognized any domain, F-tag totals, F-658/F-740 co-occurrence, high-risk count |
-| Ownership Patterns | 3 | Exposure by ownership, staffing by ownership, ownership×DSS domain combined |
-| Staffing Integrity | 3 | Reported vs PBJ discrepancy, over-reporters with F-658, all staffing fields |
+| Start Here | 3 | Exposure distribution, State comparison, Cities ranked by exposure |
+| Find Facilities | 10 | High exposure, Priority target list, Clean facilities, Special focus/abuse, Below staffing benchmark, High turnover, Staffing+risk intersection, Full facility list, Facilities by city, Urban vs rural |
+| DSS Domain Analysis | 10 | All 4 domains individually + combined Domains 3+4 + multidomain overlap + by city + Potential-to-Recognized ratio + full ×domain matrix |
+| Condition Deep-Dive | 6 | Condition breakdown, Recognized conditions, F-tag totals, Potential-dominant conditions, High-risk count, Five-Star by exposure |
+| Staffing & Ownership | 5 | Ownership exposure, Reported vs PBJ, Over-reporters with F-658, Avg staffing by exposure, Staffing by city |
+| Single Facility | 3 | Assessment snapshot, Full condition profile, Data gaps |
+| Citation Detail | 3 | Citation recency, Severe citations (G+), Survey currency |
 | Data Gaps | 1 | Gap inventory |
-| Single Facility | 3 | Profile, condition breakdown, data gaps |
-| Citation Detail | 4 | Recognized-condition recency, stale Recognized (>24mo), severe citations (G+), survey currency |
-
-**Condition Analysis restructure (from original design):**
-- Domain distribution now covers all 4 DSS domains, not just 3 and 4
-- "All conditions × domain × classification" — full matrix breakdown across every domain
-- "Domain 2 — Fall-Seizure Nexus" — F-689 specific; Domain 2 was previously invisible in the library
-- "Domain 3+4 — all active" — includes Potential conditions, not Recognized-only
-- "Recognized conditions — any domain" — the full confirmed picture across all domains
-- "Clean facilities" — facilities with zero Recognized conditions; the low-risk end of the spectrum
-- "Staffing gap + High-risk combined" — the intersection: below-benchmark staffing co-occurring with active High-risk conditions
-- "Ownership × DSS domain + staffing" — multi-dimensional: ownership structure, average staffing, and domain-level condition counts in one query
 
 ### Drill-down
 
-Queries marked with an orange dot in the sidebar support drill-down. Run the query, then click any row — a panel slides up from the bottom showing the underlying data. Examples: Domain distribution → click Domain 2 → see which facilities and conditions make up that count. Exposure distribution → click High → see those facilities. Condition breakdown → click C-4 → see which facilities carry it.
+Queries with drill-down support let you click a result row to open a panel with underlying detail data. The "↓ Click a row" hint appears in results when drill-down is available. No sidebar indicator is used.
 
 Drill-down SQL lives server-side only — not exposed to the client. Drillable queries: exposure_distribution, avg_staffing_by_exposure, condition_breakdown, dss_domain_activity_by_facility, recognized_high_any_domain, ftag_citation_totals, ownership_exposure, cities_by_exposure, city_staffing_comparison, urban_rural_exposure.
 
-### Pin / compare
+### Compare (side-by-side)
 
-After running any query, a "📌 Pin" button appears. Pinning freezes the current result in a left panel while a second query runs in the right panel — side-by-side comparison. One pinned result at a time. Use case: pin ownership exposure, run staffing by ownership alongside it.
+After running any query, a "📌 Compare" button appears. Clicking it freezes the current result in a left panel while a second query runs in the right panel — side-by-side comparison. One pinned result at a time. Use case: pin ownership exposure, run staffing by ownership alongside it.
 
 ---
 
