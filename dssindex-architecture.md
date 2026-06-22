@@ -1,0 +1,657 @@
+# The DSS Index — Architecture Snapshot
+
+**File:** `public/index.html` (served at `/`)
+**Stack:** Vanilla JS, Express API backend
+**Purpose:** Query-runner interface for 41 DSS framework SQL queries against the CMS deficiency database.
+
+---
+
+## Full Source Code
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The DSS Index — Seagull Health</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-size: 13px; line-height: 1.5; color: #2D3748; background: #F7FAFC;
+  display: flex; flex-direction: column; height: 100vh; overflow: hidden;
+}
+
+/* ── HEADER ─────────────────────────────────────────────────── */
+.header {
+  background: #1B2A4A; color: #fff; padding: 0 20px;
+  height: 46px; display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; z-index: 10;
+}
+.brand { font-size: 14px; font-weight: 500; }
+.brand span { color: #ef7835; }
+.header-right { font-size: 11px; color: #90CDF4; display: flex; align-items: center; gap: 12px; }
+.db-stat { background: rgba(255,255,255,.08); border-radius: 3px; padding: 2px 8px; }
+.state-select {
+  font-size: 11px; padding: 3px 8px; border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 3px; background: rgba(255,255,255,0.1); color: #fff;
+  outline: none; cursor: pointer; min-width: 48px;
+}
+.state-select option { color: #2D3748; background: #fff; }
+.state-select:focus { border-color: #ef7835; }
+.filter-badge {
+  display: none; font-size: 10px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; background: #ef7835; color: #fff;
+  border-radius: 3px; padding: 1px 6px;
+}
+
+/* ── LAYOUT ─────────────────────────────────────────────────── */
+.layout { display: flex; flex: 1; overflow: hidden; }
+
+/* ── SIDEBAR ─────────────────────────────────────────────────── */
+.sidebar {
+  width: 240px; background: #fff; border-right: 1px solid #E2E8F0;
+  overflow-y: auto; flex-shrink: 0; display: flex; flex-direction: column;
+}
+.sidebar-search { padding: 8px 10px; border-bottom: 1px solid #E2E8F0; flex-shrink: 0; }
+.sidebar-search input {
+  width: 100%; padding: 5px 9px; border: 1px solid #CBD5E0;
+  border-radius: 3px; font-size: 12px; color: #2D3748; outline: none;
+}
+.sidebar-search input:focus { border-color: #ef7835; }
+.cat-label {
+  padding: 10px 10px 3px; font-size: 9px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; color: #ef7835;
+}
+.qbtn {
+  width: 100%; text-align: left; padding: 6px 10px 6px 14px;
+  background: none; border: none; cursor: pointer; font-size: 12px;
+  color: #4A5568; line-height: 1.3; border-left: 2px solid transparent;
+  display: flex; align-items: flex-start; gap: 6px;
+}
+.qbtn:hover { background: #F7FAFC; color: #1B2A4A; }
+.qbtn.active { background: #EBF8FF; color: #1B2A4A; font-weight: 600; border-left-color: #ef7835; }
+.qbtn .drill-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: #ef7835;
+  flex-shrink: 0; margin-top: 5px; opacity: 0.6;
+}
+
+/* ── CONTENT ─────────────────────────────────────────────────── */
+.content { flex: 1; display: flex; overflow: hidden; }
+
+/* ── PANEL ───────────────────────────────────────────────────── */
+.panel {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+  min-width: 0;
+}
+.panel + .panel { border-left: 2px solid #E2E8F0; }
+
+.panel-header {
+  padding: 12px 20px; border-bottom: 1px solid #E2E8F0;
+  background: #fff; flex-shrink: 0;
+}
+.panel-title { font-size: 15px; font-weight: 700; color: #1B2A4A; margin-bottom: 3px; }
+.panel-desc  { font-size: 12px; color: #718096; margin-bottom: 10px; }
+.panel-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+.facility-select {
+  padding: 5px 8px; border: 1px solid #CBD5E0; border-radius: 3px;
+  font-size: 12px; color: #2D3748; min-width: 240px; outline: none;
+}
+.facility-select:focus { border-color: #ef7835; }
+
+.btn {
+  padding: 5px 14px; border: none; border-radius: 3px;
+  font-size: 12px; font-weight: 700; cursor: pointer; letter-spacing: .02em;
+}
+.btn-run  { background: #ef7835; color: #fff; }
+.btn-run:hover { background: #dd6b25; }
+.btn-run:disabled { background: #CBD5E0; cursor: not-allowed; }
+.btn-pin  { background: #EDF2F7; color: #4A5568; border: 1px solid #CBD5E0; }
+.btn-pin:hover { background: #E2E8F0; }
+.btn-pin.active { background: #FFF8F2; color: #C05621; border-color: #ef7835; }
+.btn-close { background: none; border: none; color: #A0AEC0; font-size: 16px;
+             cursor: pointer; padding: 0 4px; line-height: 1; }
+.btn-close:hover { color: #C53030; }
+
+/* ── RESULTS ─────────────────────────────────────────────────── */
+.panel-body { flex: 1; overflow: auto; display: flex; flex-direction: column; }
+
+.results-wrap { flex: 1; overflow: auto; padding: 12px 20px; }
+
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%; color: #CBD5E0; text-align: center; gap: 8px; user-select: none;
+}
+.empty-state .icon { font-size: 28px; }
+.empty-state p { font-size: 12px; color: #A0AEC0; }
+
+.result-meta {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+}
+.result-count { font-size: 11px; color: #718096; }
+.result-hint  { font-size: 11px; color: #ef7835; font-style: italic; }
+.btn-export { padding: 3px 10px; background: #EDF2F7; border: 1px solid #CBD5E0;
+              border-radius: 3px; font-size: 11px; color: #4A5568; cursor: pointer; }
+.btn-export:hover { background: #E2E8F0; }
+
+.result-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.result-table th {
+  background: #2D3748; color: #fff; padding: 6px 10px; text-align: left;
+  font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+  white-space: nowrap; position: sticky; top: 0; z-index: 1;
+}
+.result-table td { padding: 6px 10px; border-bottom: 1px solid #E2E8F0; vertical-align: top; }
+.result-table tr:last-child td { border-bottom: none; }
+.result-table tr:nth-child(even) td { background: #F7FAFC; }
+.result-table.drillable tbody tr { cursor: pointer; }
+.result-table.drillable tbody tr:hover td { background: #FFF8F2; }
+.result-table.drillable tbody tr.dd-active td { background: #FFF3E0; }
+
+/* ── DRILLDOWN PANEL ─────────────────────────────────────────── */
+.drilldown-wrap {
+  border-top: 2px solid #ef7835; background: #FFFAF5;
+  flex-shrink: 0; max-height: 40vh; display: flex; flex-direction: column;
+}
+.drilldown-wrap.hidden { display: none; }
+.dd-header {
+  padding: 8px 20px; display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid #FEEBC8; flex-shrink: 0;
+}
+.dd-title {
+  font-size: 12px; font-weight: 700; color: #C05621; flex: 1;
+}
+.dd-count { font-size: 11px; color: #A0AEC0; }
+.dd-body { overflow: auto; padding: 10px 20px; }
+
+/* ── BADGES ──────────────────────────────────────────────────── */
+.badge { display: inline-block; padding: 1px 7px; border-radius: 3px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.b-high   { background: #FED7D7; color: #C53030; }
+.b-mh     { background: #FEEBC8; color: #C05621; }
+.b-mod    { background: #FEFCBF; color: #744210; }
+.b-low    { background: #C6F6D5; color: #22543D; }
+.b-rec    { background: #FED7D7; color: #C53030; }
+.b-pot    { background: #FEFCBF; color: #744210; }
+.b-ni     { background: #C6F6D5; color: #22543D; }
+.b-high-r { background: #FED7D7; color: #C53030; }
+.b-mod-r  { background: #FEFCBF; color: #744210; }
+.b-low-r  { background: #C6F6D5; color: #22543D; }
+.flag-y   { color: #C53030; font-weight: 700; }
+.flag-n   { color: #CBD5E0; }
+
+.error-box {
+  background: #FFF5F5; border: 1px solid #FC8181; border-radius: 4px;
+  padding: 10px 14px; color: #C53030; font-size: 12px; margin: 12px 20px;
+}
+.loading { color: #A0AEC0; font-size: 12px; padding: 16px 20px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">Seagull Health &nbsp;<span>|</span>&nbsp; <span>The DSS Index</span></div>
+  <div class="header-right">
+    <span class="filter-badge" id="filter-badge">Filtered</span>
+    <span class="db-stat" id="db-stat">—</span>
+    <label style="opacity:.6;cursor:pointer">State:</label>
+    <select class="state-select" id="state-select" onchange="onStateChange()">
+      <option value="">All</option>
+    </select>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-search">
+      <input type="text" id="search" placeholder="Search queries…" oninput="filterQueries(this.value)" autocomplete="off">
+    </div>
+    <div id="query-list" style="flex:1;overflow-y:auto;padding-bottom:12px"></div>
+  </div>
+
+  <!-- CONTENT (one or two panels) -->
+  <div class="content" id="content">
+
+    <!-- PINNED PANEL (hidden until pinned) -->
+    <div class="panel" id="pinned-panel" style="display:none">
+      <div class="panel-header">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between">
+          <div>
+            <div class="panel-title" id="pinned-title">—</div>
+            <div class="panel-desc" id="pinned-desc"></div>
+          </div>
+          <button class="btn-close" onclick="unpin()" title="Unpin">✕</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="results-wrap" id="pinned-results"></div>
+      </div>
+    </div>
+
+    <!-- MAIN PANEL -->
+    <div class="panel" id="main-panel">
+      <div class="panel-header">
+        <div class="panel-title" id="q-title">Select a query</div>
+        <div class="panel-desc"  id="q-desc">Choose a query from the left panel.</div>
+        <div class="panel-controls">
+          <select class="facility-select" id="city-select" style="display:none">
+            <option value="">— Select a city —</option>
+          </select>
+          <select class="facility-select" id="facility-select" style="display:none">
+            <option value="">— Select a facility —</option>
+          </select>
+          <button class="btn btn-run" id="run-btn" onclick="runQuery()" disabled>Run</button>
+          <button class="btn btn-pin" id="pin-btn" onclick="pinResults()" style="display:none">📌 Pin</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="results-wrap" id="main-results">
+          <div class="empty-state">
+            <div class="icon">⬅</div>
+            <p>Select a query to get started.</p>
+          </div>
+        </div>
+        <!-- Drilldown -->
+        <div class="drilldown-wrap hidden" id="dd-wrap">
+          <div class="dd-header">
+            <div class="dd-title" id="dd-title">—</div>
+            <div class="dd-count" id="dd-count"></div>
+            <button class="btn-close" onclick="closeDrilldown()">✕</button>
+          </div>
+          <div class="dd-body" id="dd-body"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── State ─────────────────────────────────────────────────────────────────
+let allQueries    = [];
+let facilities    = [];
+let allStates     = [];
+let selectedState = '';
+let activeQuery   = null;
+let lastRows      = [];
+
+// ── Boot ──────────────────────────────────────────────────────────────────
+async function boot() {
+  const [qs, fs, cs, ss] = await Promise.all([
+    fetch('/api/queries').then(r => r.json()),
+    fetch('/api/facilities').then(r => r.json()),
+    fetch('/api/cities').then(r => r.json()),
+    fetch('/api/states').then(r => r.json())
+  ]);
+  allQueries = qs;
+  facilities = fs;
+  allStates  = ss;
+
+  const ssel = document.getElementById('state-select');
+  ss.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = opt.textContent = s;
+    ssel.appendChild(opt);
+  });
+
+  populateFacilitySelect(fs);
+  populateCitySelect(cs);
+  updateDbStat(fs.length);
+  renderSidebar(allQueries);
+}
+
+function populateFacilitySelect(names) {
+  const sel = document.getElementById('facility-select');
+  const val = sel.value;
+  sel.innerHTML = '<option value="">— Select a facility —</option>';
+  names.forEach(n => {
+    const opt = document.createElement('option');
+    opt.value = opt.textContent = n;
+    if (n === val) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function populateCitySelect(names) {
+  const sel = document.getElementById('city-select');
+  const val = sel.value;
+  sel.innerHTML = '<option value="">— Select a city —</option>';
+  names.forEach(n => {
+    const opt = document.createElement('option');
+    opt.value = opt.textContent = n;
+    if (n === val) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function updateDbStat(count) {
+  document.getElementById('db-stat').textContent =
+    `${count} facilit${count === 1 ? 'y' : 'ies'}`;
+}
+
+// ── State filter ─────────────────────────────────────────────────────────
+async function onStateChange() {
+  selectedState = document.getElementById('state-select').value;
+
+  const badge = document.getElementById('filter-badge');
+  badge.style.display = selectedState ? 'inline' : 'none';
+
+  const base = selectedState ? `?state=${selectedState}` : '';
+  const [fs, cs] = await Promise.all([
+    fetch(`/api/facilities${base}`).then(r => r.json()),
+    fetch(`/api/cities${base}`).then(r => r.json())
+  ]);
+  facilities = fs;
+  populateFacilitySelect(fs);
+  populateCitySelect(cs);
+  updateDbStat(fs.length);
+
+  // Re-run current query if one is active
+  if (activeQuery) runQuery();
+}
+
+// ── Sidebar ───────────────────────────────────────────────────────────────
+function renderSidebar(queries) {
+  const cats = [...new Set(queries.map(q => q.category))];
+  document.getElementById('query-list').innerHTML = cats.map((cat, ci) => {
+    const qs = queries.filter(q => q.category === cat);
+    let html = `<div>`;
+    if (cat === 'Geographic') {
+      html += `<a href="/map.html" target="_blank" rel="noopener"
+           style="display:flex;align-items:center;gap:6px;color:#ef7835;font-size:12px;font-weight:600;text-decoration:none;padding:6px 10px;margin-bottom:2px">
+          🗺 The DSS Index US Map
+        </a>`;
+    }
+    html += `<div class="cat-label">${cat}</div>
+      ${qs.map(q => `
+        <button class="qbtn ${activeQuery?.id === q.id ? 'active' : ''}"
+                onclick="selectQuery('${q.id}')">
+          ${q.drilldown ? '<span class="drill-dot" title="Has drill-down"></span>' : ''}
+          ${q.title}
+        </button>`).join('')}
+    </div>`;
+    return html;
+  }).join('');
+}
+
+function filterQueries(term) {
+  const t = term.toLowerCase();
+  renderSidebar(t
+    ? allQueries.filter(q =>
+        q.title.toLowerCase().includes(t) ||
+        q.description.toLowerCase().includes(t) ||
+        q.category.toLowerCase().includes(t))
+    : allQueries);
+}
+
+// ── Select query ──────────────────────────────────────────────────────────
+function selectQuery(id) {
+  activeQuery = allQueries.find(q => q.id === id);
+  if (!activeQuery) return;
+
+  document.getElementById('q-title').textContent = activeQuery.title;
+  document.getElementById('q-desc').textContent  = activeQuery.description;
+
+  const needsFacility = (activeQuery.params || []).includes('facility');
+  const needsCity     = (activeQuery.params || []).includes('city');
+  document.getElementById('facility-select').style.display = needsFacility ? 'inline-block' : 'none';
+  document.getElementById('city-select').style.display     = needsCity     ? 'inline-block' : 'none';
+  document.getElementById('run-btn').disabled = false;
+  document.getElementById('pin-btn').style.display = 'none';
+
+  setMainResults(`<div class="empty-state"><p>Press <strong>Run</strong> to execute.</p></div>`);
+  closeDrilldown();
+  lastRows = [];
+
+  renderSidebar(allQueries.filter(q => {
+    const s = document.getElementById('search').value.toLowerCase();
+    return !s || q.title.toLowerCase().includes(s) || q.category.toLowerCase().includes(s);
+  }));
+}
+
+// ── Run query ─────────────────────────────────────────────────────────────
+async function runQuery() {
+  if (!activeQuery) return;
+  const facility = document.getElementById('facility-select').value;
+  const city     = document.getElementById('city-select').value;
+  if ((activeQuery.params || []).includes('facility') && !facility) {
+    alert('Please select a facility.'); return;
+  }
+  if ((activeQuery.params || []).includes('city') && !city) {
+    alert('Please select a city.'); return;
+  }
+
+  setMainResults(`<div class="loading">Running…</div>`);
+  document.getElementById('run-btn').disabled = true;
+  document.getElementById('pin-btn').style.display = 'none';
+  closeDrilldown();
+
+  try {
+    const res  = await fetch('/api/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: activeQuery.id, facility, city, state: selectedState || undefined })
+    });
+    const data = await res.json();
+    if (data.error) {
+      setMainResults(`<div class="error-box">${data.error}</div>`);
+    } else {
+      lastRows = data.rows;
+      renderTable('main-results', data.rows, true);
+      if (data.rows.length) {
+        document.getElementById('pin-btn').style.display = 'inline-block';
+      }
+    }
+  } catch (err) {
+    setMainResults(`<div class="error-box">${err.message}</div>`);
+  } finally {
+    document.getElementById('run-btn').disabled = false;
+  }
+}
+
+// ── Render table ──────────────────────────────────────────────────────────
+function renderTable(containerId, rows, isMain = false) {
+  const container = document.getElementById(containerId);
+  if (!rows.length) {
+    container.innerHTML = '<div class="empty-state"><p>No rows returned.</p></div>';
+    return;
+  }
+
+  const hasDrilldown = isMain && activeQuery?.drilldown;
+  const cols  = Object.keys(rows[0]);
+  const thead = `<tr>${cols.map(c => `<th>${c.replace(/_/g, ' ')}</th>`).join('')}</tr>`;
+  const tbody = rows.map((row, i) =>
+    `<tr ${hasDrilldown ? `onclick="drilldown(${i})" class=""` : ''}>
+      ${cols.map(c => `<td>${formatCell(c, row[c])}</td>`).join('')}
+    </tr>`
+  ).join('');
+
+  const hint = hasDrilldown
+    ? `<span class="result-hint">↓ Click a row to drill down</span>` : '';
+
+  container.innerHTML = `
+    <div class="result-meta">
+      <div style="display:flex;gap:12px;align-items:center">
+        <span class="result-count">${rows.length} row${rows.length !== 1 ? 's' : ''}</span>
+        ${hint}
+      </div>
+      <button class="btn-export" onclick="exportCSV('${containerId}','${activeQuery?.id || 'query'}')">
+        Export CSV
+      </button>
+    </div>
+    <table class="result-table ${hasDrilldown ? 'drillable' : ''}" id="tbl-${containerId}">
+      <thead>${thead}</thead>
+      <tbody>${tbody}</tbody>
+    </table>`;
+}
+
+// ── Drilldown ─────────────────────────────────────────────────────────────
+async function drilldown(rowIndex) {
+  if (!activeQuery?.drilldown) return;
+  const row      = lastRows[rowIndex];
+  const paramCol = activeQuery.drilldown.paramCol;
+  const paramVal = row[paramCol];
+  if (paramVal === null || paramVal === undefined) return;
+
+  // Highlight clicked row
+  document.querySelectorAll('#tbl-main-results tbody tr').forEach((tr, i) => {
+    tr.classList.toggle('dd-active', i === rowIndex);
+  });
+
+  const titleTemplate = activeQuery.drilldown.title || '';
+  const title = titleTemplate.replace('{value}', paramVal);
+  document.getElementById('dd-title').textContent = title;
+  document.getElementById('dd-count').textContent = '';
+  document.getElementById('dd-body').innerHTML = '<div class="loading">Loading…</div>';
+  document.getElementById('dd-wrap').classList.remove('hidden');
+
+  try {
+    const res  = await fetch('/api/drilldown', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ queryId: activeQuery.id, paramValue: paramVal, state: selectedState || undefined })
+    });
+    const data = await res.json();
+    if (data.error) {
+      document.getElementById('dd-body').innerHTML = `<div class="error-box">${data.error}</div>`;
+    } else {
+      document.getElementById('dd-count').textContent = `${data.count} row${data.count !== 1 ? 's' : ''}`;
+      renderDrilldownTable(data.rows);
+    }
+  } catch (err) {
+    document.getElementById('dd-body').innerHTML = `<div class="error-box">${err.message}</div>`;
+  }
+}
+
+function renderDrilldownTable(rows) {
+  if (!rows.length) {
+    document.getElementById('dd-body').innerHTML = '<div style="color:#A0AEC0;font-size:12px">No rows.</div>';
+    return;
+  }
+  const cols  = Object.keys(rows[0]);
+  const thead = `<tr>${cols.map(c => `<th>${c.replace(/_/g, ' ')}</th>`).join('')}</tr>`;
+  const tbody = rows.map(row =>
+    `<tr>${cols.map(c => `<td>${formatCell(c, row[c])}</td>`).join('')}</tr>`
+  ).join('');
+  document.getElementById('dd-body').innerHTML =
+    `<table class="result-table"><thead>${thead}</thead><tbody>${tbody}</tbody></table>`;
+}
+
+function closeDrilldown() {
+  document.getElementById('dd-wrap').classList.add('hidden');
+  document.querySelectorAll('#tbl-main-results tbody tr').forEach(tr => tr.classList.remove('dd-active'));
+}
+
+// ── Pin / Compare ─────────────────────────────────────────────────────────
+function pinResults() {
+  if (!lastRows.length) return;
+
+  document.getElementById('pinned-title').textContent = activeQuery.title;
+  document.getElementById('pinned-desc').textContent  = activeQuery.description;
+
+  const pinnedResults = document.getElementById('pinned-results');
+  const cols  = Object.keys(lastRows[0]);
+  const thead = `<tr>${cols.map(c => `<th>${c.replace(/_/g, ' ')}</th>`).join('')}</tr>`;
+  const tbody = lastRows.map(row =>
+    `<tr>${cols.map(c => `<td>${formatCell(c, row[c])}</td>`).join('')}</tr>`
+  ).join('');
+  pinnedResults.innerHTML = `
+    <div class="result-meta">
+      <span class="result-count">${lastRows.length} row${lastRows.length !== 1 ? 's' : ''}</span>
+    </div>
+    <table class="result-table">
+      <thead>${thead}</thead><tbody>${tbody}</tbody>
+    </table>`;
+
+  document.getElementById('pinned-panel').style.display = 'flex';
+  document.getElementById('pin-btn').classList.add('active');
+  document.getElementById('pin-btn').textContent = '📌 Pinned';
+  closeDrilldown();
+}
+
+function unpin() {
+  document.getElementById('pinned-panel').style.display = 'none';
+  document.getElementById('pin-btn').classList.remove('active');
+  document.getElementById('pin-btn').textContent = '📌 Pin';
+}
+
+// ── Format cells ──────────────────────────────────────────────────────────
+function formatCell(col, val) {
+  if (val === null || val === undefined) return '<span style="color:#CBD5E0">—</span>';
+
+  const v = String(val);
+
+  if (col === 'exposure_level') {
+    const m = { 'High': 'b-high', 'Moderate-High': 'b-mh', 'Moderate': 'b-mod', 'Low': 'b-low' };
+    return `<span class="badge ${m[v] || ''}">${v}</span>`;
+  }
+  if (col === 'classification' || col === 'f658' || col === 'f740_741') {
+    const m = { 'Recognized': 'b-rec', 'Potential': 'b-pot', 'Not Identified': 'b-ni' };
+    return `<span class="badge ${m[v] || ''}">${v}</span>`;
+  }
+  if (col === 'recognition_risk' || col === 'f_risk') {
+    const m = { 'High': 'b-high-r', 'Moderate': 'b-mod-r', 'Low': 'b-low-r' };
+    return v ? `<span class="badge ${m[v] || ''}">${v}</span>` : '<span style="color:#CBD5E0">—</span>';
+  }
+  if (col === 'materiality') {
+    const m = { 'Recognized': 'b-rec', 'Potential': 'b-pot' };
+    return `<span class="badge ${m[v] || ''}">${v}</span>`;
+  }
+  if (['special_focus', 'abuse_flag', 'special_focus_flag'].includes(col)) {
+    const yes = v === 'Yes' || v === '1';
+    return `<span class="${yes ? 'flag-y' : 'flag-n'}">${yes ? 'Yes' : 'No'}</span>`;
+  }
+  if (['five_star', 'five_star_overall', 'overall_rating'].includes(col)) {
+    const n = parseInt(v);
+    return !isNaN(n) && n > 0 ? '★'.repeat(n) + '☆'.repeat(5 - n) : v;
+  }
+  if (col === 'dss_domain') {
+    const labels = { '1': 'Domain 1', '2': 'Domain 2', '3': 'Domain 3', '4': 'Domain 4' };
+    return labels[v] || v;
+  }
+  if (col === 'domain_name') {
+    return `<span style="font-weight:600;color:#1B2A4A">${v}</span>`;
+  }
+
+  return v;
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+function setMainResults(html) {
+  document.getElementById('main-results').innerHTML = html;
+}
+
+function exportCSV(containerId, queryId) {
+  const table = document.querySelector(`#${containerId} .result-table`);
+  if (!table) return;
+  const rows = [...table.querySelectorAll('tr')];
+  const csv  = rows.map(r =>
+    [...r.querySelectorAll('th, td')]
+      .map(c => `"${c.textContent.replace(/"/g, '""').trim()}"`)
+      .join(',')
+  ).join('\n');
+  const a = document.createElement('a');
+  a.href     = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = `dsca-${queryId}-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+boot();
+</script>
+</body>
+</html>
+```
+
+---
+
+## Key Architecture Points
+
+- **API endpoints consumed:** `/api/queries`, `/api/facilities`, `/api/cities`, `/api/states`, `/api/run`, `/api/drilldown`
+- **State filter** scopes facility/city lists and re-runs current query against a state
+- **Pin/Compare** pins a result set to a second panel for side-by-side comparison
+- **Drilldown** fetches detail rows by clicking a result row (queries with `drilldown` config)
+- **Export** produces CSV from any rendered table
+- **Cell formatting** handles exposure level badges, classification badges, star ratings, domain labels
+- **Sidebar** dynamically renders query categories with search filter; "🗺 The DSS Index US Map" link appears above the GEOGRAPHIC section, opens in a new tab
