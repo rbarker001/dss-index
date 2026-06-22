@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DSCA Exposure Map — Seagull Health</title>
+<title>The DSS Index US Map — Seagull Health</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
@@ -12,21 +12,21 @@ html, body { height: 100%; margin: 0; padding: 0; font-family: -apple-system, Bl
 
 .header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 10000;
-  background: #1B2A4A; color: #fff; padding: 0 16px;
-  height: 56px; display: flex; align-items: center; gap: 14px;
+  background: #1B2A4A; color: #fff; padding: 4px 20px; height: 50px;
+  display: flex; align-items: center; gap: 14px;
 }
-.brand { font-size: 13px; font-weight: 500; white-space: nowrap; }
-.brand em { font-style: normal; color: #ef7835; }
-.header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 11px; }
-.header-link { color: #90CDF4; font-size: 11px; text-decoration: none; white-space: nowrap; }
-.header-link:hover { text-decoration: underline; }
+.brand { font-size: 14px; font-weight: 500; white-space: nowrap; line-height: 1.3; }
+.brand span { color: #ef7835; }
+.brand-back { font-size: 11px; font-weight: 400; }
+.brand-back a { color: #90CDF4; text-decoration: none; }
+.brand-back a:hover { text-decoration: underline; }
+.header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 11px; }
 .state-select {
   font-size: 11px; padding: 3px 8px; border: 1px solid rgba(255,255,255,0.2);
   border-radius: 3px; background: rgba(255,255,255,0.1); color: #fff;
   outline: none; cursor: pointer; min-width: 56px;
 }
 .state-select option { color: #2D3748; background: #fff; }
-.count-badge { background: rgba(255,255,255,.08); border-radius: 3px; padding: 2px 8px; color: #90CDF4; white-space: nowrap; font-size: 11px; }
 .toggle-btn {
   background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
   color: #fff; padding: 3px 10px; border-radius: 3px; font-size: 11px;
@@ -36,10 +36,10 @@ html, body { height: 100%; margin: 0; padding: 0; font-family: -apple-system, Bl
 
 #map { height: 100%; }
 
-.leaflet-top { top: 56px; }
+.leaflet-top { top: 50px; }
 
 .loading-overlay {
-  position: fixed; top: 56px; left: 0; right: 0; bottom: 0;
+  position: fixed; top: 50px; left: 0; right: 0; bottom: 0;
   background: rgba(26,32,44,.85); display: flex; align-items: center;
   justify-content: center; z-index: 9999; color: #fff; font-size: 14px;
   flex-direction: column; gap: 12px;
@@ -104,10 +104,11 @@ html, body { height: 100%; margin: 0; padding: 0; font-family: -apple-system, Bl
 <body>
 
 <div class="header">
-  <div class="brand">Seagull Health | <em>CRISP</em></div>
-  <a class="header-link" href="/">Return to The DSS Index</a>
+  <div class="brand">
+    <div>Seagull Health &nbsp;<span>|</span>&nbsp; <span>The DSS Index US Map</span></div>
+    <div class="brand-back"><a href="/">← DSS Index</a></div>
+  </div>
   <div class="header-right">
-    <span class="count-badge" id="count-badge">—</span>
     <span style="opacity:.6">State:</span>
     <select class="state-select" id="state-select">
       <option value="">All States</option>
@@ -186,8 +187,6 @@ function makeFacilityCircle(f) {
 async function loadFacilityData(state) {
   const res = await fetch(`/api/facilities/map?state=${state}`);
   const { rows, count } = await res.json();
-  document.getElementById('count-badge').textContent =
-    `${count.toLocaleString()} facilit${count === 1 ? 'y' : 'ies'}`;
 
   facilityLayer.clearLayers();
   const markers = rows.filter(f => f.latitude && f.longitude).map(makeFacilityCircle);
@@ -203,8 +202,6 @@ async function loadFacilityData(state) {
 
 async function loadStateData() {
   const { rows } = await fetch('/api/facilities/map/states').then(r => r.json());
-  document.getElementById('count-badge').textContent =
-    `${rows.length.toLocaleString()} states`;
   document.getElementById('loading').classList.add('hidden');
   return rows;
 }
@@ -234,8 +231,14 @@ function toggleLegend() {
   document.getElementById('legend-reopen').classList.toggle('show');
 }
 
+function drillState(abbr) {
+  document.getElementById('state-select').value = abbr;
+  onStateChange();
+}
+
 async function boot() {
-  map = L.map('map').setView([39.8, -98.6], 4);
+  map = L.map('map', { zoomControl: false }).setView([39.8, -98.6], 4);
+  L.control.zoom({ position: 'topright' }).addTo(map);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'OSM', maxZoom: 19
   }).addTo(map);
@@ -304,19 +307,14 @@ async function boot() {
           <div class="detail"><strong>Moderate-High:</strong> ${s.mh_pct}%</div>
           <div class="detail"><strong>Moderate:</strong> ${s.mod_pct}%</div>
           <div class="detail"><strong>Low:</strong> ${s.low_pct}%</div>
+          <div style="margin-top:6px"><a href="#" style="color:#ef7835;font-size:11px;font-weight:600" onclick="drillState('${abbr}');return false">View facilities →</a></div>
         </div>
       `);
       layer.on('mouseover', () => layer.setStyle({ fillOpacity: 0.95, weight: 1.5 }));
       layer.on('mouseout', () => layer.setStyle({ fillOpacity: 0.7, weight: 0.5 }));
-      layer.on('click', () => {
-        document.getElementById('state-select').value = abbr;
-        onStateChange();
-      });
     }
   }).addTo(map);
 
-  document.getElementById('count-badge').textContent =
-    `${rows.length.toLocaleString()} states`;
   document.getElementById('loading').classList.add('hidden');
 }
 

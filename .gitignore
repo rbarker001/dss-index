@@ -1,5 +1,4 @@
 node_modules/
-dsca.db
 *.db-shm
 *.db-wal
 .env

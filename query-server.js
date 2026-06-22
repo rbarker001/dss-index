@@ -4,7 +4,7 @@ const { initDB } = require('./db/init');
 const QUERIES    = require('./queries/library');
 
 const app  = express();
-const PORT = 3010;
+const PORT = process.env.PORT || 3010;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));

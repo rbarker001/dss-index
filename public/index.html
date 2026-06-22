@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DSCA Query Runner — Seagull Health</title>
+<title>The DSS Index — Seagull Health</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -179,8 +179,7 @@ body {
 <body>
 
 <div class="header">
-  <div class="brand">Seagull Health &nbsp;<span>|</span>&nbsp; <span>CRISP</span> &nbsp;·&nbsp; Query Runner</div>
-  <a href="/map.html" style="color:#90CDF4;font-size:11px;margin-left:4px;text-decoration:none">🗺 Map</a>
+  <div class="brand">Seagull Health &nbsp;<span>|</span>&nbsp; <span>The DSS Index</span></div>
   <div class="header-right">
     <span class="filter-badge" id="filter-badge">Filtered</span>
     <span class="db-stat" id="db-stat">—</span>
@@ -345,10 +344,16 @@ async function onStateChange() {
 // ── Sidebar ───────────────────────────────────────────────────────────────
 function renderSidebar(queries) {
   const cats = [...new Set(queries.map(q => q.category))];
-  document.getElementById('query-list').innerHTML = cats.map(cat => {
+  document.getElementById('query-list').innerHTML = cats.map((cat, ci) => {
     const qs = queries.filter(q => q.category === cat);
-    return `<div>
-      <div class="cat-label">${cat}</div>
+    let html = `<div>`;
+    if (cat === 'Geographic') {
+      html += `<a href="/map.html" target="_blank" rel="noopener"
+           style="display:flex;align-items:center;gap:6px;color:#ef7835;font-size:12px;font-weight:600;text-decoration:none;padding:6px 10px;margin-bottom:2px">
+          🗺 The DSS Index US Map
+        </a>`;
+    }
+    html += `<div class="cat-label">${cat}</div>
       ${qs.map(q => `
         <button class="qbtn ${activeQuery?.id === q.id ? 'active' : ''}"
                 onclick="selectQuery('${q.id}')">
@@ -356,6 +361,7 @@ function renderSidebar(queries) {
           ${q.title}
         </button>`).join('')}
     </div>`;
+    return html;
   }).join('');
 }
 

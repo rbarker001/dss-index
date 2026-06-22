@@ -6,6 +6,7 @@
     "node": ">=18"
   },
   "scripts": {
+    "start": "node query-server.js",
     "city": "node run-city.js"
   },
   "dependencies": {
