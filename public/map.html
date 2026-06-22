@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSCA Exposure Map — Seagull Health</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+<style>
+html, body { height: 100%; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; }
+
+.header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 10000;
+  background: #1B2A4A; color: #fff; padding: 0 16px;
+  height: 56px; display: flex; align-items: center; gap: 14px;
+}
+.brand { font-size: 13px; font-weight: 500; white-space: nowrap; }
+.brand em { font-style: normal; color: #ef7835; }
+.header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 11px; }
+.header-link { color: #90CDF4; font-size: 11px; text-decoration: none; white-space: nowrap; }
+.header-link:hover { text-decoration: underline; }
+.state-select {
+  font-size: 11px; padding: 3px 8px; border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 3px; background: rgba(255,255,255,0.1); color: #fff;
+  outline: none; cursor: pointer; min-width: 56px;
+}
+.state-select option { color: #2D3748; background: #fff; }
+.count-badge { background: rgba(255,255,255,.08); border-radius: 3px; padding: 2px 8px; color: #90CDF4; white-space: nowrap; font-size: 11px; }
+.toggle-btn {
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+  color: #fff; padding: 3px 10px; border-radius: 3px; font-size: 11px;
+  cursor: pointer; white-space: nowrap;
+}
+.toggle-btn:hover { background: rgba(255,255,255,0.2); }
+
+#map { height: 100%; }
+
+.leaflet-top { top: 56px; }
+
+.loading-overlay {
+  position: fixed; top: 56px; left: 0; right: 0; bottom: 0;
+  background: rgba(26,32,44,.85); display: flex; align-items: center;
+  justify-content: center; z-index: 9999; color: #fff; font-size: 14px;
+  flex-direction: column; gap: 12px;
+}
+.loading-overlay .spinner {
+  width: 32px; height: 32px; border: 3px solid rgba(255,255,255,0.1);
+  border-top-color: #ef7835; border-radius: 50%; animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-overlay.hidden { display: none; }
+
+.legend {
+  position: fixed; bottom: 24px; right: 24px; z-index: 10000;
+  background: rgba(255,255,255,.95); border-radius: 6px;
+  padding: 10px 14px; box-shadow: 0 2px 12px rgba(0,0,0,.15);
+  font-size: 11px; min-width: 130px;
+}
+.legend-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.legend-title { font-weight: 700; color: #1B2A4A; font-size: 10px; letter-spacing: .05em; text-transform: uppercase; }
+.legend-close { cursor: pointer; color: #A0AEC0; font-size: 14px; line-height: 1; padding: 0 2px; }
+.legend-close:hover { color: #4A5568; }
+.legend-body { }
+.legend-body.hidden { display: none; }
+.legend-reopen {
+  position: fixed; bottom: 24px; right: 24px; z-index: 10000;
+  display: none; width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,.95); box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  cursor: pointer; align-items: center; justify-content: center;
+  color: #1B2A4A; font-size: 16px; font-weight: 700; border: none;
+}
+.legend-reopen.show { display: flex; }
+.legend-reopen:hover { background: #fff; }
+.legend-row { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
+.legend-label { color: #4A5568; }
+.legend-note-toggle { margin-top: 6px; color: #718096; font-size: 10px; cursor: pointer; user-select: none; }
+.legend-note-toggle:hover { color: #4A5568; }
+.legend-note { display: none; margin-top: 6px; padding-top: 6px; border-top: 1px solid #E2E8F0; color: #718096; font-size: 10px; line-height: 1.4; }
+.legend-note.open { display: block; }
+.legend-note-close { display: block; margin-top: 6px; cursor: pointer; color: #718096; }
+.legend-note-close:hover { color: #4A5568; }
+
+.popup-content { font-size: 12px; line-height: 1.5; min-width: 160px; }
+.popup-content .name { font-size: 13px; font-weight: 700; color: #1B2A4A; margin-bottom: 4px; }
+.popup-content .detail { color: #4A5568; }
+.popup-content .detail strong { color: #2D3748; }
+
+.popup-badge { display: inline-block; padding: 1px 7px; border-radius: 3px; font-size: 11px; font-weight: 700; }
+.pb-high   { background: #FED7D7; color: #C53030; }
+.pb-mh     { background: #FEEBC8; color: #C05621; }
+.pb-mod    { background: #FEFCBF; color: #744210; }
+.pb-low    { background: #C6F6D5; color: #22543D; }
+
+.marker-cluster-small  { background-color: rgba(214, 158, 46, 0.4); }
+.marker-cluster-small div { background-color: rgba(214, 158, 46, 0.7); color: #fff; font-weight: 700; }
+.marker-cluster-medium { background-color: rgba(239, 120, 53, 0.4); }
+.marker-cluster-medium div { background-color: rgba(239, 120, 53, 0.7); color: #fff; font-weight: 700; }
+.marker-cluster-large  { background-color: rgba(197, 48, 48, 0.4); }
+.marker-cluster-large div { background-color: rgba(197, 48, 48, 0.7); color: #fff; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">Seagull Health | <em>CRISP</em></div>
+  <a class="header-link" href="/">Return to The DSS Index</a>
+  <div class="header-right">
+    <span class="count-badge" id="count-badge">—</span>
+    <span style="opacity:.6">State:</span>
+    <select class="state-select" id="state-select">
+      <option value="">All States</option>
+    </select>
+    <button class="toggle-btn" id="back-btn" style="display:none" onclick="document.getElementById('state-select').value='';onStateChange()">← Back</button>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div>Loading facilities…</div>
+</div>
+
+<div id="map"></div>
+
+<div class="legend">
+  <div class="legend-header">
+    <div class="legend-title">Exposure Level</div>
+    <span class="legend-close" onclick="toggleLegend()">✕</span>
+  </div>
+  <div class="legend-body" id="legend-body">
+    <div class="legend-row"><span class="legend-dot" style="background:#C53030"></span><span class="legend-label">20%+</span></div>
+    <div class="legend-row"><span class="legend-dot" style="background:#C05621"></span><span class="legend-label">10–20%</span></div>
+    <div class="legend-row"><span class="legend-dot" style="background:#D69E2E"></span><span class="legend-label">5–10%</span></div>
+    <div class="legend-row"><span class="legend-dot" style="background:#38A169"></span><span class="legend-label">Under 5%</span></div>
+    <div class="legend-row"><span class="legend-dot" style="background:#E2E8F0"></span><span class="legend-label">No data</span></div>
+    <div class="legend-note-toggle" onclick="toggleNote()" id="note-toggle">ⓘ How is this measured?</div>
+    <div class="legend-note" id="legend-note">Each state's percentage reflects how many of its nursing facilities have received deficiencies in areas that research literature associates with unrecognized seizures in dementia (behavioral health, medication management, professional standards, staffing). These are regulatory flags from CMS inspections, not clinical diagnoses. <span class="legend-note-close" onclick="toggleNote()">▲ Hide</span></div>
+  </div>
+</div>
+<button class="legend-reopen" id="legend-reopen" onclick="toggleLegend()">+</button>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+<script>
+const EXPOSURE_COLORS = {
+  'High': '#C53030', 'Moderate-High': '#C05621',
+  'Moderate': '#D69E2E', 'Low': '#38A169'
+};
+
+let map, choropleth, facilityLayer;
+let currentState = '';
+
+function exposureColor(pct) {
+  if (pct >= 20) return '#C53030';
+  if (pct >= 10) return '#C05621';
+  if (pct >= 5)  return '#D69E2E';
+  return '#38A169';
+}
+
+function getRadius(beds) {
+  if (!beds) return 5;
+  return Math.max(3, Math.min(Math.sqrt(beds) * 1.4, 22));
+}
+
+function makeFacilityCircle(f) {
+  const color = EXPOSURE_COLORS[f.exposure_level] || '#A0AEC0';
+  const circle = L.circleMarker([f.latitude, f.longitude], {
+    radius: getRadius(f.licensed_beds), color, weight: 1,
+    fillColor: color, fillOpacity: 0.7
+  });
+  const level = f.exposure_level || '—';
+  const badge = ({ 'High':'pb-high', 'Moderate-High':'pb-mh', 'Moderate':'pb-mod', 'Low':'pb-low' })[level] || '';
+  circle.bindPopup(`
+    <div class="popup-content">
+      <div class="name">${f.name.replace(/'/g,"&#39;")}</div>
+      <div class="detail"><strong>Exposure:</strong> <span class="popup-badge ${badge}">${level}</span></div>
+      <div class="detail"><strong>City:</strong> ${f.city || '—'}, ${f.region}</div>
+      <div class="detail"><strong>Beds:</strong> ${f.licensed_beds || '—'}</div>
+    </div>
+  `);
+  return circle;
+}
+
+async function loadFacilityData(state) {
+  const res = await fetch(`/api/facilities/map?state=${state}`);
+  const { rows, count } = await res.json();
+  document.getElementById('count-badge').textContent =
+    `${count.toLocaleString()} facilit${count === 1 ? 'y' : 'ies'}`;
+
+  facilityLayer.clearLayers();
+  const markers = rows.filter(f => f.latitude && f.longitude).map(makeFacilityCircle);
+  facilityLayer.addLayers(markers);
+
+  if (count === 1 && rows[0]) {
+    map.setView([rows[0].latitude, rows[0].longitude], 13);
+  } else if (count > 1 && markers.length) {
+    const bounds = facilityLayer.getBounds();
+    if (bounds.isValid()) map.fitBounds(bounds, { padding: [24, 24] });
+  }
+}
+
+async function loadStateData() {
+  const { rows } = await fetch('/api/facilities/map/states').then(r => r.json());
+  document.getElementById('count-badge').textContent =
+    `${rows.length.toLocaleString()} states`;
+  document.getElementById('loading').classList.add('hidden');
+  return rows;
+}
+
+async function onStateChange() {
+  currentState = document.getElementById('state-select').value;
+  document.getElementById('back-btn').style.display = currentState ? 'inline-block' : 'none';
+  if (currentState) {
+    map.removeLayer(choropleth);
+    map.addLayer(facilityLayer);
+    await loadFacilityData(currentState);
+  } else {
+    map.removeLayer(facilityLayer);
+    map.addLayer(choropleth);
+  }
+}
+
+function toggleNote() {
+  const note = document.getElementById('legend-note');
+  const toggle = document.getElementById('note-toggle');
+  const isOpen = note.classList.toggle('open');
+  toggle.textContent = isOpen ? '▲ Hide' : 'ⓘ How is this measured?';
+}
+
+function toggleLegend() {
+  document.getElementById('legend-body').classList.toggle('hidden');
+  document.getElementById('legend-reopen').classList.toggle('show');
+}
+
+async function boot() {
+  map = L.map('map').setView([39.8, -98.6], 4);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'OSM', maxZoom: 19
+  }).addTo(map);
+
+  facilityLayer = L.markerClusterGroup({
+    chunkedLoading: true, maxClusterRadius: 60,
+    spiderfyOnMaxZoom: true, showCoverageOnHover: false,
+    disableClusteringAtZoom: 12
+  });
+
+  const [topoRes, dataRes, statesRes] = await Promise.all([
+    fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json'),
+    fetch('/api/facilities/map/states'),
+    fetch('/api/states')
+  ]);
+
+  const topology = await topoRes.json();
+  const { rows } = await dataRes.json();
+  const stateList = await statesRes.json();
+
+  // Populate dropdown
+  const sel = document.getElementById('state-select');
+  stateList.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = opt.textContent = s;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener('change', onStateChange);
+
+  const stateToAbbr = {
+    'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA',
+    'Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA',
+    'Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA',
+    'Kansas':'KS','Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD',
+    'Massachusetts':'MA','Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO',
+    'Montana':'MT','Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ',
+    'New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH',
+    'Oklahoma':'OK','Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC',
+    'South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT',
+    'Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY',
+    'District of Columbia':'DC'
+  };
+
+  const lookup = {};
+  rows.forEach(s => { lookup[s.state] = s; });
+
+  const states = topojson.feature(topology, topology.objects.states);
+
+  choropleth = L.geoJSON(states, {
+    style: feature => {
+      const abbr = stateToAbbr[feature.properties.name];
+      const s = lookup[abbr];
+      if (!s) return { fillColor: '#E2E8F0', color: '#CBD5E0', weight: 0.5, fillOpacity: 0.6 };
+      const pct = s.high_pct + s.mh_pct;
+      return { fillColor: exposureColor(pct), color: '#fff', weight: 0.5, fillOpacity: 0.7 };
+    },
+    onEachFeature: (feature, layer) => {
+      const abbr = stateToAbbr[feature.properties.name];
+      const s = lookup[abbr];
+      if (!s) return;
+      layer.bindPopup(`
+        <div class="popup-content">
+          <div class="name">${s.state}</div>
+          <div class="detail"><strong>Facilities:</strong> ${s.facilities.toLocaleString()}</div>
+          <div class="detail"><strong>High:</strong> ${s.high_pct}%</div>
+          <div class="detail"><strong>Moderate-High:</strong> ${s.mh_pct}%</div>
+          <div class="detail"><strong>Moderate:</strong> ${s.mod_pct}%</div>
+          <div class="detail"><strong>Low:</strong> ${s.low_pct}%</div>
+        </div>
+      `);
+      layer.on('mouseover', () => layer.setStyle({ fillOpacity: 0.95, weight: 1.5 }));
+      layer.on('mouseout', () => layer.setStyle({ fillOpacity: 0.7, weight: 0.5 }));
+      layer.on('click', () => {
+        document.getElementById('state-select').value = abbr;
+        onStateChange();
+      });
+    }
+  }).addTo(map);
+
+  document.getElementById('count-badge').textContent =
+    `${rows.length.toLocaleString()} states`;
+  document.getElementById('loading').classList.add('hidden');
+}
+
+boot();
+</script>
+</body>
+</html>

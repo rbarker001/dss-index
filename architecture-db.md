@@ -261,7 +261,7 @@ Express server at port 3010. Query library in `queries/library.js`.
 
 Queries marked with an orange dot in the sidebar support drill-down. Run the query, then click any row — a panel slides up from the bottom showing the underlying data. Examples: Domain distribution → click Domain 2 → see which facilities and conditions make up that count. Exposure distribution → click High → see those facilities. Condition breakdown → click C-4 → see which facilities carry it.
 
-Drill-down SQL lives server-side only — not exposed to the client. Drillable queries: exposure_distribution, avg_staffing_by_exposure, condition_breakdown, domain_distribution, recognized_high_any_domain, ftag_citation_totals, ownership_exposure, cities_by_exposure, city_staffing_comparison, urban_rural_exposure.
+Drill-down SQL lives server-side only — not exposed to the client. Drillable queries: exposure_distribution, avg_staffing_by_exposure, condition_breakdown, dss_domain_activity_by_facility, recognized_high_any_domain, ftag_citation_totals, ownership_exposure, cities_by_exposure, city_staffing_comparison, urban_rural_exposure.
 
 ### Pin / compare
 

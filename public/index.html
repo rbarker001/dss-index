@@ -20,8 +20,20 @@ body {
 }
 .brand { font-size: 14px; font-weight: 500; }
 .brand span { color: #ef7835; }
-.header-right { font-size: 11px; color: #90CDF4; display: flex; align-items: center; gap: 16px; }
+.header-right { font-size: 11px; color: #90CDF4; display: flex; align-items: center; gap: 12px; }
 .db-stat { background: rgba(255,255,255,.08); border-radius: 3px; padding: 2px 8px; }
+.state-select {
+  font-size: 11px; padding: 3px 8px; border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 3px; background: rgba(255,255,255,0.1); color: #fff;
+  outline: none; cursor: pointer; min-width: 48px;
+}
+.state-select option { color: #2D3748; background: #fff; }
+.state-select:focus { border-color: #ef7835; }
+.filter-badge {
+  display: none; font-size: 10px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; background: #ef7835; color: #fff;
+  border-radius: 3px; padding: 1px 6px;
+}
 
 /* ── LAYOUT ─────────────────────────────────────────────────── */
 .layout { display: flex; flex: 1; overflow: hidden; }
@@ -168,9 +180,14 @@ body {
 
 <div class="header">
   <div class="brand">Seagull Health &nbsp;<span>|</span>&nbsp; <span>CRISP</span> &nbsp;·&nbsp; Query Runner</div>
+  <a href="/map.html" style="color:#90CDF4;font-size:11px;margin-left:4px;text-decoration:none">🗺 Map</a>
   <div class="header-right">
+    <span class="filter-badge" id="filter-badge">Filtered</span>
     <span class="db-stat" id="db-stat">—</span>
-    <span style="opacity:.4">Kansas City, MO</span>
+    <label style="opacity:.6;cursor:pointer">State:</label>
+    <select class="state-select" id="state-select" onchange="onStateChange()">
+      <option value="">All</option>
+    </select>
   </div>
 </div>
 
@@ -243,39 +260,86 @@ body {
 
 <script>
 // ── State ─────────────────────────────────────────────────────────────────
-let allQueries  = [];
-let facilities  = [];
-let activeQuery = null;
-let lastRows    = [];
+let allQueries    = [];
+let facilities    = [];
+let allStates     = [];
+let selectedState = '';
+let activeQuery   = null;
+let lastRows      = [];
 
 // ── Boot ──────────────────────────────────────────────────────────────────
 async function boot() {
-  const [qs, fs, cs] = await Promise.all([
+  const [qs, fs, cs, ss] = await Promise.all([
     fetch('/api/queries').then(r => r.json()),
     fetch('/api/facilities').then(r => r.json()),
-    fetch('/api/cities').then(r => r.json())
+    fetch('/api/cities').then(r => r.json()),
+    fetch('/api/states').then(r => r.json())
   ]);
   allQueries = qs;
   facilities = fs;
+  allStates  = ss;
 
-  const fsel = document.getElementById('facility-select');
-  fs.forEach(name => {
+  const ssel = document.getElementById('state-select');
+  ss.forEach(s => {
     const opt = document.createElement('option');
-    opt.value = opt.textContent = name;
-    fsel.appendChild(opt);
+    opt.value = opt.textContent = s;
+    ssel.appendChild(opt);
   });
 
-  const csel = document.getElementById('city-select');
-  cs.forEach(city => {
-    const opt = document.createElement('option');
-    opt.value = opt.textContent = city;
-    csel.appendChild(opt);
-  });
-
-  document.getElementById('db-stat').textContent =
-    `${fs.length} facilit${fs.length === 1 ? 'y' : 'ies'}`;
-
+  populateFacilitySelect(fs);
+  populateCitySelect(cs);
+  updateDbStat(fs.length);
   renderSidebar(allQueries);
+}
+
+function populateFacilitySelect(names) {
+  const sel = document.getElementById('facility-select');
+  const val = sel.value;
+  sel.innerHTML = '<option value="">— Select a facility —</option>';
+  names.forEach(n => {
+    const opt = document.createElement('option');
+    opt.value = opt.textContent = n;
+    if (n === val) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function populateCitySelect(names) {
+  const sel = document.getElementById('city-select');
+  const val = sel.value;
+  sel.innerHTML = '<option value="">— Select a city —</option>';
+  names.forEach(n => {
+    const opt = document.createElement('option');
+    opt.value = opt.textContent = n;
+    if (n === val) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function updateDbStat(count) {
+  document.getElementById('db-stat').textContent =
+    `${count} facilit${count === 1 ? 'y' : 'ies'}`;
+}
+
+// ── State filter ─────────────────────────────────────────────────────────
+async function onStateChange() {
+  selectedState = document.getElementById('state-select').value;
+
+  const badge = document.getElementById('filter-badge');
+  badge.style.display = selectedState ? 'inline' : 'none';
+
+  const base = selectedState ? `?state=${selectedState}` : '';
+  const [fs, cs] = await Promise.all([
+    fetch(`/api/facilities${base}`).then(r => r.json()),
+    fetch(`/api/cities${base}`).then(r => r.json())
+  ]);
+  facilities = fs;
+  populateFacilitySelect(fs);
+  populateCitySelect(cs);
+  updateDbStat(fs.length);
+
+  // Re-run current query if one is active
+  if (activeQuery) runQuery();
 }
 
 // ── Sidebar ───────────────────────────────────────────────────────────────
@@ -351,7 +415,7 @@ async function runQuery() {
     const res  = await fetch('/api/run', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: activeQuery.id, facility, city })
+      body: JSON.stringify({ id: activeQuery.id, facility, city, state: selectedState || undefined })
     });
     const data = await res.json();
     if (data.error) {
@@ -430,7 +494,7 @@ async function drilldown(rowIndex) {
     const res  = await fetch('/api/drilldown', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ queryId: activeQuery.id, paramValue: paramVal })
+      body: JSON.stringify({ queryId: activeQuery.id, paramValue: paramVal, state: selectedState || undefined })
     });
     const data = await res.json();
     if (data.error) {

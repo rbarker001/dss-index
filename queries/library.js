@@ -354,15 +354,19 @@ const QUERIES = [
       ORDER BY condition_code`
   },
   {
-    id: 'domain_distribution',
+    id: 'dss_domain_activity_by_facility',
     category: 'Condition Analysis',
-    title: 'DSS domain distribution — all domains',
-    description: 'Active conditions by DSS domain across all facilities. All four domains shown. Click a row to see the facilities and conditions behind that count.',
+    title: 'DSS domain activity — all 4 domains with labels',
+    description: 'Active conditions by DSS domain across all facilities. Includes domain names (Seizure Events, Movement Changes, Awareness Changes, Behavioral Changes). Click a row to see the facilities and conditions behind that count.',
     drilldown: {
       paramCol: 'dss_domain',
       title: 'DSS Domain {value} — active conditions',
       sql: `
         SELECT f.name, c.condition_code, c.condition_name, c.classification,
+               CASE c.dss_domain WHEN 1 THEN 'Seizure Events'
+                 WHEN 2 THEN 'Movement Changes'
+                 WHEN 3 THEN 'Awareness Changes'
+                 WHEN 4 THEN 'Behavioral Changes' END AS domain_name,
                c.recognition_risk, c.source_citation_value AS ftag, c.source_count AS citations
         FROM condition c
         JOIN assessment a ON c.assessment_id = a.assessment_id
@@ -372,6 +376,10 @@ const QUERIES = [
     },
     sql: `
       SELECT dss_domain,
+             CASE dss_domain WHEN 1 THEN 'Seizure Events'
+               WHEN 2 THEN 'Movement Changes'
+               WHEN 3 THEN 'Awareness Changes'
+               WHEN 4 THEN 'Behavioral Changes' END AS domain_name,
              COUNT(*) AS total_active,
              SUM(CASE WHEN classification = 'Recognized' THEN 1 ELSE 0 END) AS recognized,
              SUM(CASE WHEN classification = 'Potential'  THEN 1 ELSE 0 END) AS potential
@@ -401,32 +409,37 @@ const QUERIES = [
                CASE c.classification WHEN 'Recognized' THEN 1 WHEN 'Potential' THEN 2 ELSE 3 END`
   },
   {
-    id: 'domain2_fall_seizure',
+    id: 'dss_domain2_movement_active',
     category: 'Condition Analysis',
-    title: 'Domain 2 — Fall-Seizure Nexus (F-689)',
-    description: 'Every facility with an active F-689 condition. Domain 2 covers movement automatisms and seizure-precipitated falls — partially recognizable but inconsistently attributed.',
+    title: 'Domain 2 — all active Movement Changes conditions',
+    description: 'Every active Domain 2 condition across all facilities. Domain 2 covers movement automatisms (oral, limb, hand), episodic stiffness, and seizure-precipitated falls — partially recognizable but inconsistently attributed in dementia populations.',
     sql: `
-      SELECT f.name, c.classification, c.source_count AS f689_citations,
-             a.staffing_hprd, a.nursing_turnover_pct AS turnover, a.exposure_level
+      SELECT f.name, c.condition_code, c.condition_name, c.classification,
+             c.source_citation_value AS ftag, c.source_count AS citations, a.exposure_level,
+             a.staffing_hprd, a.nursing_turnover_pct AS turnover
       FROM condition c
       JOIN assessment a ON c.assessment_id = a.assessment_id
       JOIN facility f   ON a.facility_id   = f.facility_id
-      WHERE c.source_citation_value = 'F-689' AND c.classification IN ('Recognized', 'Potential')
-      ORDER BY c.source_count DESC, c.classification`
+      WHERE c.dss_domain = 2 AND c.classification IN ('Recognized', 'Potential')
+      ORDER BY CASE c.classification WHEN 'Recognized' THEN 1 ELSE 2 END,
+               c.condition_code, f.name`
   },
   {
-    id: 'active_domain34_all',
+    id: 'dss_domain3_domain4_active_combined',
     category: 'Condition Analysis',
-    title: 'Domain 3 + 4 — all active conditions (Recognized and Potential)',
-    description: 'Every active condition mapping to Domains 3 or 4 — awareness changes and behavioral manifestations. Both Recognized and Potential included.',
+    title: 'Domain 3 + 4 combined — Awareness and Behavioral Changes',
+    description: 'Every active condition mapping to Domains 3 or 4. Domain 3 (Awareness Changes: staring spells, unresponsiveness, acute confusion, transient amnesia) and Domain 4 (Behavioral Changes: sudden agitation, speech arrest, abrupt mood shifts, repetitive actions). Combined view for overview; separate domain-specific queries also available.',
     sql: `
       SELECT f.name, c.condition_code, c.condition_name, c.classification,
+             CASE c.dss_domain WHEN 3 THEN 'Awareness Changes'
+                               WHEN 4 THEN 'Behavioral Changes' END AS domain_name,
              c.source_citation_value AS ftag, c.source_count AS citations, a.exposure_level
       FROM condition c
       JOIN assessment a ON c.assessment_id = a.assessment_id
       JOIN facility f   ON a.facility_id   = f.facility_id
       WHERE c.dss_domain IN (3, 4) AND c.classification IN ('Recognized', 'Potential')
-      ORDER BY CASE c.classification WHEN 'Recognized' THEN 1 ELSE 2 END,
+      ORDER BY c.dss_domain,
+               CASE c.classification WHEN 'Recognized' THEN 1 ELSE 2 END,
                c.condition_code, f.name`
   },
   {
@@ -482,24 +495,6 @@ const QUERIES = [
       ORDER BY total_citations DESC`
   },
   {
-    id: 'cooccurrence_f658_f740',
-    category: 'Condition Analysis',
-    title: 'F-658 and F-740/741 co-occurrence',
-    description: 'Tests the syndrome hypothesis: do professional standards failure and behavioral competency failure always appear together?',
-    sql: `
-      SELECT f.name,
-             MAX(CASE WHEN c.source_citation_value = 'F-658'       THEN c.classification END) AS f658,
-             MAX(CASE WHEN c.source_citation_value = 'F-740/F-741' THEN c.classification END) AS f740_741,
-             a.exposure_level
-      FROM condition c
-      JOIN assessment a ON c.assessment_id = a.assessment_id
-      JOIN facility f   ON a.facility_id   = f.facility_id
-      GROUP BY f.name, a.exposure_level
-      ORDER BY CASE a.exposure_level
-        WHEN 'High' THEN 1 WHEN 'Moderate-High' THEN 2
-        WHEN 'Moderate' THEN 3 WHEN 'Low' THEN 4 ELSE 5 END`
-  },
-  {
     id: 'high_risk_condition_count',
     category: 'Condition Analysis',
     title: 'High recognition risk condition count per facility',
@@ -512,6 +507,122 @@ const QUERIES = [
       WHERE c.recognition_risk = 'High' AND c.classification IN ('Recognized', 'Potential')
       GROUP BY f.name, a.exposure_level
       ORDER BY high_risk_active DESC, f.name`
+  },
+  {
+    id: 'dss_domain1_seizure_events_active',
+    category: 'Condition Analysis',
+    title: 'Domain 1 — all active Seizure Events conditions',
+    description: 'Every active Domain 1 condition across all facilities. Domain 1 covers convulsive episodes, incontinence, post-ictal confusion, unexplained falls, and nocturnal episodes — the most direct seizure indicators in the DSS framework.',
+    sql: `
+      SELECT f.name, c.condition_code, c.condition_name, c.classification,
+             c.source_citation_value AS ftag, c.source_count AS citations, a.exposure_level
+      FROM condition c
+      JOIN assessment a ON c.assessment_id = a.assessment_id
+      JOIN facility f   ON a.facility_id   = f.facility_id
+      WHERE c.dss_domain = 1 AND c.classification IN ('Recognized', 'Potential')
+      ORDER BY CASE c.classification WHEN 'Recognized' THEN 1 ELSE 2 END,
+               c.condition_code, f.name`
+  },
+  {
+    id: 'dss_domain3_awareness_active',
+    category: 'Condition Analysis',
+    title: 'Domain 3 — all active Awareness Changes conditions',
+    description: 'Every active Domain 3 condition across all facilities. Domain 3 (Awareness Changes) covers staring spells, unresponsiveness, acute confusion episodes, and transient amnesia — the seizure manifestations most commonly mistaken for dementia progression.',
+    sql: `
+      SELECT f.name, c.condition_code, c.condition_name, c.classification,
+             c.source_citation_value AS ftag, c.source_count AS citations, a.exposure_level
+      FROM condition c
+      JOIN assessment a ON c.assessment_id = a.assessment_id
+      JOIN facility f   ON a.facility_id   = f.facility_id
+      WHERE c.dss_domain = 3 AND c.classification IN ('Recognized', 'Potential')
+      ORDER BY CASE c.classification WHEN 'Recognized' THEN 1 ELSE 2 END,
+               c.condition_code, f.name`
+  },
+  {
+    id: 'dss_domain4_behavioral_active',
+    category: 'Condition Analysis',
+    title: 'Domain 4 — all active Behavioral Changes conditions',
+    description: 'Every active Domain 4 condition across all facilities. Domain 4 (Behavioral Changes) covers sudden agitation/fear, speech arrest, abrupt mood shifts, and repetitive purposeless actions — ictal and post-ictal behavioral manifestations of seizures.',
+    sql: `
+      SELECT f.name, c.condition_code, c.condition_name, c.classification,
+             c.source_citation_value AS ftag, c.source_count AS citations, a.exposure_level
+      FROM condition c
+      JOIN assessment a ON c.assessment_id = a.assessment_id
+      JOIN facility f   ON a.facility_id   = f.facility_id
+      WHERE c.dss_domain = 4 AND c.classification IN ('Recognized', 'Potential')
+      ORDER BY CASE c.classification WHEN 'Recognized' THEN 1 ELSE 2 END,
+               c.condition_code, f.name`
+  },
+  {
+    id: 'potential_recognized_ratio_by_domain',
+    category: 'Condition Analysis',
+    title: 'Potential-to-Recognized ratio by DSS domain',
+    description: 'For each DSS domain, the percentage of active conditions classified as Potential vs Recognized. A high Potential share in Domains 3 and 4 supports the DSEF thesis that seizure indicators in those domains are systematically under-recognized.',
+    sql: `
+      SELECT dss_domain,
+             CASE dss_domain WHEN 1 THEN 'Seizure Events'
+               WHEN 2 THEN 'Movement Changes'
+               WHEN 3 THEN 'Awareness Changes'
+               WHEN 4 THEN 'Behavioral Changes' END AS domain_name,
+             COUNT(*) AS total_active,
+             SUM(CASE WHEN classification = 'Recognized' THEN 1 ELSE 0 END) AS recognized,
+             SUM(CASE WHEN classification = 'Potential'  THEN 1 ELSE 0 END) AS potential,
+             ROUND(100.0 * SUM(CASE WHEN classification = 'Potential' THEN 1 ELSE 0 END)
+               / NULLIF(SUM(CASE WHEN classification IN ('Recognized', 'Potential') THEN 1 ELSE 0 END), 0), 1) AS pct_potential
+      FROM condition
+      WHERE classification IN ('Recognized', 'Potential') AND dss_domain IS NOT NULL
+      GROUP BY dss_domain
+      ORDER BY pct_potential DESC`
+  },
+  {
+    id: 'conditions_potential_dominant',
+    category: 'Condition Analysis',
+    title: 'Potential-dominant conditions (Potential > Recognized)',
+    description: 'Specific conditions where Potential classifications outnumber Recognized. These are the conditions where the framework is most likely under-documenting seizure activity — the condition looks seizure-like but CMS surveys rarely cite it as such.',
+    sql: `
+      WITH domain_totals AS (
+        SELECT dss_domain, condition_code, condition_name,
+               SUM(CASE WHEN classification = 'Recognized' THEN 1 ELSE 0 END) AS recognized,
+               SUM(CASE WHEN classification = 'Potential'  THEN 1 ELSE 0 END) AS potential
+        FROM condition
+        WHERE dss_domain IS NOT NULL AND classification IN ('Recognized', 'Potential')
+        GROUP BY dss_domain, condition_code, condition_name
+      )
+      SELECT dt.dss_domain,
+             CASE dt.dss_domain WHEN 1 THEN 'Seizure Events'
+               WHEN 2 THEN 'Movement Changes'
+               WHEN 3 THEN 'Awareness Changes'
+               WHEN 4 THEN 'Behavioral Changes' END AS domain_name,
+             dt.condition_code, dt.condition_name,
+             dt.recognized, dt.potential,
+             ROUND(100.0 * dt.potential / NULLIF(dt.recognized + dt.potential, 0), 1) AS pct_potential
+      FROM domain_totals dt
+      WHERE dt.potential > dt.recognized
+      ORDER BY pct_potential DESC, dt.dss_domain`
+  },
+  {
+    id: 'facility_multidomain_overlap',
+    category: 'Condition Analysis',
+    title: 'Facilities with active conditions in 2+ DSS domains',
+    description: 'The DSEF thesis is that seizure indicators in dementia appear across multiple DSS domains simultaneously. This query surfaces facilities with active conditions in 2 or more domains — the empirical evidence for multi-domain seizure presentation.',
+    sql: `
+      SELECT f.name, a.exposure_level,
+             COUNT(DISTINCT c.dss_domain) AS active_domains,
+             GROUP_CONCAT(DISTINCT CASE c.dss_domain
+               WHEN 1 THEN 'D1-Seizure'
+               WHEN 2 THEN 'D2-Movement'
+               WHEN 3 THEN 'D3-Awareness'
+               WHEN 4 THEN 'D4-Behavioral'
+             END) AS domains_present,
+             COUNT(CASE WHEN c.classification = 'Recognized' THEN 1 END) AS recognized_total,
+             COUNT(CASE WHEN c.classification = 'Potential'  THEN 1 END) AS potential_total
+      FROM condition c
+      JOIN assessment a ON c.assessment_id = a.assessment_id
+      JOIN facility f   ON a.facility_id   = f.facility_id
+      WHERE c.dss_domain IS NOT NULL AND c.classification IN ('Recognized', 'Potential')
+      GROUP BY f.name, a.exposure_level
+      HAVING active_domains >= 2
+      ORDER BY active_domains DESC, recognized_total DESC`
   },
 
   // ── OWNERSHIP PATTERNS ───────────────────────────────────────────────────
@@ -542,40 +653,6 @@ const QUERIES = [
       GROUP BY a.ownership_type
       ORDER BY high DESC, moderate_high DESC`
   },
-  {
-    id: 'ownership_staffing',
-    category: 'Ownership Patterns',
-    title: 'Staffing by ownership type',
-    description: 'Do non-profit operators staff more hours per resident day than for-profit?',
-    sql: `
-      SELECT a.ownership_type, COUNT(*) AS facilities,
-             ROUND(AVG(a.staffing_hprd), 2)        AS avg_reported_hprd,
-             ROUND(AVG(a.staffing_hprd_pbj), 2)    AS avg_pbj_hprd,
-             ROUND(AVG(a.rn_hprd), 2)              AS avg_rn_hprd,
-             ROUND(AVG(a.nursing_turnover_pct), 1) AS avg_turnover
-      FROM assessment a
-      GROUP BY a.ownership_type
-      ORDER BY avg_reported_hprd DESC`
-  },
-  {
-    id: 'ownership_domain',
-    category: 'Ownership Patterns',
-    title: 'Ownership type × DSS domain + staffing',
-    description: 'Combined view: ownership structure, average staffing, and High-risk condition counts by DSS domain. The multi-dimensional comparison.',
-    sql: `
-      SELECT a.ownership_type,
-             COUNT(DISTINCT a.assessment_id)                                           AS facilities,
-             ROUND(AVG(a.staffing_hprd), 2)                                            AS avg_hprd,
-             SUM(CASE WHEN c.dss_domain = 2 AND c.classification IN ('Recognized', 'Potential') THEN 1 ELSE 0 END) AS active_domain2,
-             SUM(CASE WHEN c.dss_domain IN (3,4) AND c.classification = 'Recognized' THEN 1 ELSE 0 END) AS recognized_domain34,
-             SUM(CASE WHEN c.dss_domain IN (3,4) AND c.classification = 'Potential'  THEN 1 ELSE 0 END) AS potential_domain34
-      FROM assessment a
-      JOIN facility f   ON f.facility_id   = a.facility_id
-      JOIN condition c  ON c.assessment_id = a.assessment_id
-      GROUP BY a.ownership_type
-      ORDER BY recognized_domain34 DESC`
-  },
-
   // ── STAFFING INTEGRITY ───────────────────────────────────────────────────
   {
     id: 'staffing_discrepancy',
@@ -608,19 +685,6 @@ const QUERIES = [
       WHERE a.staffing_hprd > a.staffing_hprd_pbj
       ORDER BY staffing_gap DESC`
   },
-  {
-    id: 'all_staffing_fields',
-    category: 'Staffing Integrity',
-    title: 'All staffing fields — full picture',
-    description: 'Reported total, PBJ total, RN hours, and turnover for every facility.',
-    sql: `
-      SELECT f.name, a.staffing_hprd AS reported_total, a.staffing_hprd_pbj AS pbj_total,
-             a.rn_hprd AS reported_rn, a.nursing_turnover_pct AS turnover_pct,
-             a.staffing_rating AS cms_staffing_star, a.exposure_level
-      FROM facility f JOIN assessment a ON f.facility_id = a.facility_id
-      ORDER BY a.staffing_hprd_pbj ASC`
-  },
-
   // ── DATA GAPS ────────────────────────────────────────────────────────────
   {
     id: 'gap_summary',
@@ -692,12 +756,14 @@ const QUERIES = [
   {
     id: 'condition_recency',
     category: 'Citation Detail',
-    title: 'Recognized conditions — citation recency',
-    description: 'Every Recognized citation-based condition with its latest citation date and how many citations fall in the most recent inspection cycle. Stale-first: the conditions most exposed to the "old citations" critique are at the top.',
+    title: 'Recognized conditions — citation recency with stale flag',
+    description: 'Every Recognized citation-based condition with citation dates, months since latest, and a stale flag (no citation in 24+ months). Sort stale-first to surface conditions most exposed to the "old citations" critique.',
     sql: `
       SELECT f.name, c.condition_code, c.source_citation_value AS ftag,
              c.source_count AS citations,
              MAX(ct.citation_date) AS latest_citation,
+             CAST((julianday('now') - julianday(MAX(ct.citation_date))) / 30.44 AS INTEGER) AS months_since,
+             CASE WHEN julianday('now') - julianday(MAX(ct.citation_date)) > 730 THEN 'Yes' ELSE 'No' END AS stale,
              SUM(CASE WHEN ct.inspection_cycle = 1 THEN 1 ELSE 0 END) AS cycle1_citations,
              SUM(CASE WHEN ct.severity_code IN ('G','H','I','J','K','L') THEN 1 ELSE 0 END) AS severe_citations
       FROM condition c
@@ -709,27 +775,6 @@ const QUERIES = [
       WHERE c.classification = 'Recognized' AND c.condition_code IN ('C-1','C-2','C-3','C-4')
       GROUP BY c.condition_id
       ORDER BY latest_citation ASC`
-  },
-  {
-    id: 'stale_recognized',
-    category: 'Citation Detail',
-    title: 'Stale Recognized conditions (no citation in 24 months)',
-    description: 'Recognized conditions whose most recent citation is over two years old — the recency caveat list. These classifications rest entirely on older survey cycles.',
-    sql: `
-      SELECT f.name, c.condition_code, c.source_citation_value AS ftag,
-             c.source_count AS citations,
-             MAX(ct.citation_date) AS latest_citation,
-             CAST((julianday('now') - julianday(MAX(ct.citation_date))) / 30.44 AS INTEGER) AS months_since
-      FROM condition c
-      JOIN assessment a ON c.assessment_id = a.assessment_id
-      JOIN facility f   ON a.facility_id   = f.facility_id
-      JOIN citation ct  ON ct.assessment_id = a.assessment_id
-                       AND ((c.condition_code = 'C-4' AND ct.source_citation_value IN ('F-740','F-741'))
-                         OR ct.source_citation_value = c.source_citation_value)
-      WHERE c.classification = 'Recognized' AND c.condition_code IN ('C-1','C-2','C-3','C-4')
-      GROUP BY c.condition_id
-      HAVING julianday('now') - julianday(MAX(ct.citation_date)) > 730
-      ORDER BY months_since DESC`
   },
   {
     id: 'severe_citations',
