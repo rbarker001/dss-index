@@ -174,11 +174,62 @@ body {
   padding: 10px 14px; color: #C53030; font-size: 12px; margin: 12px 20px;
 }
 .loading { color: #A0AEC0; font-size: 12px; padding: 16px 20px; }
+
+/* ── HAMBURGER ──────────────────────────────────────────────── */
+.hamburger {
+  display: none; background: none; border: none; cursor: pointer;
+  padding: 4px; color: #fff; font-size: 18px; line-height: 1;
+}
+.sidebar-backdrop { display: none; }
+
+@media (max-width: 768px) {
+  .hamburger { display: block; }
+  .header { padding: 0 8px; }
+  .brand { font-size: 11px; }
+  .header-right { gap: 4px; }
+  .header-right label { display: none; }
+  .state-select { min-width: auto; width: 60px; font-size: 10px; padding: 2px 6px; }
+  .db-stat { font-size: 9px; padding: 1px 5px; }
+  .filter-badge { font-size: 8px; padding: 0 4px; }
+
+  .sidebar {
+    position: fixed; top: 46px; left: -260px; width: 260px; bottom: 0; z-index: 1000;
+    transition: left .2s ease; box-shadow: 2px 0 12px rgba(0,0,0,.15);
+  }
+  .sidebar.open { left: 0; }
+  .sidebar-backdrop {
+    display: none; position: fixed; top: 46px; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,.3); z-index: 999;
+  }
+  .sidebar-backdrop.open { display: block; }
+
+  .content { flex-direction: column; }
+  .panel + .panel { border-left: none; border-top: 2px solid #E2E8F0; }
+
+  .panel-controls { flex-wrap: wrap; }
+  .panel-controls select { width: 100%; min-width: 0; }
+  .facility-select { min-width: 0; width: 100%; }
+
+  .results-wrap { padding: 8px 12px; }
+  .panel-header { padding: 8px 12px; }
+  .panel-title { font-size: 13px; }
+  .panel-desc { font-size: 11px; }
+
+  .result-table { font-size: 11px; }
+  .result-table th,
+  .result-table td { padding: 4px 6px; }
+  .result-table-wrap { overflow-x: auto; }
+
+  .drilldown-wrap { max-height: 50vh; }
+  .dd-header { padding: 6px 12px; }
+  .dd-body { padding: 6px 12px; }
+}
 </style>
 </head>
 <body>
 
 <div class="header">
+  <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Toggle sidebar">☰</button>
   <div class="brand">Seagull Health &nbsp;<span>|</span>&nbsp; <span>The DSS Index</span></div>
   <div class="header-right">
     <span class="filter-badge" id="filter-badge">Filtered</span>
@@ -199,6 +250,7 @@ body {
     </div>
     <div id="query-list" style="flex:1;overflow-y:auto;padding-bottom:12px"></div>
   </div>
+  <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
 
   <!-- CONTENT (one or two panels) -->
   <div class="content" id="content">
@@ -398,6 +450,7 @@ function selectQuery(id) {
     const s = document.getElementById('search').value.toLowerCase();
     return !s || q.title.toLowerCase().includes(s) || q.category.toLowerCase().includes(s);
   }));
+  closeSidebar();
 }
 
 // ── Run query ─────────────────────────────────────────────────────────────
@@ -470,10 +523,12 @@ function renderTable(containerId, rows, isMain = false) {
         Export CSV
       </button>
     </div>
+    <div class="result-table-wrap">
     <table class="result-table ${hasDrilldown ? 'drillable' : ''}" id="tbl-${containerId}">
       <thead>${thead}</thead>
       <tbody>${tbody}</tbody>
-    </table>`;
+    </table>
+    </div>`;
 }
 
 // ── Drilldown ─────────────────────────────────────────────────────────────
@@ -525,7 +580,7 @@ function renderDrilldownTable(rows) {
     `<tr>${cols.map(c => `<td>${formatCell(c, row[c])}</td>`).join('')}</tr>`
   ).join('');
   document.getElementById('dd-body').innerHTML =
-    `<table class="result-table"><thead>${thead}</thead><tbody>${tbody}</tbody></table>`;
+    `<div class="result-table-wrap"><table class="result-table"><thead>${thead}</thead><tbody>${tbody}</tbody></table></div>`;
 }
 
 function closeDrilldown() {
@@ -550,9 +605,11 @@ function pinResults() {
     <div class="result-meta">
       <span class="result-count">${lastRows.length} row${lastRows.length !== 1 ? 's' : ''}</span>
     </div>
+    <div class="result-table-wrap">
     <table class="result-table">
       <thead>${thead}</thead><tbody>${tbody}</tbody>
-    </table>`;
+    </table>
+    </div>`;
 
   document.getElementById('pinned-panel').style.display = 'flex';
   document.getElementById('pin-btn').classList.add('active');
@@ -625,6 +682,16 @@ function exportCSV(containerId, queryId) {
   a.href     = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = `dsca-${queryId}-${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
+}
+
+// ── Mobile sidebar ──────────────────────────────────────────
+function toggleSidebar() {
+  document.getElementById('sidebar-backdrop').classList.toggle('open');
+  document.querySelector('.sidebar').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar-backdrop').classList.remove('open');
+  document.querySelector('.sidebar').classList.remove('open');
 }
 
 boot();
