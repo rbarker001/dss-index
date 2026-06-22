@@ -51,7 +51,7 @@ const QUERIES = [
       paramCol: 'city',
       title: '{value} — all facilities',
       sql: `
-        SELECT f.name, a.exposure_level, a.staffing_hprd, a.overall_rating AS five_star,
+        SELECT f.name, f.region AS state, a.exposure_level, a.staffing_hprd, a.overall_rating AS five_star,
                a.ownership_type, a.nursing_turnover_pct AS turnover
         FROM facility f JOIN assessment a ON f.facility_id = a.facility_id
         WHERE f.city = ?
@@ -60,7 +60,7 @@ const QUERIES = [
           WHEN 'Moderate' THEN 3 WHEN 'Low' THEN 4 ELSE 5 END`
     },
     sql: `
-      SELECT f.city,
+      SELECT f.city, f.region AS state,
              COUNT(*)                                                                AS facilities,
              SUM(CASE WHEN a.exposure_level = 'High'          THEN 1 ELSE 0 END)   AS high,
              SUM(CASE WHEN a.exposure_level = 'Moderate-High' THEN 1 ELSE 0 END)   AS moderate_high,
@@ -70,7 +70,7 @@ const QUERIES = [
                SUM(CASE WHEN a.exposure_level IN ('High','Moderate-High') THEN 1 ELSE 0 END)
                / COUNT(*), 0)                                                        AS pct_elevated
       FROM facility f JOIN assessment a ON f.facility_id = a.facility_id
-      GROUP BY f.city
+      GROUP BY f.city, f.region
       ORDER BY pct_elevated DESC, high DESC`
   },
 
@@ -192,7 +192,7 @@ const QUERIES = [
     description: 'Full list of facilities in a specific city with exposure, staffing, and Five-Star.',
     params: ['city'],
     sql: `
-      SELECT f.name, a.exposure_level, a.overall_rating AS five_star,
+      SELECT f.name, f.region AS state, a.exposure_level, a.overall_rating AS five_star,
              a.staffing_hprd, a.nursing_turnover_pct AS turnover,
              a.ownership_type, a.special_focus_flag, a.abuse_flag
       FROM facility f JOIN assessment a ON f.facility_id = a.facility_id
@@ -378,7 +378,7 @@ const QUERIES = [
     title: 'Domain activity by city',
     description: 'Which cities show the most Domains 3/4 activity.',
     sql: `
-      SELECT f.city,
+      SELECT f.city, f.region AS state,
              COUNT(DISTINCT f.facility_id)                                                          AS facilities,
              SUM(CASE WHEN c.dss_domain IN (3,4) AND c.classification = 'Recognized' THEN 1 ELSE 0 END) AS recognized_domain34,
              SUM(CASE WHEN c.dss_domain IN (3,4) AND c.classification = 'Potential'  THEN 1 ELSE 0 END) AS potential_domain34,
@@ -386,7 +386,7 @@ const QUERIES = [
       FROM facility f
       JOIN assessment a ON f.facility_id = a.facility_id
       JOIN condition c  ON c.assessment_id = a.assessment_id
-      GROUP BY f.city
+      GROUP BY f.city, f.region
       ORDER BY recognized_domain34 DESC, potential_domain34 DESC`
   },
   {
@@ -666,7 +666,7 @@ const QUERIES = [
       paramCol: 'city',
       title: '{value} — staffing detail',
       sql: `
-        SELECT f.name, a.staffing_hprd, a.staffing_hprd_pbj,
+        SELECT f.name, f.region AS state, a.staffing_hprd, a.staffing_hprd_pbj,
                ROUND(a.staffing_hprd - a.staffing_hprd_pbj, 3) AS pbj_gap,
                a.rn_hprd, a.nursing_turnover_pct AS turnover, a.exposure_level
         FROM facility f JOIN assessment a ON f.facility_id = a.facility_id
@@ -674,14 +674,14 @@ const QUERIES = [
         ORDER BY a.staffing_hprd ASC`
     },
     sql: `
-      SELECT f.city,
+      SELECT f.city, f.region AS state,
              COUNT(*)                                         AS facilities,
              ROUND(AVG(a.staffing_hprd), 2)                  AS avg_reported_hprd,
              ROUND(AVG(a.staffing_hprd_pbj), 2)              AS avg_pbj_hprd,
              ROUND(AVG(a.rn_hprd), 2)                        AS avg_rn_hprd,
              ROUND(AVG(a.nursing_turnover_pct), 1)           AS avg_turnover
       FROM facility f JOIN assessment a ON f.facility_id = a.facility_id
-      GROUP BY f.city
+      GROUP BY f.city, f.region
       ORDER BY avg_reported_hprd ASC`
   },
 
