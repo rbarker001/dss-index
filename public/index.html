@@ -67,10 +67,6 @@ body {
   text-decoration: none; padding: 8px 10px; border-bottom: 1px solid #E2E8F0;
 }
 .sidebar-map-link:hover { background: #FFF8F2; }
-.sidebar-hint {
-  padding: 6px 10px; font-size: 10px; color: #718096; line-height: 1.3;
-  border-bottom: 1px solid #E2E8F0; background: #FFFAF5;
-}
 
 /* ── CONTENT ─────────────────────────────────────────────────── */
 .content { flex: 1; display: flex; overflow: hidden; }
@@ -262,7 +258,6 @@ body {
       <input type="text" id="search" placeholder="Search queries…" oninput="filterQueries(this.value)" autocomplete="off">
     </div>
     <a href="/map.html" target="_blank" rel="noopener" class="sidebar-map-link">🗺 The DSS Index US Map</a>
-    <div class="sidebar-hint">Run → 📌 Compare → run another → side-by-side view</div>
     <div id="query-list" style="flex:1;overflow-y:auto;padding-bottom:12px"></div>
   </div>
   <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
